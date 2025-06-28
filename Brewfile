@@ -11,8 +11,6 @@ brew "ffmpeg"
 brew 'grep'
 brew 'tailscale'
 brew 'imagemagick'
-brew 'postgresql@17'
-brew 'redis'
 brew 'python@3.14'
 brew 'uv'
 brew 'spaceman-diff' # A tool for viewing git diffs in a more readable format
@@ -20,21 +18,19 @@ brew 'spark'
 brew 'wget'
 brew "node"
 brew 'yt-dlp'
-brew 'claude'
 brew 'neovim'
-brew 'bitwarden'
 brew 'tree'
 
 cask 'font-caskaydia-cove-nerd-font'
 cask 'handbrake'
 cask 'messenger'
+cask 'bitwarden'
+cask 'claude'
 cask 'synergy'
 cask 'plex'
 cask 'qlvideo' # QuickLook plugin for various video formats
 cask 'steam'
 cask 'transmission'
-cask 'raycast'
-cask 'warp' # Modern Rust-based terminal with GPU acceleration, autocomplete, and collaboration features
 cask 'whatsapp'
 cask 'windsurf'
 cask 'visual-studio-code'
