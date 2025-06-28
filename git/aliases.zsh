@@ -22,3 +22,7 @@ alias gb='git branch'
 alias gs='git status -sb' # upgrade your git if -sb breaks for you. it's fun.
 alias gac='git add -A && git commit -m'
 alias ge='git-edit-new'
+
+# added by j03l
+alias gme='git remote set-url origin git@github.com:j03l/dotfiles.git'
+alias grem='git remote -v'

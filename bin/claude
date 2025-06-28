@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# Check if claude is installed
+if [ ! -f "/Users/$USER/.claude/local/node_modules/.bin/claude" ]; then
+  echo "Claude Code not found. Installing..."
+  "$HOME/.dotfiles/claude-code/install.sh" --auto
+fi
+
+exec "/Users/$USER/.claude/local/node_modules/.bin/claude" "$@"

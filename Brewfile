@@ -1,37 +1,47 @@
 cask_args appdir: '/Applications'
 
 tap 'homebrew/bundle'
+tap "homebrew/services"
 
-brew 'cloudflared'
+brew 'ack'
+brew "btop"
+brew "coreutils"
+brew "curl"
+brew "ffmpeg"
+brew 'grep'
+brew 'tailscale'
 brew 'imagemagick'
-brew 'postgresql@14'
+brew 'postgresql@17'
 brew 'redis'
-brew 'ruby-build'
-brew 'spaceman-diff'
+brew 'python@3.14'
+brew 'uv'
+brew 'spaceman-diff' # A tool for viewing git diffs in a more readable format
 brew 'spark'
-brew 'stripe/stripe-cli/stripe'
-brew 'stripe/stripe-mock/stripe-mock'
 brew 'wget'
+brew "node"
 brew 'yt-dlp'
+brew 'claude'
+brew 'neovim'
+brew 'bitwarden'
+brew 'tree'
 
-cask '1password'
-cask 'airtable'
-cask 'android-platform-tools'
-cask 'arq'
-cask 'diffusionbee'
+cask 'font-caskaydia-cove-nerd-font'
 cask 'handbrake'
 cask 'messenger'
-cask 'notion-calendar'
+cask 'synergy'
 cask 'plex'
-cask 'qlvideo'
-cask 'sonos'
+cask 'qlvideo' # QuickLook plugin for various video formats
 cask 'steam'
 cask 'transmission'
 cask 'raycast'
-cask 'warp'
+cask 'warp' # Modern Rust-based terminal with GPU acceleration, autocomplete, and collaboration features
 cask 'whatsapp'
 cask 'windsurf'
 cask 'visual-studio-code'
+cask 'cursor'
+cask 'telegram'
+cask 'brave-browser'
+cask 'rustdesk'
+cask 'discord'
 cask 'vlc'
-cask 'zed'
-cask 'zoom'
+cask 'zed' # High-performance code editor with real-time collaboration
