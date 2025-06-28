@@ -1,0 +1,45 @@
+# Core utilities
+ack
+htop
+coreutils
+curl
+ffmpeg
+grep
+imagemagick
+python3
+python3-pip
+pipx
+wget
+# nodejs and npm will be installed via nvm
+yt-dlp
+neovim
+tree
+
+# Development tools
+git
+build-essential
+cmake
+pkg-config
+
+# System monitoring
+ncdu
+
+# Network tools
+curl
+wget
+net-tools
+
+# Media tools
+vlc
+handbrake
+transmission-gtk
+
+# Fonts (via separate script)
+# fonts-nerd-fonts (needs custom installation)
+
+# Note: Some tools need special installation:
+# - tailscale: curl -fsSL https://tailscale.com/install.sh | sh
+# - uv: pipx install uv
+# - dust: cargo install du-dust (needs rust)
+# - spaceman-diff: manual installation required
+# - spark: manual installation required

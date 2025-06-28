@@ -20,6 +20,7 @@ brew "node"
 brew 'yt-dlp'
 brew 'neovim'
 brew 'tree'
+brew 'dust' # A great way to check system storage 'sudo dust <dir>'
 
 cask 'font-caskaydia-cove-nerd-font'
 cask 'handbrake'

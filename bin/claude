@@ -1,11 +1,24 @@
 #!/usr/bin/env bash
 # This is a wrapper around the Claude Code CLI. It checks if Claude Code is
 # installed, and if not, it installs it.
-#
+
+# Source OS detection
+. "$(dirname "$0")/../system/os.zsh"
+
+# Determine Claude installation path based on OS
+if is_macos; then
+  CLAUDE_PATH="/Users/$USER/.claude/local/node_modules/.bin/claude"
+elif is_linux; then
+  CLAUDE_PATH="$HOME/.claude/local/node_modules/.bin/claude"
+else
+  echo "Unsupported OS: $OS_TYPE"
+  exit 1
+fi
+
 # Check if Claude Code is installed
-if [ ! -f "/Users/$USER/.claude/local/node_modules/.bin/claude" ]; then
+if [ ! -f "$CLAUDE_PATH" ]; then
   echo "Claude Code not found. Installing..."
   "$HOME/.dotfiles/claude-code/install.sh" --auto
 fi
 
-exec "/Users/$USER/.claude/local/node_modules/.bin/claude" "$@"
+exec "$CLAUDE_PATH" "$@"

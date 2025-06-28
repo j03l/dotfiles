@@ -2,4 +2,14 @@
 #
 # Sets macOS defaults by running $ZSH/macos/set-defaults.sh.
 
+# Source OS detection utilities
+dotfilesDirectory="$(cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd -P)"
+. "$dotfilesDirectory/system/os.zsh"
+
+# Check if running on macOS
+if ! is_macos; then
+  echo "Error: set-defaults is only supported on macOS"
+  exit 1
+fi
+
 exec $ZSH/macos/set-defaults.sh

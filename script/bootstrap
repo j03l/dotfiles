@@ -9,6 +9,9 @@ set -e
 
 echo ''
 
+# Source OS detection utilities
+source "$DOTFILES_ROOT/system/os.zsh"
+
 info () {
   printf "\r  [ \033[00;34m..\033[0m ] $1\n"
 }
@@ -33,9 +36,12 @@ setup_gitconfig () {
     info 'setup gitconfig'
 
     git_credential='cache'
-    if [ "$(uname -s)" == "Darwin" ]
+    if is_macos
     then
       git_credential='osxkeychain'
+    elif is_linux
+    then
+      git_credential='cache'
     fi
 
     user ' - What is your github author name?'
@@ -140,16 +146,13 @@ install_dotfiles () {
 setup_gitconfig
 install_dotfiles
 
-# If we're on a Mac, let's install and setup homebrew.
-if [ "$(uname -s)" == "Darwin" ]
+# Install dependencies based on OS
+info "installing dependencies for $OS_TYPE"
+if source bin/dot | while read -r data; do info "$data"; done
 then
-  info "installing dependencies"
-  if source bin/dot | while read -r data; do info "$data"; done
-  then
-    success "dependencies installed"
-  else
-    fail "error installing dependencies"
-  fi
+  success "dependencies installed"
+else
+  fail "error installing dependencies"
 fi
 
 echo ''

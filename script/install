@@ -5,9 +5,22 @@
 set -e
 
 cd "$(dirname $0)"/..
+DOTFILES_ROOT=$(pwd -P)
 
-echo "› brew bundle"
-brew bundle
+# Source OS detection utilities
+source "$DOTFILES_ROOT/system/os.zsh"
+
+# Run OS-specific package installation
+if is_macos; then
+  echo "› brew bundle"
+  brew bundle
+elif is_debian_based; then
+  echo "› Running Debian package installation"
+  sh -c "$DOTFILES_ROOT/debian/install.sh"
+else
+  echo "› Unsupported OS: $OS_TYPE"
+  echo "› Skipping package installation"
+fi
 
 # find the installers and run them iteratively
 find . -name install.sh | while read installer ; do sh -c "${installer}" ; done
