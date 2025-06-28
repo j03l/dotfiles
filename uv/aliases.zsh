@@ -11,7 +11,7 @@ alias ur='uv remove'
 alias ul='uv lock'
 
 # Virtual environment
-alias uv='uv venv'
+alias venv='uv venv'
 alias uva='source .venv/bin/activate'
 
 # Running commands
