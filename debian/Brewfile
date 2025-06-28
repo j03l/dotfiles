@@ -1,0 +1,31 @@
+# Homebrew packages for Linux systems
+
+# Core utilities
+brew 'ack'
+brew "btop"
+brew "curl"
+brew "ffmpeg"
+brew 'grep'
+brew 'imagemagick'
+brew 'wget'
+brew 'yt-dlp'
+brew 'neovim'
+brew 'tree'
+brew 'dust' # A great way to check system storage 'sudo dust <dir>'
+
+# Development tools
+brew "node"
+brew 'python@3.14'
+brew 'uv'
+
+# Git tools
+brew 'spaceman-diff' # A tool for viewing git diffs in a more readable format
+
+# Media tools
+# VLC, handbrake, transmission will be installed via system packages or other means
+
+# Fonts
+# Nerd fonts will be installed via system package manager or manual installation
+
+# Note: Some GUI applications may not be available via Homebrew on Linux
+# These should be installed via system package manager, snap, flatpak, or AppImage
