@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
-# Check if claude is installed
+# This is a wrapper around the Claude Code CLI. It checks if Claude Code is
+# installed, and if not, it installs it.
+#
+# Check if Claude Code is installed
 if [ ! -f "/Users/$USER/.claude/local/node_modules/.bin/claude" ]; then
   echo "Claude Code not found. Installing..."
   "$HOME/.dotfiles/claude-code/install.sh" --auto
