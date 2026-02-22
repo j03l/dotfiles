@@ -34,3 +34,6 @@ vim.opt.colorcolumn = "80"
 
 vim.opt.laststatus = 2
 vim.opt.showmode = true
+
+vim.opt.title = true
+vim.opt.titlestring = "nvim:%t"

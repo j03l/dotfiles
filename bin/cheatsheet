@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-glow -p ~/dotfiles/KEYBINDS.md
+glow -p -w 120 ~/dotfiles/KEYBINDS.md

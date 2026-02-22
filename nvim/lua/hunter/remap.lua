@@ -1,9 +1,17 @@
-vim.keymap.set("n", "<leader>pv", vim.cmd.Ex, { desc = "Open file explorer" })
+vim.keymap.set("n", "<leader>pv", function()
+    require("hunter.floating_netrw").open()
+end, { desc = "Open file explorer (float)" })
 
 vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv", { desc = "Move selection down" })
 vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv", { desc = "Move selection up" })
 
 vim.api.nvim_set_keymap("n", "<leader>tf", "<Plug>PlenaryTestFile", { noremap = false, silent = false, desc = "Plenary test file" })
+
+-- better up/down (visual lines when no count)
+vim.keymap.set({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { desc = "Down", expr = true, silent = true })
+vim.keymap.set({ "n", "x" }, "<Down>", "v:count == 0 ? 'gj' : 'j'", { desc = "Down", expr = true, silent = true })
+vim.keymap.set({ "n", "x" }, "k", "v:count == 0 ? 'gk' : 'k'", { desc = "Up", expr = true, silent = true })
+vim.keymap.set({ "n", "x" }, "<Up>", "v:count == 0 ? 'gk' : 'k'", { desc = "Up", expr = true, silent = true })
 
 vim.keymap.set("n", "J", "mzJ`z", { desc = "Join lines (cursor stays)" })
 vim.keymap.set("n", "<C-d>", "<C-d>zz", { desc = "Half-page down (centered)" })
@@ -37,6 +45,7 @@ vim.keymap.set("i", "<C-c>", "<Esc>", { desc = "Escape insert mode" })
 
 vim.keymap.set("n", "Q", "<nop>", { desc = "Disable Q" })
 vim.keymap.set("n", "<C-f>", "<cmd>silent !tmux neww tmux-sessionizer<CR>", { desc = "Tmux sessionizer" })
+vim.keymap.set("n", "<leader>gg", "<cmd>silent !tmux neww lazygit<CR>", { desc = "Lazygit" })
 vim.keymap.set("n", "<M-h>", "<cmd>silent !tmux-sessionizer -s 0 --vsplit<CR>", { desc = "Tmux sessionizer vsplit" })
 vim.keymap.set("n", "<M-H>", "<cmd>silent !tmux neww tmux-sessionizer -s 0<CR>", { desc = "Tmux sessionizer new window" })
 
@@ -83,6 +92,16 @@ end, { desc = "Make it rain" })
 vim.keymap.set("n", "<leader>cm", "<cmd>Mason<CR>", { desc = "Open Mason" })
 vim.keymap.set("n", "<leader>K", "<cmd>Telescope keymaps<CR>", { desc = "Search keymaps" })
 
-vim.keymap.set("n", "<leader><leader>", function()
-    vim.cmd("so")
-end, { desc = "Source file" })
+vim.keymap.set("n", "<leader><leader>", "<cmd>b#<CR>", { desc = "Switch to last buffer" })
+
+vim.keymap.set({ "i", "x", "n", "s" }, "<C-s>", "<cmd>w<cr><esc>", { desc = "Save file" })
+
+-- better indenting
+vim.keymap.set("x", "<", "<gv", { desc = "Indent left (stay selected)" })
+vim.keymap.set("x", ">", ">gv", { desc = "Indent right (stay selected)" })
+
+-- commenting
+vim.keymap.set("n", "gco", "o<esc>Vcx<esc><cmd>normal gcc<cr>fxa<bs>", { desc = "Add comment below" })
+vim.keymap.set("n", "gcO", "O<esc>Vcx<esc><cmd>normal gcc<cr>fxa<bs>", { desc = "Add comment above" })
+vim.keymap.set("n", "<leader>qq", "<cmd>wqa<cr>", { desc = "Save and quit all" })
+vim.keymap.set("n", "<leader>q!", "<cmd>qa!<cr>", { desc = "Force quit all (discard changes)" })

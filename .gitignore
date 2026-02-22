@@ -4,3 +4,4 @@ nvim/plugin/
 # OS junk
 .DS_Store
 Thumbs.db
+env/.config/tmux/plugins/

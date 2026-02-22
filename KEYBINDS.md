@@ -11,7 +11,8 @@ Leader = Space
 ### Navigation
 | Binding       | Action                              | Source     |
 |---------------|-------------------------------------|------------|
-| `<leader>pv`  | Open file explorer (netrw)          | remap.lua  |
+| `<leader>pv`  | Open file explorer (floating netrw) | remap.lua  |
+| `j`/`k`/`↑`/`↓` | Move by visual line (no count)   | remap.lua  |
 | `<C-d>`       | Half-page down (centered)           | remap.lua  |
 | `<C-u>`       | Half-page up (centered)             | remap.lua  |
 | `n`           | Next search result (centered)       | remap.lua  |
@@ -54,6 +55,11 @@ Leader = Space
 | `<leader>s`   | Search & replace word under cursor  | remap.lua  |
 | `<leader>x`   | chmod +x current file               | remap.lua  |
 | `=ap`         | Format paragraph (cursor stays)     | remap.lua  |
+| `<C-s>`       | Save file (works in any mode)       | remap.lua  |
+| `<` (visual)  | Indent left (stay selected)         | remap.lua  |
+| `>` (visual)  | Indent right (stay selected)        | remap.lua  |
+| `gco`         | Add comment below current line      | remap.lua  |
+| `gcO`         | Add comment above current line      | remap.lua  |
 | `<leader>f`   | Format buffer (conform)             | conform.lua|
 | `<C-c>`       | Escape from insert mode             | remap.lua  |
 | `Q`           | Disabled (no Ex mode)               | remap.lua  |
@@ -105,6 +111,12 @@ Leader = Space
 | `gu`          | Diffget ours                        | fugitive.lua  |
 | `gh`          | Diffget theirs                      | fugitive.lua  |
 
+### Gitsigns (Inline Git Indicators)
+| Binding       | Action                              | Source         |
+|---------------|-------------------------------------|----------------|
+| `]c`          | Next hunk                           | gitsigns.lua   |
+| `[c`          | Previous hunk                       | gitsigns.lua   |
+
 ### Trouble (Diagnostics)
 | Binding       | Action                              | Source       |
 |---------------|-------------------------------------|--------------|
@@ -137,7 +149,7 @@ Leader = Space
 | `<leader>cm`       | Open Mason                        | remap.lua  |
 | `<leader>K`        | Search keymaps (Telescope)        | remap.lua  |
 | `<leader>ca`       | Cellular automaton (make it rain) | remap.lua  |
-| `<leader><leader>` | Source current file                | remap.lua  |
+| `<leader><leader>` | Switch to last buffer              | remap.lua  |
 
 ### Theme Switching
 | Command  | Action                              | Source    |
