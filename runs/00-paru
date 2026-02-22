@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if command -v paru &>/dev/null; then
+    echo "paru already installed"
+    exit 0
+fi
+
+echo "Installing paru..."
+sudo pacman -S --needed --noconfirm base-devel git
+
+tmpdir=$(mktemp -d)
+trap 'rm -rf "$tmpdir"' EXIT
+git clone https://aur.archlinux.org/paru.git "$tmpdir/paru"
+cd "$tmpdir/paru"
+makepkg -si --noconfirm

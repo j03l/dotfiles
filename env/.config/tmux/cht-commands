@@ -1,0 +1,10 @@
+find
+grep
+awk
+sed
+docker
+git
+kubectl
+psql
+curl
+jq

@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+paru -S --needed --noconfirm \
+    fzf \
+    ripgrep \
+    btop \
+    eza \
+    lazygit \
+    glow \
+    jq \
+    docker \
+    docker-compose
+
+# Enable docker (idempotent)
+sudo systemctl enable docker.service
+sudo systemctl enable containerd.service
+
+echo "dev tools installed"

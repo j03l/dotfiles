@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+
+# tmux-cht - Quick access to cht.sh cheat sheets from within tmux
+# Inspired by ThePrimeagen's tmux-cht.sh
+
+# Create language and command lists if they don't exist
+mkdir -p ~/.config/tmux
+
+if [[ ! -f ~/.config/tmux/cht-languages ]]; then
+    cat > ~/.config/tmux/cht-languages << 'EOF'
+python
+javascript
+typescript
+bash
+rust
+go
+sql
+lua
+vim
+EOF
+fi
+
+if [[ ! -f ~/.config/tmux/cht-commands ]]; then
+    cat > ~/.config/tmux/cht-commands << 'EOF'
+find
+grep
+awk
+sed
+docker
+git
+kubectl
+psql
+curl
+jq
+EOF
+fi
+
+# Let user select language or command
+selected=$(cat ~/.config/tmux/cht-languages ~/.config/tmux/cht-commands | fzf --prompt="Select topic: ")
+
+if [[ -z $selected ]]; then
+    exit 0
+fi
+
+# Prompt for query
+read -p "Query: " query
+
+# Check if it's a language or command
+if grep -qs "$selected" ~/.config/tmux/cht-languages; then
+    # Language query
+    query=$(echo $query | tr ' ' '+')
+    tmux neww bash -c "echo \"Fetching: curl cht.sh/$selected/$query\" && curl -s cht.sh/$selected/$query | less -R"
+else
+    # Command query
+    tmux neww bash -c "curl -s cht.sh/$selected~$query | less -R"
+fi

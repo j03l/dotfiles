@@ -1,0 +1,6 @@
+# Neovim plugin artifacts (managed by lazy.nvim at runtime)
+nvim/plugin/
+
+# OS junk
+.DS_Store
+Thumbs.db

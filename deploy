@@ -1,0 +1,65 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+DOTFILES="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
+export DOTFILES
+
+dry_run="0"
+[[ "${1:-}" == "--dry" ]] && dry_run="1"
+
+XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
+
+log() {
+    if [[ $dry_run == "1" ]]; then
+        echo "[DRY_RUN]: $1"
+    else
+        echo "$1"
+    fi
+}
+
+# Remove target then copy fresh (idempotent)
+deploy_dir() {
+    local src="$1" dest="$2"
+    log "rm -rf $dest"
+    log "cp -r  $src -> $dest"
+    if [[ $dry_run == "0" ]]; then
+        rm -rf "$dest"
+        mkdir -p "$(dirname "$dest")"
+        cp -r "$src" "$dest"
+    fi
+}
+
+deploy_file() {
+    local src="$1" dest="$2"
+    log "cp $src -> $dest"
+    if [[ $dry_run == "0" ]]; then
+        mkdir -p "$(dirname "$dest")"
+        cp "$src" "$dest"
+    fi
+}
+
+echo "=== deploy: nvim ==="
+deploy_dir "$DOTFILES/nvim" "$XDG_CONFIG_HOME/nvim"
+
+echo "=== deploy: env/.config/* ==="
+for dir in "$DOTFILES"/env/.config/*/; do
+    name=$(basename "$dir")
+    deploy_dir "$dir" "$XDG_CONFIG_HOME/$name"
+done
+
+echo "=== deploy: zsh dotfiles ==="
+deploy_file "$DOTFILES/env/.zshrc" "$HOME/.zshrc"
+deploy_file "$DOTFILES/env/.zsh_profile" "$HOME/.zsh_profile"
+
+echo "=== deploy: bin/ ==="
+mkdir -p "$HOME/.local/bin"
+for script in "$DOTFILES"/bin/*; do
+    name=$(basename "$script")
+    deploy_file "$script" "$HOME/.local/bin/$name"
+    log "chmod +x $HOME/.local/bin/$name"
+    if [[ $dry_run == "0" ]]; then
+        chmod +x "$HOME/.local/bin/$name"
+    fi
+done
+
+log "deploy complete."

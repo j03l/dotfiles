@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if command -v go &>/dev/null; then
+    echo "go already installed: $(go version)"
+else
+    echo "Installing go via webi..."
+    curl -sS https://webi.sh/golang | sh
+fi

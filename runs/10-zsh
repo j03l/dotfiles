@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+paru -S --needed --noconfirm \
+    zsh \
+    oh-my-zsh-git \
+    zsh-syntax-highlighting \
+    zsh-autosuggestions \
+    zsh-history-substring-search \
+    pkgfile
+
+# Set zsh as default shell if not already
+if [[ "$SHELL" != */zsh ]]; then
+    echo "Setting zsh as default shell..."
+    chsh -s "$(which zsh)"
+else
+    echo "zsh is already default shell"
+fi

@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+paru -S --needed --noconfirm \
+    neovim \
+    lua51 \
+    luarocks
+
+mkdir -p "$HOME/.vim/undodir"
+echo "neovim ready (plugins install on first launch via lazy.nvim)"

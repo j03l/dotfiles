@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+DOTFILES="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
+
+dry_run=""
+[[ "${1:-}" == "--dry" ]] && dry_run="--dry"
+
+if [[ -z "$dry_run" ]]; then
+    echo "This will install packages and deploy configs."
+    read -rp "Continue? [y/N] " answer
+    if [[ ! "$answer" =~ ^[Yy]$ ]]; then
+        echo "Aborted."
+        exit 0
+    fi
+fi
+
+echo "=== Phase 1: install packages ==="
+"$DOTFILES/run" $dry_run
+
+echo ""
+echo "=== Phase 2: deploy configs ==="
+"$DOTFILES/deploy" $dry_run

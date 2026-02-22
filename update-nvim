@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+DOTFILES="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
+XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
+
+dry_run="0"
+[[ "${1:-}" == "--dry" ]] && dry_run="1"
+
+log() {
+    if [[ $dry_run == "1" ]]; then
+        echo "[DRY_RUN]: $1"
+    else
+        echo "$1"
+    fi
+}
+
+log "rm -rf $XDG_CONFIG_HOME/nvim"
+log "cp -r  $DOTFILES/nvim -> $XDG_CONFIG_HOME/nvim"
+
+if [[ $dry_run == "0" ]]; then
+    rm -rf "$XDG_CONFIG_HOME/nvim"
+    cp -r "$DOTFILES/nvim" "$XDG_CONFIG_HOME/nvim"
+fi
+
+log "nvim config updated."

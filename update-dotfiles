@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+DOTFILES="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
+
+dry_run=""
+[[ "${1:-}" == "--dry" ]] && dry_run="--dry"
+
+"$DOTFILES/deploy" $dry_run

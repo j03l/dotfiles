@@ -1,0 +1,40 @@
+#!/bin/bash
+# tmux-project: Quick project session switcher
+# Usage: tmux-project <session-name> [project-path]
+
+SESSION_NAME="$1"
+PROJECT_PATH="${2:-$HOME/dev/$SESSION_NAME}"
+
+if [ -z "$SESSION_NAME" ]; then
+    echo "Usage: tmux-project <session-name> [project-path]"
+    echo ""
+    echo "Examples:"
+    echo "  tmux-project chatagent"
+    echo "  tmux-project dotfiles ~/.config"
+    echo ""
+    echo "Current sessions:"
+    tmux list-sessions 2>/dev/null || echo "  (no sessions)"
+    exit 1
+fi
+
+# Check if session exists
+if tmux has-session -t "$SESSION_NAME" 2>/dev/null; then
+    # Session exists, switch to it
+    if [ -n "$TMUX" ]; then
+        # Already in tmux, switch client
+        tmux switch-client -t "$SESSION_NAME"
+    else
+        # Not in tmux, attach
+        tmux attach-session -t "$SESSION_NAME"
+    fi
+else
+    # Create new session
+    if [ -n "$TMUX" ]; then
+        # Already in tmux, create and switch
+        tmux new-session -d -s "$SESSION_NAME" -c "$PROJECT_PATH"
+        tmux switch-client -t "$SESSION_NAME"
+    else
+        # Not in tmux, create and attach
+        tmux new-session -s "$SESSION_NAME" -c "$PROJECT_PATH"
+    fi
+fi

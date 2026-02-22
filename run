@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+DOTFILES="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
+export DOTFILES
+
+grep_filter=""
+dry_run="0"
+
+while [[ $# -gt 0 ]]; do
+    if [[ "$1" == "--dry" ]]; then
+        dry_run="1"
+    else
+        grep_filter="$1"
+    fi
+    shift
+done
+
+log() {
+    if [[ $dry_run == "1" ]]; then
+        echo "[DRY_RUN]: $1"
+    else
+        echo "$1"
+    fi
+}
+
+log "DOTFILES=$DOTFILES  grep=$grep_filter"
+
+# Find executable scripts in runs/, sorted by name
+mapfile -t scripts < <(find "$DOTFILES/runs" -mindepth 1 -maxdepth 1 -executable | sort)
+
+for s in "${scripts[@]}"; do
+    name=$(basename "$s")
+
+    if [[ -n "$grep_filter" ]] && ! echo "$name" | grep -q "$grep_filter"; then
+        log "grep \"$grep_filter\" filtered out $name"
+        continue
+    fi
+
+    log "running: $name"
+
+    if [[ $dry_run == "0" ]]; then
+        if ! "$s"; then
+            echo ""
+            read -rp "$name failed. Continue? [y/N] " answer
+            if [[ ! "$answer" =~ ^[Yy]$ ]]; then
+                echo "Aborting."
+                exit 1
+            fi
+        fi
+    fi
+done
+
+log "done."
