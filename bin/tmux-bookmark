@@ -1,0 +1,103 @@
+#!/usr/bin/env bash
+# tmux-bookmark - Session bookmark manager for tmux
+# 4 slots (h/j/k/l) bound to sessions at runtime with status bar indicators.
+#
+# Usage: tmux-bookmark <set|goto|restore> [slot] [session_name]
+
+set -euo pipefail
+
+SLOT_KEYS=(h j k l)
+SLOT_COLORS=("#9ece6a" "#bb9af7" "#7dcfff" "#ff9e64")
+SAVE_FILE="${XDG_DATA_HOME:-$HOME/.local/share}/tmux/bookmarks"
+
+persist() {
+    mkdir -p "$(dirname "$SAVE_FILE")"
+    for i in 1 2 3 4; do
+        tmux show-option -gqv "@bm_${i}"
+    done > "$SAVE_FILE"
+}
+
+validate_slot() {
+    [[ -n "$1" && "$1" -ge 1 && "$1" -le 4 ]] 2>/dev/null || {
+        echo "Usage: tmux-bookmark $2 <1-4>" >&2; exit 1
+    }
+}
+
+slot_label() {
+    local s=$1
+    local key="${SLOT_KEYS[$((s-1))]}"
+    local color="${SLOT_COLORS[$((s-1))]}"
+    printf '#[fg=%s,bold]%s#[default]' "$color" "${key^^}"
+}
+
+cmd="${1:-}"
+slot="${2:-}"
+
+case "$cmd" in
+    set)
+        validate_slot "$slot" set
+        current_session="${3:-$(tmux display-message -p '#S')}"
+        existing=$(tmux show-option -gqv "@bm_${slot}")
+
+        if [[ "$existing" == "$current_session" ]]; then
+            # Toggle off
+            tmux set-option -g "@bm_${slot}" ""
+        else
+            # Clear session from any other slot (one slot per session)
+            for i in 1 2 3 4; do
+                [[ $i -eq $slot ]] && continue
+                if [[ "$(tmux show-option -gqv "@bm_${i}")" == "$current_session" ]]; then
+                    tmux set-option -g "@bm_${i}" ""
+                fi
+            done
+            tmux set-option -g "@bm_${slot}" "$current_session"
+        fi
+        tmux set-option -g @bookmark_mode 0
+        tmux refresh-client -S
+        persist >/dev/null 2>&1 &
+        ;;
+
+    goto)
+        validate_slot "$slot" goto
+        target=$(tmux show-option -gqv "@bm_${slot}")
+        if [[ -z "$target" ]]; then
+            tmux display-message "$(slot_label "$slot") is not set"
+            exit 0
+        fi
+        if tmux has-session -t "=$target" 2>/dev/null; then
+            tmux switch-client -t "=$target"
+        else
+            tmux display-message "$(slot_label "$slot"): '${target}' no longer exists"
+            tmux set-option -g "@bm_${slot}" ""
+            persist >/dev/null 2>&1 &
+        fi
+        ;;
+
+    restore)
+        if [[ -f "$SAVE_FILE" ]]; then
+            i=1
+            while IFS= read -r session && [[ $i -le 4 ]]; do
+                tmux set-option -g "@bm_${i}" "$session"
+                ((i++))
+            done < "$SAVE_FILE"
+            while [[ $i -le 4 ]]; do
+                tmux set-option -g "@bm_${i}" ""
+                ((i++))
+            done
+        fi
+        ;;
+
+    reset)
+        for i in 1 2 3 4; do
+            tmux set-option -g "@bm_${i}" ""
+        done
+        tmux set-option -g @bookmark_mode 0
+        tmux refresh-client -S
+        persist >/dev/null 2>&1 &
+        ;;
+
+    *)
+        echo "Usage: tmux-bookmark <set|goto|reset|restore> [slot] [session_name]" >&2
+        exit 1
+        ;;
+esac

@@ -189,12 +189,30 @@ Press `Ctrl-B Space` for the interactive which-key menu.
 |---------------------------|-------------------------------------|
 | `Ctrl-B` then `Space`    | Which-key menu (all keybinds)       |
 | `Ctrl-B` then `H`        | Cheatsheet popup                    |
+| `Ctrl-B` then `a`        | Claude Code scratchpad popup        |
 | `Ctrl-B` then `r`        | Reload tmux config                  |
 | `Ctrl-B` then `D`        | Open TODO.md / study guide in nvim  |
+| `Ctrl-B` then `S`        | Save sessions (tmux-resurrect)      |
+| `Ctrl-B` then `R`        | Restore sessions (tmux-resurrect)   |
 | `Ctrl-B` then `Ctrl-F`   | tmux-sessionizer (project switch)   |
-| `Ctrl-B` then `Alt-h`    | Sessionizer slot 0                  |
-| `Ctrl-B` then `Alt-t`    | Sessionizer slot 1                  |
-| `Ctrl-B` then `Alt-n`    | Sessionizer slot 2                  |
+
+### Session Bookmarks
+
+4 slots (H/J/K/L) with colored status bar indicators. Click indicators to switch.
+
+| Binding                       | Action                              |
+|-------------------------------|-------------------------------------|
+| `Ctrl-B` then `m` then `h`   | Set/toggle bookmark slot H (green)  |
+| `Ctrl-B` then `m` then `j`   | Set/toggle bookmark slot J (purple) |
+| `Ctrl-B` then `m` then `k`   | Set/toggle bookmark slot K (cyan)   |
+| `Ctrl-B` then `m` then `l`   | Set/toggle bookmark slot L (orange) |
+| `Ctrl-B` then `m` then `m`   | Clear all bookmarks (with confirm)  |
+| `Ctrl-B` then `m` then `Esc` | Cancel bookmark set mode            |
+| `Alt-h`                       | Go to bookmark H                    |
+| `Alt-j`                       | Go to bookmark J                    |
+| `Alt-k`                       | Go to bookmark K                    |
+| `Alt-l`                       | Go to bookmark L                    |
+| Click status bar indicator    | Go to that bookmark                 |
 
 ### Copy Mode
 | Binding                | Action                              |
@@ -208,17 +226,13 @@ Press `Ctrl-B Space` for the interactive which-key menu.
 
 ## tmux-sessionizer (project switching)
 
+Auto-restores saved sessions on first launch after reboot (if a resurrect save exists).
+
 | Binding       | Where    | Action                              |
 |---------------|----------|-------------------------------------|
 | `Ctrl-F`      | zsh      | Open fzf project picker             |
 | `Ctrl-F`      | tmux     | Open fzf project picker             |
 | `<C-f>`       | nvim     | Open fzf project picker             |
-| `Alt-h`       | zsh      | Sessionizer slot 0                  |
-| `Alt-t`       | zsh      | Sessionizer slot 1                  |
-| `Alt-n`       | zsh      | Sessionizer slot 2                  |
-| `Alt-s`       | zsh      | Sessionizer slot 3                  |
-| `<M-h>`       | nvim     | Sessionizer vsplit (slot 0)         |
-| `<M-H>`       | nvim     | Sessionizer new window (slot 0)     |
 | `ts`          | zsh      | Alias for tmux-sessionizer          |
 
 ---
