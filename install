@@ -21,3 +21,12 @@ echo "=== Phase 1: install packages ==="
 echo ""
 echo "=== Phase 2: deploy configs ==="
 "$DOTFILES/deploy" $dry_run
+
+echo ""
+echo "=== Phase 3: secrets ==="
+if [[ -n "${BWS_ACCESS_TOKEN:-}" ]]; then
+    "$DOTFILES/secrets" $dry_run
+else
+    echo "BWS_ACCESS_TOKEN not set — skipping secrets."
+    echo "To provision secrets: export BWS_ACCESS_TOKEN='...' && ./secrets"
+fi

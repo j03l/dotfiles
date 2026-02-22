@@ -15,12 +15,16 @@ log() {
     fi
 }
 
-log "rm -rf $XDG_CONFIG_HOME/nvim"
-log "cp -r  $DOTFILES/nvim -> $XDG_CONFIG_HOME/nvim"
+target="$XDG_CONFIG_HOME/nvim"
 
-if [[ $dry_run == "0" ]]; then
-    rm -rf "$XDG_CONFIG_HOME/nvim"
-    cp -r "$DOTFILES/nvim" "$XDG_CONFIG_HOME/nvim"
+if [[ -L "$target" && "$(readlink "$target")" == "$DOTFILES/nvim" ]]; then
+    log "nvim already symlinked correctly"
+else
+    log "rm -rf $target"
+    log "ln -s  $DOTFILES/nvim -> $target"
+    if [[ $dry_run == "0" ]]; then
+        rm -rf "$target"
+        ln -s "$DOTFILES/nvim" "$target"
+    fi
+    log "nvim symlink created."
 fi
-
-log "nvim config updated."

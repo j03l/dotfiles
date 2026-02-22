@@ -78,7 +78,7 @@ alias la="eza --icons --group-directories-first -a"
 alias ll="eza --icons --group-directories-first -lag --git --header"
 alias lt="eza --icons --group-directories-first --tree -L 2"
 alias gdb="gdb --tui"
-alias paru="paru --answerclean None --answerdiff None"
+alias paru="paru --skipreview"
 alias fd="find . -type d -name"
 alias ff="find . -name"
 alias reload!="exec zsh"
@@ -110,3 +110,6 @@ export PATH="$HOME/.local/bin:$PATH"
 
 # GOlang
 export PATH=$PATH:$HOME/.local/opt/go/bin:$HOME/go/bin
+
+# Aliases
+alias c='claude'

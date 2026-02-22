@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-glow -p ~/study-prime/KEYBINDS.md
+glow -p ~/dotfiles/KEYBINDS.md

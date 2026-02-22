@@ -19,8 +19,14 @@ cursor-style-blink = false
 # Shell integration (minimal, like Prime)
 shell-integration-features = no-cursor,no-sudo,no-title
 
+# Links
+link-url = true
+
 # No bell
 # Ghostty has no audible bell by default
 
 # Unbind Ctrl+Enter fullscreen
 keybind = ctrl+enter=unbind
+
+# Fullscreen toggle
+keybind = f11=toggle_fullscreen

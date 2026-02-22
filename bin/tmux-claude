@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+# tmux-claude - Persistent Claude Code scratchpad
+# Usage: tmux-claude [question]
+#   No args  → opens persistent scratchpad (survives popup dismiss)
+#   With args → one-shot question, then waits for keypress
+
+SESSION="claude"
+
+if [[ $# -gt 0 ]]; then
+    claude -p "$*"
+    echo ""
+    read -n 1 -s -r -p "Press any key to close..."
+else
+    # Create session if it doesn't exist
+    tmux has-session -t "$SESSION" 2>/dev/null || \
+        tmux new-session -d -s "$SESSION" "claude"
+
+    # Apply scratchpad styling (purple tokyonight accent)
+    tmux set-option -t "$SESSION" status-style 'bg=#1a1b26 fg=#bb9af7'
+    tmux set-option -t "$SESSION" status-left '#[bg=#bb9af7 fg=#1a1b26 bold]  ai #[default] '
+    tmux set-option -t "$SESSION" status-right ''
+
+    exec env -u TMUX tmux attach-session -t "$SESSION"
+fi

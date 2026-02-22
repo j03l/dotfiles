@@ -17,49 +17,57 @@ log() {
     fi
 }
 
-# Remove target then copy fresh (idempotent)
-deploy_dir() {
+# Remove target (file, dir, or stale symlink) then symlink
+link_dir() {
     local src="$1" dest="$2"
+    if [[ -L "$dest" && "$(readlink "$dest")" == "$src" ]]; then
+        log "ok (already linked) $dest -> $src"
+        return
+    fi
     log "rm -rf $dest"
-    log "cp -r  $src -> $dest"
+    log "ln -s  $src -> $dest"
     if [[ $dry_run == "0" ]]; then
         rm -rf "$dest"
         mkdir -p "$(dirname "$dest")"
-        cp -r "$src" "$dest"
+        ln -s "$src" "$dest"
     fi
 }
 
-deploy_file() {
+link_file() {
     local src="$1" dest="$2"
-    log "cp $src -> $dest"
+    if [[ -L "$dest" && "$(readlink "$dest")" == "$src" ]]; then
+        log "ok (already linked) $dest -> $src"
+        return
+    fi
+    log "rm -f $dest"
+    log "ln -s $src -> $dest"
     if [[ $dry_run == "0" ]]; then
         mkdir -p "$(dirname "$dest")"
-        cp "$src" "$dest"
+        rm -f "$dest"
+        ln -s "$src" "$dest"
     fi
 }
 
 echo "=== deploy: nvim ==="
-deploy_dir "$DOTFILES/nvim" "$XDG_CONFIG_HOME/nvim"
+link_dir "$DOTFILES/nvim" "$XDG_CONFIG_HOME/nvim"
 
 echo "=== deploy: env/.config/* ==="
 for dir in "$DOTFILES"/env/.config/*/; do
     name=$(basename "$dir")
-    deploy_dir "$dir" "$XDG_CONFIG_HOME/$name"
+    link_dir "${dir%/}" "$XDG_CONFIG_HOME/$name"
 done
 
 echo "=== deploy: zsh dotfiles ==="
-deploy_file "$DOTFILES/env/.zshrc" "$HOME/.zshrc"
-deploy_file "$DOTFILES/env/.zsh_profile" "$HOME/.zsh_profile"
+link_file "$DOTFILES/env/.zshrc" "$HOME/.zshrc"
+link_file "$DOTFILES/env/.zsh_profile" "$HOME/.zsh_profile"
 
 echo "=== deploy: bin/ ==="
 mkdir -p "$HOME/.local/bin"
 for script in "$DOTFILES"/bin/*; do
+    [[ -f "$script" ]] || continue
     name=$(basename "$script")
-    deploy_file "$script" "$HOME/.local/bin/$name"
-    log "chmod +x $HOME/.local/bin/$name"
-    if [[ $dry_run == "0" ]]; then
-        chmod +x "$HOME/.local/bin/$name"
-    fi
+    [[ "$name" == "README.md" ]] && continue
+    link_file "$script" "$HOME/.local/bin/$name"
 done
 
 log "deploy complete."

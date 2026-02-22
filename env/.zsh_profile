@@ -1,5 +1,6 @@
 export XDG_CONFIG_HOME=$HOME/.config
 export GIT_EDITOR=nvim
+export BWS_ACCESS_TOKEN=$(kwallet-query -f Passwords -r bws-access-token kdewallet 2>/dev/null)
 
 # tmux-sessionizer keybinds
 bindkey -s ^f "tmux-sessionizer\n"

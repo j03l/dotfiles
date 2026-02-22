@@ -1,0 +1,10 @@
+# style name or JSON path
+style: "dark"
+# use pager to display markdown
+pager: true
+# word-wrap at width (0 = no wrap, allows horizontal scroll)
+width: 0
+# mouse support (TUI-mode only)
+mouse: true
+# show all files, including hidden and ignored
+all: false
