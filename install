@@ -24,9 +24,16 @@ echo "=== Phase 2: deploy configs ==="
 
 echo ""
 echo "=== Phase 3: secrets ==="
-if [[ -n "${BWS_ACCESS_TOKEN:-}" ]]; then
-    "$DOTFILES/secrets" $dry_run
-else
+if [[ -z "${BWS_ACCESS_TOKEN:-}" ]]; then
     echo "BWS_ACCESS_TOKEN not set — skipping secrets."
     echo "To provision secrets: export BWS_ACCESS_TOKEN='...' && ./secrets"
+elif [[ -n "$dry_run" ]]; then
+    "$DOTFILES/secrets" $dry_run
+else
+    read -rp "Deploy secrets (gitconfig, gh tokens, etc.)? [y/N] " answer
+    if [[ "$answer" =~ ^[Yy]$ ]]; then
+        "$DOTFILES/secrets"
+    else
+        echo "Skipped secrets."
+    fi
 fi
