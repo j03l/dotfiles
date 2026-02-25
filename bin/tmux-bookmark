@@ -96,8 +96,24 @@ case "$cmd" in
         persist >/dev/null 2>&1 &
         ;;
 
+    cleanup)
+        # Remove bookmarks for sessions that no longer exist
+        changed=0
+        for i in 1 2 3 4; do
+            session=$(tmux show-option -gqv "@bm_${i}")
+            if [[ -n "$session" ]] && ! tmux has-session -t "=$session" 2>/dev/null; then
+                tmux set-option -g "@bm_${i}" ""
+                changed=1
+            fi
+        done
+        if [[ $changed -eq 1 ]]; then
+            tmux refresh-client -S
+            persist >/dev/null 2>&1 &
+        fi
+        ;;
+
     *)
-        echo "Usage: tmux-bookmark <set|goto|reset|restore> [slot] [session_name]" >&2
+        echo "Usage: tmux-bookmark <set|goto|reset|restore|cleanup> [slot] [session_name]" >&2
         exit 1
         ;;
 esac
