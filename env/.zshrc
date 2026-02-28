@@ -109,7 +109,7 @@ export PATH="$HOME/.local/bin:$PATH"
 [ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"
 
 # GOlang
-export PATH=$PATH:$HOME/.local/opt/go/bin:$HOME/go/bin
+export PATH=$PATH:$HOME/go/bin
 
 # Aliases
 alias c='claude'

@@ -1,2 +1,3 @@
 #!/usr/bin/env bash
-glow -p -w 120 ~/dotfiles/KEYBINDS.md
+DOTFILES="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/.." &>/dev/null && pwd)"
+glow -p -w 120 "$DOTFILES/KEYBINDS.md"

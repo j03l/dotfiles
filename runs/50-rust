@@ -1,14 +1,15 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-if command -v rustup &>/dev/null; then
-    echo "Updating rustup..."
-    rustup update
-else
-    echo "Installing rustup..."
-    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-    source "$HOME/.cargo/env"
+paru -S --needed --noconfirm rustup stylua
+
+# Ensure a default toolchain is installed
+if ! rustup show active-toolchain &>/dev/null; then
+    rustup default stable
 fi
 
-echo "Installing cargo packages..."
-cargo install stylua claude-tmux
+# claude-tmux is not packaged — install via cargo
+if ! command -v claude-tmux &>/dev/null; then
+    echo "Installing claude-tmux via cargo..."
+    cargo install claude-tmux
+fi

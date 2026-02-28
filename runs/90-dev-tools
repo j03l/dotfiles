@@ -14,6 +14,13 @@ paru -S --needed --noconfirm \
 
 # Enable docker (idempotent)
 sudo systemctl enable docker.service
+sudo systemctl enable docker.socket
 sudo systemctl enable containerd.service
+
+# Add current user to docker group if not already a member
+if ! groups "$USER" | grep -q '\bdocker\b'; then
+    sudo usermod -aG docker "$USER"
+    echo "Added $USER to docker group (logout/login required to take effect)"
+fi
 
 echo "dev tools installed"
