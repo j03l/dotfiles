@@ -15,6 +15,14 @@ if [[ -z "$dry_run" ]]; then
     fi
 fi
 
+echo "=== Syncing package databases ==="
+if [[ -z "$dry_run" ]]; then
+    paru -Sy
+else
+    echo "[DRY_RUN]: paru -Sy"
+fi
+
+echo ""
 echo "=== Phase 1: install packages ==="
 "$DOTFILES/run" $dry_run
 
