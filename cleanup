@@ -74,11 +74,14 @@ fi
 log "${RED}--- Config symlinks ---${NC}"
 remove_symlink "$HOME/.config/nvim"
 remove_symlink "$HOME/.config/ghostty"
+remove_symlink "$HOME/.config/kitty"
 remove_symlink "$HOME/.config/glow"
 remove_symlink "$HOME/.config/tmux"
 remove_symlink "$HOME/.config/tmux-sessionizer"
+remove_symlink "$HOME/.gitconfig"
 remove_symlink "$HOME/.zshrc"
 remove_symlink "$HOME/.zsh_profile"
+remove_symlink "$HOME/.ssh/config"
 
 # --- bin/ scripts ---
 log ""
@@ -93,11 +96,13 @@ done
 # --- Secrets (if deployed) ---
 log ""
 log "${RED}--- Secret files ---${NC}"
-remove_file "$HOME/.gitconfig"
+remove_file "$HOME/.gitconfig.local"
 remove_file "$HOME/.git-credentials"
 remove_file "$HOME/.config/gh/hosts.yml"
 remove_file "$HOME/.config/github-copilot/apps.json"
 remove_file "$HOME/.config/rclone/rclone.conf"
+remove_file "$HOME/.config/gitlab/token"
+remove_file "$HOME/.config/ynab/token"
 remove_file "$HOME/.bootdev.yaml"
 
 # --- Runtime artifacts ---
@@ -107,6 +112,7 @@ remove_dir "$HOME/.tmux"
 remove_dir "$HOME/.local/share/nvim"
 remove_dir "$HOME/.local/state/nvim"
 remove_dir "$HOME/.cache/nvim"
+remove_dir "$HOME/.vim/undodir"
 remove_file "$HOME/.zsh_history"
 
 echo ""
