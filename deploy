@@ -57,6 +57,9 @@ for dir in "$DOTFILES"/env/.config/*/; do
     link_dir "${dir%/}" "$XDG_CONFIG_HOME/$name"
 done
 
+echo "=== deploy: gitconfig ==="
+link_file "$DOTFILES/env/.gitconfig" "$HOME/.gitconfig"
+
 echo "=== deploy: zsh dotfiles ==="
 link_file "$DOTFILES/env/.zshrc" "$HOME/.zshrc"
 link_file "$DOTFILES/env/.zsh_profile" "$HOME/.zsh_profile"
