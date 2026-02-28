@@ -61,6 +61,11 @@ echo "=== deploy: zsh dotfiles ==="
 link_file "$DOTFILES/env/.zshrc" "$HOME/.zshrc"
 link_file "$DOTFILES/env/.zsh_profile" "$HOME/.zsh_profile"
 
+echo "=== deploy: ssh config ==="
+mkdir -p "$HOME/.ssh"
+chmod 700 "$HOME/.ssh"
+link_file "$DOTFILES/env/.ssh/config" "$HOME/.ssh/config"
+
 echo "=== deploy: bin/ ==="
 mkdir -p "$HOME/.local/bin"
 for script in "$DOTFILES"/bin/*; do

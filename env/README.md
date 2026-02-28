@@ -11,6 +11,7 @@ Mirrors the target filesystem structure. `deploy` copies each item to its corres
 | `.config/ghostty/` | `~/.config/ghostty/` |
 | `.config/tmux/` | `~/.config/tmux/` |
 | `.config/tmux-sessionizer/` | `~/.config/tmux-sessionizer/` |
+| `.ssh/config` | `~/.ssh/config` |
 
 ## zsh
 

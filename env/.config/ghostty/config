@@ -1,6 +1,6 @@
 # Font
 font-family = CaskaydiaCove Nerd Font Mono
-font-size = 13
+font-size = 12
 
 # Theme & background
 theme = TokyoNight Night
@@ -30,3 +30,11 @@ keybind = ctrl+enter=unbind
 
 # Fullscreen toggle
 keybind = f11=toggle_fullscreen
+
+# Tab bar (tokyonight-night, matching tmux)
+window-theme = ghostty
+window-titlebar-background = #16161e
+window-titlebar-foreground = #a9b1d6
+gtk-wide-tabs = false
+adw-toolbar-style = flat
+gtk-custom-css = tabs.css
