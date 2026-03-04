@@ -1,5 +1,5 @@
 # Font
-font-family = CaskaydiaCove Nerd Font Mono
+font-family = Cascadia Mono NF
 font-size = 12
 
 # Theme & background
@@ -38,3 +38,6 @@ window-titlebar-foreground = #a9b1d6
 gtk-wide-tabs = false
 adw-toolbar-style = flat
 gtk-custom-css = tabs.css
+
+# Copy & paste
+copy-on-select = clipboard

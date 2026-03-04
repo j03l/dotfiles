@@ -6,9 +6,11 @@ return {
 		},
 		branch = "master",
 		build = ":TSUpdate",
-		main = "nvim-treesitter.configs",
-		opts = {
-			ensure_installed = {
+		config = function()
+			require("nvim-treesitter").setup()
+
+			-- Install parsers
+			require("nvim-treesitter").install({
 				"vimdoc",
 				"javascript",
 				"typescript",
@@ -20,36 +22,25 @@ return {
 				"go",
 				"python",
 				"templ",
-			},
-			sync_install = false,
-			auto_install = true,
-			indent = {
-				enable = true,
-			},
-			highlight = {
-				enable = true,
-				disable = function(lang, buf)
-					if lang == "html" then
-						return true
-					end
+			})
+
+			vim.treesitter.language.register("templ", "templ")
+
+			-- Disable treesitter for large files
+			vim.api.nvim_create_autocmd("BufReadPre", {
+				callback = function(args)
 					local max_filesize = 500 * 1024 -- 500 KB
-					local ok, stats = pcall(vim.uv.fs_stat, vim.api.nvim_buf_get_name(buf))
+					local ok, stats = pcall(vim.uv.fs_stat, args.file)
 					if ok and stats and stats.size > max_filesize then
+						vim.treesitter.stop(args.buf)
 						vim.notify(
-							"File larger than 500KB treesitter disabled for performance",
+							"File larger than 500KB, treesitter disabled for performance",
 							vim.log.levels.WARN,
 							{ title = "Treesitter" }
 						)
-						return true
 					end
 				end,
-				additional_vim_regex_highlighting = { "markdown" },
-			},
-		},
-		config = function(_, opts)
-			---@diagnostic disable-next-line: missing-fields
-			require("nvim-treesitter.configs").setup(opts)
-			vim.treesitter.language.register("templ", "templ")
+			})
 		end,
 	},
 
