@@ -9,6 +9,29 @@ dry_run="0"
 
 XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 
+# Read or prompt for environment
+selected_env=""
+[[ -f "$HOME/.dotfiles-env" ]] && selected_env=$(cat "$HOME/.dotfiles-env")
+if [[ -n "$selected_env" ]]; then
+    echo "Current environment: $selected_env"
+    read -rp "Keep current? [Y/n] " answer
+    if [[ ! "${answer:-y}" =~ ^[Yy]$ ]]; then
+        selected_env=""
+    fi
+fi
+if [[ -z "$selected_env" ]]; then
+    echo "Select environment:"
+    select env in home work; do
+        if [[ -n "$env" ]]; then
+            selected_env="$env"
+            break
+        fi
+    done
+fi
+echo "$selected_env" > "$HOME/.dotfiles-env"
+echo "Environment: $selected_env"
+echo ""
+
 log() {
     if [[ $dry_run == "1" ]]; then
         echo "[DRY_RUN]: $1"
@@ -17,12 +40,29 @@ log() {
     fi
 }
 
+# Warn if target is a real file/dir (not a symlink) — may contain local changes
+check_overwrite() {
+    local dest="$1"
+    if [[ -e "$dest" && ! -L "$dest" ]]; then
+        echo "WARNING: $dest is a real file/directory, not a symlink."
+        read -rp "Overwrite? [y/N] " answer
+        if [[ ! "$answer" =~ ^[Yy]$ ]]; then
+            echo "skip: $dest"
+            return 1
+        fi
+    fi
+    return 0
+}
+
 # Remove target (file, dir, or stale symlink) then symlink
 link_dir() {
     local src="$1" dest="$2"
     if [[ -L "$dest" && "$(readlink "$dest")" == "$src" ]]; then
         log "ok (already linked) $dest -> $src"
         return
+    fi
+    if [[ $dry_run == "0" ]]; then
+        check_overwrite "$dest" || return 0
     fi
     log "rm -rf $dest"
     log "ln -s  $src -> $dest"
@@ -38,6 +78,9 @@ link_file() {
     if [[ -L "$dest" && "$(readlink "$dest")" == "$src" ]]; then
         log "ok (already linked) $dest -> $src"
         return
+    fi
+    if [[ $dry_run == "0" ]]; then
+        check_overwrite "$dest" || return 0
     fi
     log "rm -f $dest"
     log "ln -s $src -> $dest"

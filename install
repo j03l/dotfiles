@@ -15,6 +15,29 @@ if [[ -z "$dry_run" ]]; then
     fi
 fi
 
+echo "=== Environment ==="
+current_env=""
+[[ -f "$HOME/.dotfiles-env" ]] && current_env=$(cat "$HOME/.dotfiles-env")
+if [[ -n "$current_env" ]]; then
+    echo "Current environment: $current_env"
+    read -rp "Keep current? [Y/n] " answer
+    if [[ ! "${answer:-y}" =~ ^[Yy]$ ]]; then
+        current_env=""
+    fi
+fi
+if [[ -z "$current_env" ]]; then
+    echo "Select environment:"
+    select env in home work; do
+        if [[ -n "$env" ]]; then
+            current_env="$env"
+            break
+        fi
+    done
+fi
+echo "$current_env" > "$HOME/.dotfiles-env"
+echo "Environment set to: $current_env"
+echo ""
+
 echo "=== Syncing package databases ==="
 if [[ -z "$dry_run" ]]; then
     paru -Sy
