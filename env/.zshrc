@@ -4,7 +4,7 @@
 export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
 
 # Local bin path
-export PATH=$HOME/.local/bin:/usr/local/bin:$PATH
+export PATH=$HOME/.local/bin:/usr/local/bin:$HOME/go/bin:$PATH
 
 # Path to oh-my-zsh installation
 export ZSH="/usr/share/oh-my-zsh"
@@ -104,13 +104,8 @@ setopt hist_ignore_all_dups
 setopt hist_save_no_dups
 setopt hist_ignore_dups
 setopt hist_find_no_dups
-export PATH="$HOME/.local/bin:$PATH"
-
 # Generated for envman. Do not edit.
 [ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"
-
-# GOlang
-export PATH=$PATH:$HOME/go/bin
 
 # Aliases
 alias c='claude'
