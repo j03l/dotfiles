@@ -1,0 +1,50 @@
+{
+  "vim": {
+    "toggle_relative_line_numbers": true
+  },
+  "soft_wrap": "editor_width",
+  "use_smartcase_search": true,
+  "calls": {
+    "mute_on_join": true
+  },
+  "icon_theme": "Colored Zed Icons Theme Dark",
+  "terminal": {
+    "font_size": 14.0,
+    "font_family": "CaskaydiaCove Nerd Font Mono"
+  },
+  "edit_predictions": {
+    "mode": "subtle"
+  },
+  "ui_font_family": ".ZedSans",
+  "buffer_line_height": "comfortable",
+  "buffer_font_family": "CaskaydiaCove Nerd Font",
+  "ssh_connections": [
+    {
+      "host": "Lunter",
+      "args": [],
+      "projects": [
+        {
+          "paths": ["/home/hunter/dev/datadog"]
+        },
+        {
+          "paths": ["/home/hunter/dev/hellogo"]
+        }
+      ]
+    }
+  ],
+  "telemetry": {
+    "diagnostics": true,
+    "metrics": true
+  },
+  "session": {
+    "trust_all_worktrees": true
+  },
+  "vim_mode": true,
+  "ui_font_size": 16,
+  "buffer_font_size": 15,
+  "theme": {
+    "mode": "system",
+    "light": "Tokyo Night Light",
+    "dark": "Tokyo Night"
+  }
+}
