@@ -1,50 +1,86 @@
 {
+  "search": {
+    "include_ignored": true,
+  },
+  "agent_servers": {
+    "claude-acp": {
+      "type": "registry",
+    },
+  },
+  "file_scan_exclusions": [
+    "**/.svn",
+    "**/.hg",
+    "**/CVS",
+    "**/.DS_Store",
+    "**/Thumbs.db",
+    "**/.classpath",
+    "**/__pycache__",
+    "**/*.pyc",
+    "**/.mypy_cache",
+    "**/.ruff_cache",
+    "**/.pytest_cache",
+    "**/node_modules",
+  ],
+  "auto_update": false,
+  "auto_install_extensions": {
+    "go": true,
+    "toml": true,
+    "dockerfile": true,
+    "html": true,
+    "tokyo-night": true,
+    "rose-pine": true,
+    "zed-icons-colored-theme": true,
+  },
   "vim": {
-    "toggle_relative_line_numbers": true
+    "toggle_relative_line_numbers": true,
   },
   "soft_wrap": "editor_width",
   "use_smartcase_search": true,
   "calls": {
-    "mute_on_join": true
+    "mute_on_join": true,
   },
-  "icon_theme": "Colored Zed Icons Theme Dark",
+  "icon_theme": {
+    "mode": "system",
+    "light": "Colored Zed Icons Theme Light",
+    "dark": "Colored Zed Icons Theme Dark",
+  },
   "terminal": {
     "font_size": 14.0,
-    "font_family": "CaskaydiaCove Nerd Font Mono"
+    "font_family": "Cascadia Code NF",
   },
   "edit_predictions": {
-    "mode": "subtle"
+    "mode": "subtle",
   },
-  "ui_font_family": ".ZedSans",
+  "ui_font_family": "Noto Sans",
   "buffer_line_height": "comfortable",
-  "buffer_font_family": "CaskaydiaCove Nerd Font",
+  "buffer_font_family": "Cascadia Mono NF",
   "ssh_connections": [
     {
       "host": "Lunter",
       "args": [],
       "projects": [
         {
-          "paths": ["/home/hunter/dev/datadog"]
+          "paths": ["/home/hunter/dev/datadog"],
         },
         {
-          "paths": ["/home/hunter/dev/hellogo"]
-        }
-      ]
-    }
+          "paths": ["/home/hunter/dev/hellogo"],
+        },
+      ],
+    },
   ],
   "telemetry": {
     "diagnostics": true,
-    "metrics": true
+    "metrics": true,
   },
   "session": {
-    "trust_all_worktrees": true
+    "trust_all_worktrees": true,
   },
-  "vim_mode": true,
+  "vim_mode": false,
   "ui_font_size": 16,
   "buffer_font_size": 15,
   "theme": {
     "mode": "system",
     "light": "Tokyo Night Light",
-    "dark": "Tokyo Night"
-  }
+    "dark": "Rosé Pine",
+  },
 }
