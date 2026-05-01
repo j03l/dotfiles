@@ -1,0 +1,13 @@
+[Unit]
+Description=iCloud auth-failure watcher
+After=graphical-session.target rclone-icloud.service
+PartOf=graphical-session.target
+
+[Service]
+Type=simple
+ExecStart=/bin/bash %h/.local/bin/icloud-2fa-watch.sh
+Restart=on-failure
+RestartSec=30
+
+[Install]
+WantedBy=graphical-session.target

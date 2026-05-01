@@ -1,0 +1,11 @@
+[Unit]
+Description=iCloud 2FA token refresh prompt
+After=graphical-session.target rclone-icloud.service
+PartOf=graphical-session.target
+
+[Service]
+Type=oneshot
+ExecStart=/bin/bash %h/.local/bin/icloud-refresh-2fa.sh
+
+[Install]
+WantedBy=graphical-session.target
