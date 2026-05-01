@@ -97,7 +97,16 @@ link_dir "$DOTFILES/nvim" "$XDG_CONFIG_HOME/nvim"
 echo "=== deploy: env/.config/* ==="
 for dir in "$DOTFILES"/env/.config/*/; do
     name=$(basename "$dir")
+    [[ "$name" == "systemd" ]] && continue
     link_dir "${dir%/}" "$XDG_CONFIG_HOME/$name"
+done
+
+echo "=== deploy: systemd user units ==="
+mkdir -p "$XDG_CONFIG_HOME/systemd/user"
+for unit in "$DOTFILES"/env/.config/systemd/user/*.service; do
+    [[ -f "$unit" ]] || continue
+    name=$(basename "$unit")
+    link_file "$unit" "$XDG_CONFIG_HOME/systemd/user/$name"
 done
 
 echo "=== deploy: gitconfig ==="

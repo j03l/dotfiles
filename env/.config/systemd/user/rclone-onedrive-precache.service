@@ -1,0 +1,13 @@
+[Unit]
+Description=OneDrive precache folders
+After=rclone-onedrive.service
+Requires=rclone-onedrive.service
+
+[Service]
+Type=oneshot
+ExecStartPre=/bin/sleep 10
+ExecStart=/bin/bash %h/.local/bin/onedrive-precache.sh
+StandardOutput=journal
+
+[Install]
+WantedBy=default.target

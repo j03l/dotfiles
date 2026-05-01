@@ -1,0 +1,25 @@
+[Unit]
+Description=OneDrive rclone mount
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=notify
+ExecStartPre=/usr/bin/mkdir -p %h/OneDrive
+ExecStart=/usr/bin/rclone mount onedrive: %h/OneDrive \
+  --vfs-cache-mode full \
+  --vfs-cache-max-age 720h \
+  --vfs-cache-max-size 50G \
+  --onedrive-delta \
+  --buffer-size 128M \
+  --vfs-read-ahead 256M \
+  --vfs-read-chunk-size 32M \
+  --vfs-read-chunk-size-limit 256M \
+  --log-level NOTICE \
+  --log-file %h/.cache/rclone/onedrive-mount.log
+ExecStop=/usr/bin/fusermount -u %h/OneDrive
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target

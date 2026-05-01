@@ -1,4 +1,6 @@
 {
+  "ui_font_weight": 400.0,
+  "buffer_font_weight": 400.0,
   "tab_bar": {
     "show_pinned_tabs_in_separate_row": false
   },
@@ -14,7 +16,7 @@
     "show_active_file": false,
     "active_encoding_button": "enabled"
   },
-  "agent_ui_font_size": 16.0,
+  "agent_ui_font_size": 14.0,
   "proxy": "",
   "project_panel": {
     "hide_hidden": false,
@@ -36,7 +38,7 @@
     "use_modifier_to_send": false,
     "expand_terminal_card": false,
     "thinking_display": "always_collapsed",
-    "play_sound_when_agent_done": "always",
+    "play_sound_when_agent_done": "when_hidden",
     "single_file_review": true,
     "dock": "left",
     "favorite_models": [],
@@ -108,8 +110,8 @@
   "edit_predictions": {
     "mode": "subtle",
   },
-  "ui_font_family": "Noto Sans",
-  "buffer_line_height": "comfortable",
+  "ui_font_family": "Cascadia Code NF",
+  "buffer_line_height": "standard",
   "buffer_font_family": "Cascadia Mono NF",
   "ssh_connections": [
     {
@@ -164,7 +166,13 @@
       "host": "hunter-work",
       "username": "hunter",
       "args": [],
-      "projects": []
+      "projects": [
+        {
+          "paths": [
+            "/home/hunter/tmp/./"
+          ]
+        }
+      ]
     },
     {
       "host": "hunter-work",
@@ -202,11 +210,11 @@
     "trust_all_worktrees": true,
   },
   "vim_mode": false,
-  "ui_font_size": 16,
-  "buffer_font_size": 15,
+  "ui_font_size": 14.0,
+  "buffer_font_size": 14.0,
   "theme": {
     "mode": "system",
     "light": "Tokyo Night Light",
-    "dark": "Tokyo Night Storm",
+    "dark": "Rosé Pine",
   },
 }

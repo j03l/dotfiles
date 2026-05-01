@@ -1,0 +1,23 @@
+[Unit]
+Description=iCloud Drive rclone mount
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=notify
+ExecStartPre=/usr/bin/mkdir -p %h/iCloud
+ExecStart=/usr/bin/rclone mount icloud: %h/iCloud \
+  --vfs-cache-mode full \
+  --vfs-cache-max-age 168h \
+  --vfs-cache-max-size 10G \
+  --dir-cache-time 10m \
+  --buffer-size 32M \
+  --vfs-read-ahead 64M \
+  --log-level NOTICE \
+  --log-file %h/.cache/rclone/icloud-mount.log
+ExecStop=/usr/bin/fusermount -u %h/iCloud
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=default.target
