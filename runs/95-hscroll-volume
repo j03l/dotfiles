@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Add user to input group for evdev access
+if ! groups "$USER" | grep -q '\binput\b'; then
+    sudo usermod -aG input "$USER"
+    echo "Added $USER to input group (logout/login required to take effect)"
+fi
+
+# Install systemd user service
+SERVICE_DIR="$HOME/.config/systemd/user"
+mkdir -p "$SERVICE_DIR"
+
+cat > "$SERVICE_DIR/hscroll-volume.service" <<'EOF'
+[Unit]
+Description=Horizontal scroll to volume control
+After=graphical-session.target
+
+[Service]
+ExecStart=%h/.local/bin/hscroll-volume
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=default.target
+EOF
+
+# Enable and start
+systemctl --user daemon-reload
+systemctl --user enable hscroll-volume.service
+
+# Only start if device exists and user has input group access
+if [[ -e /dev/input/by-id/usb-Keychron_Keychron_Ultra-Link_8K-event-mouse ]]; then
+    systemctl --user restart hscroll-volume.service 2>/dev/null || \
+        echo "Service installed but may need logout/login for input group access"
+fi
+
+echo "hscroll-volume installed"

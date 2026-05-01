@@ -1,4 +1,22 @@
 {
+  "project_panel": {
+    "dock": "right"
+  },
+  "outline_panel": {
+    "dock": "left"
+  },
+  "collaboration_panel": {
+    "dock": "left"
+  },
+  "agent": {
+    "dock": "left",
+    "favorite_models": [],
+    "model_parameters": []
+  },
+  "git_panel": {
+    "dock": "right"
+  },
+  "show_wrap_guides": true,
   "search": {
     "include_ignored": true,
   },
@@ -45,6 +63,7 @@
     "dark": "Colored Zed Icons Theme Dark",
   },
   "terminal": {
+    "copy_on_select": true,
     "font_size": 14.0,
     "font_family": "Cascadia Code NF",
   },
@@ -60,13 +79,56 @@
       "args": [],
       "projects": [
         {
-          "paths": ["/home/hunter/dev/datadog"],
+          "paths": [
+            "/home/hunter/dev/datadog"
+          ]
         },
         {
-          "paths": ["/home/hunter/dev/hellogo"],
-        },
-      ],
+          "paths": [
+            "/home/hunter/dev/hellogo"
+          ]
+        }
+      ]
     },
+    {
+      "host": "Hunters_Workstation",
+      "args": [],
+      "projects": []
+    },
+    {
+      "host": "hunter-work",
+      "username": "hunter",
+      "args": [],
+      "projects": [
+        {
+          "paths": [
+            "/home/hunter/dev/eagle-leather-shopify"
+          ]
+        },
+        {
+          "paths": [
+            "/home/hunter/dev/eagle-leather-theme"
+          ]
+        },
+        {
+          "paths": [
+            "/home/hunter/dev/jira-work"
+          ]
+        }
+      ]
+    },
+    {
+      "host": "hunter-work",
+      "username": "hunter",
+      "args": [],
+      "projects": []
+    },
+    {
+      "host": "hunter-work",
+      "username": "hunter",
+      "args": [],
+      "projects": []
+    }
   ],
   "telemetry": {
     "diagnostics": true,

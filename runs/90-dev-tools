@@ -9,7 +9,7 @@ paru -S --needed --noconfirm \
     lazygit \
     glow \
     jq \
-    bws \
+    bws-bin \
     docker \
     docker-compose
 

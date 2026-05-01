@@ -82,6 +82,7 @@ alias gdb="gdb --tui"
 alias paru="paru --skipreview"
 alias fd="find . -type d -name"
 alias ff="find . -name"
+alias zed="zeditor"
 alias reload!="exec zsh"
 
 # Useful aliases from CachyOS

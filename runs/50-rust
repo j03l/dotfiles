@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-paru -S --needed --noconfirm rustup stylua
+# Install via paru only if not already available (may be installed via rustup.rs/cargo)
+command -v rustup &>/dev/null || paru -S --needed --noconfirm rustup
+command -v stylua &>/dev/null || paru -S --needed --noconfirm stylua
 
 # Ensure a default toolchain is installed
 if ! rustup show active-toolchain &>/dev/null; then

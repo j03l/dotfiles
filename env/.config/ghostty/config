@@ -41,3 +41,5 @@ gtk-custom-css = tabs.css
 
 # Copy & paste
 copy-on-select = clipboard
+keybind = ctrl+c=copy_to_clipboard
+keybind = ctrl+v=paste_from_clipboard
