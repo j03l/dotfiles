@@ -6,6 +6,7 @@ paru -S --needed --noconfirm \
     ripgrep \
     btop \
     eza \
+    expect \
     lazygit \
     glow \
     jq \
