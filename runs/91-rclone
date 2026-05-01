@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# rclone + FUSE for the OneDrive / iCloud user mounts.
+#
+# Using rclone-beta-bin (AUR) until v1.74 stable lands: the iCloud
+# Drive SRP fix for iOS 26.4+ is only in 1.74-beta. The beta package
+# Conflicts with stable rclone, so swap explicitly if it's installed.
+# Once v1.74 stable ships in extra/, switch this back to plain rclone.
+
+if pacman -Qq rclone 2>/dev/null | grep -qx rclone; then
+    echo "Removing stable rclone to make room for rclone-beta-bin..."
+    sudo pacman -R --noconfirm rclone
+fi
+
+paru -S --needed --noconfirm rclone-beta-bin fuse3
+
+echo "rclone + fuse installed."
+echo "Next: configure remotes with 'rclone config' (creds aren't in dotfiles),"
+echo "      then enable mounts: systemctl --user enable --now rclone-onedrive rclone-onedrive-precache rclone-icloud icloud-2fa-refresh icloud-2fa-watch"
