@@ -75,15 +75,20 @@ log_user 1
 set timeout 90
 set password $::env(RCLONE_PASSWORD)
 
+# Match only rclone's actual interactive prompt sentinels (`name>` lines).
+# Loose regexes on words like "verification" or "two-factor" also match
+# rclone's pre-prompt instruction text and cause exp_continue to fire
+# multiple times per prompt cycle.
+
 spawn rclone config reconnect icloud:
 
 expect {
-    -re "(?i)password:" {
+    -re "password>\\s*$" {
         send -- "$password\r"
         exp_continue
     }
-    -re "(?i)config_2fa|2fa code|two.?factor|verification|authentication code" {
-        # rclone has just asked Apple to push; pop dialog now.
+    -re "config_2fa>\\s*$" {
+        # rclone has hit Apple's verify endpoint; the push has gone out.
         if { [catch {
             set code [exec kdialog --title "iCloud 2FA" \
                 --inputbox "A 6-digit verification code was sent to your trusted Apple devices.\n\nEnter the code below:" ""]
@@ -98,11 +103,7 @@ expect {
         send -- "$code\r"
         exp_continue
     }
-    -re "Keep this .* remote" {
-        send -- "y\r"
-        exp_continue
-    }
-    -re "y/n>" {
+    -re "y/n>\\s*$" {
         send -- "y\r"
         exp_continue
     }
