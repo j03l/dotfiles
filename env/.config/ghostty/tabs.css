@@ -17,3 +17,17 @@ tabbar tabbox tab:selected {
   background-color: #292e42;
   color: #7aa2f7;
 }
+
+/* Keep colors when window loses focus */
+tabbar:backdrop tabbox {
+  background-color: #16161e;
+}
+
+tabbar:backdrop tabbox tab {
+  color: #a9b1d6;
+}
+
+tabbar:backdrop tabbox tab:selected {
+  background-color: #292e42;
+  color: #7aa2f7;
+}

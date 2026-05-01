@@ -1,5 +1,25 @@
 {
+  "tab_bar": {
+    "show_pinned_tabs_in_separate_row": false
+  },
+  "tabs": {
+    "file_icons": true,
+    "git_status": true
+  },
+  "title_bar": {
+    "show_menus": false,
+    "show_branch_status_icon": true
+  },
+  "status_bar": {
+    "show_active_file": false,
+    "active_encoding_button": "enabled"
+  },
+  "agent_ui_font_size": 16.0,
+  "proxy": "",
   "project_panel": {
+    "hide_hidden": false,
+    "git_status_indicator": true,
+    "entry_spacing": "standard",
     "dock": "right"
   },
   "outline_panel": {
@@ -8,13 +28,24 @@
   "collaboration_panel": {
     "dock": "left"
   },
-  "agent": {
-    "dock": "left",
-    "favorite_models": [],
-    "model_parameters": []
-  },
   "git_panel": {
     "dock": "right"
+  },
+  "agent": {
+    "show_turn_stats": true,
+    "use_modifier_to_send": false,
+    "expand_terminal_card": false,
+    "thinking_display": "always_collapsed",
+    "play_sound_when_agent_done": "always",
+    "single_file_review": true,
+    "dock": "left",
+    "favorite_models": [],
+    "inline_assistant_model": {
+      "provider": "copilot_chat",
+      "model": "claude-haiku-4.5",
+      "enable_thinking": false,
+    },
+    "model_parameters": [],
   },
   "show_wrap_guides": true,
   "search": {
@@ -41,10 +72,11 @@
   ],
   "auto_update": false,
   "auto_install_extensions": {
-    "go": true,
     "toml": true,
     "dockerfile": true,
     "html": true,
+    "ruff": true,
+    "ty": true,
     "tokyo-night": true,
     "rose-pine": true,
     "zed-icons-colored-theme": true,
@@ -63,9 +95,15 @@
     "dark": "Colored Zed Icons Theme Dark",
   },
   "terminal": {
-    "copy_on_select": true,
+    "dock": "bottom",
+    "flexible": true,
+    "show_count_badge": true,
+    "toolbar": {
+      "breadcrumbs": false
+    },
     "font_size": 14.0,
     "font_family": "Cascadia Code NF",
+    "copy_on_select": true,
   },
   "edit_predictions": {
     "mode": "subtle",
@@ -86,6 +124,11 @@
         {
           "paths": [
             "/home/hunter/dev/hellogo"
+          ]
+        },
+        {
+          "paths": [
+            "/home/hunter/dev/pokemon/./"
           ]
         }
       ]
@@ -130,6 +173,27 @@
       "projects": []
     }
   ],
+  "languages": {
+    "Python": {
+      "language_servers": ["ruff", "ty", "!pyright", "!basedpyright"],
+      "formatter": {
+        "external": {
+          "command": "ruff",
+          "arguments": ["format", "--stdin-filename", "{buffer_path}", "-"],
+        },
+      },
+      "format_on_save": "on",
+    },
+  },
+  "lsp": {
+    "ruff": {
+      "initialization_options": {
+        "settings": {
+          "lineLength": 120,
+        },
+      },
+    },
+  },
   "telemetry": {
     "diagnostics": true,
     "metrics": true,
@@ -143,6 +207,6 @@
   "theme": {
     "mode": "system",
     "light": "Tokyo Night Light",
-    "dark": "Rosé Pine",
+    "dark": "Tokyo Night Storm",
   },
 }

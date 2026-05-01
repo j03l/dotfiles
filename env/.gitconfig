@@ -21,3 +21,5 @@
 	format = ssh
 [commit]
 	gpgsign = true
+[init]
+	defaultBranch = main
