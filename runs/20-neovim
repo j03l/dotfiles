@@ -4,7 +4,8 @@ set -euo pipefail
 paru -S --needed --noconfirm \
     neovim \
     lua51 \
-    luarocks
+    luarocks \
+    tree-sitter-cli
 
 mkdir -p "$HOME/.vim/undodir"
 echo "neovim ready (plugins install on first launch via lazy.nvim)"
