@@ -92,6 +92,7 @@ alias paru="paru --skipreview"
 alias fd="find . -type d -name"
 alias ff="find . -name"
 alias zed="zeditor"
+alias open="xdg-open"
 alias reload!="exec zsh"
 
 # Useful aliases from CachyOS
