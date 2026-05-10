@@ -24,6 +24,15 @@ plugins=(git aliases history docker archlinux colorize command-not-found copybuf
 source $ZSH/oh-my-zsh.sh
 source ~/.zsh_profile
 
+# Tailscale hostname injected before username in prompt (computed once at startup)
+__ts_host=$(tailscale status --json --self=true --peers=false 2>/dev/null | jq -r 'select(.BackendState=="Running") | .Self.HostName // empty' 2>/dev/null)
+if [[ -n "$__ts_host" ]]; then
+  __ts_repl="%F{cyan}${__ts_host}%f:%n"
+  PROMPT=${PROMPT//'%n'/$__ts_repl}
+  unset __ts_repl
+fi
+unset __ts_host
+
 # System-installed zsh plugins (from CachyOS packages)
 source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
