@@ -116,8 +116,8 @@ echo "=== deploy: zsh dotfiles ==="
 link_file "$DOTFILES/env/.zshrc" "$HOME/.zshrc"
 link_file "$DOTFILES/env/.zsh_profile" "$HOME/.zsh_profile"
 
-echo "=== deploy: tmux ==="
-link_file "$DOTFILES/env/.tmux.conf" "$HOME/.tmux.conf"
+echo "=== deploy: tmux (legacy ~/.tmux.conf -> XDG config) ==="
+link_file "$DOTFILES/env/.config/tmux/tmux.conf" "$HOME/.tmux.conf"
 
 echo "=== deploy: ssh config ==="
 mkdir -p "$HOME/.ssh"
