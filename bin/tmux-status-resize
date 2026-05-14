@@ -16,16 +16,16 @@ if (( width < 60 )); then
 elif (( width < 160 )); then
     desired=2
 else
-    desired=1
+    desired=on
 fi
 
 current=$(tmux show -gv status 2>/dev/null)
 [[ "$current" == "$desired" ]] && exit 0
 
 case "$desired" in
-    1)
-        tmux set -g status 1
-        tmux set -gu status-format[0] 2>/dev/null
+    on)
+        tmux set -g status on
+        tmux set -g status-format[0] "${LEFT}${WINDOWS}${RIGHT}"
         tmux set -gu status-format[1] 2>/dev/null
         tmux set -gu status-format[2] 2>/dev/null
         ;;
