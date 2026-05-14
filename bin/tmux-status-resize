@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+# Switch tmux status line count based on client width.
+#   < 60 cols  : 3 lines (mobile/very narrow)
+#   60-159     : 2 lines (windows on their own row)
+#   >= 160     : 1 line  (default packed layout)
+
+width=$(tmux display -p '#{client_width}' 2>/dev/null) || exit 0
+[[ -z "$width" || "$width" == "0" ]] && exit 0
+
+LEFT='#[align=left range=left #{E:status-left-style}]#[push-default]#{T;=/#{status-left-length}:status-left}#[pop-default]#[norange default]'
+RIGHT='#[align=right range=right #{E:status-right-style}]#[push-default]#{T;=/#{status-right-length}:status-right}#[pop-default]#[norange default]'
+WINDOWS='#[align=#{status-justify} list=on]#{W:#[range=window|#{window_index} #{E:window-status-style}]#[push-default]#{T:window-status-format}#[pop-default]#[norange default]#{?window_end_flag,,#{window-status-separator}},#[range=window|#{window_index} list=focus #{E:window-status-current-style}]#[push-default]#{T:window-status-current-format}#[pop-default]#[norange list=on default]#{?window_end_flag,,#{window-status-separator}}}'
+
+if (( width < 60 )); then
+    desired=3
+elif (( width < 160 )); then
+    desired=2
+else
+    desired=1
+fi
+
+current=$(tmux show -gv status 2>/dev/null)
+[[ "$current" == "$desired" ]] && exit 0
+
+case "$desired" in
+    1)
+        tmux set -g status 1
+        tmux set -gu status-format[0] 2>/dev/null
+        tmux set -gu status-format[1] 2>/dev/null
+        tmux set -gu status-format[2] 2>/dev/null
+        ;;
+    2)
+        tmux set -g status 2
+        tmux set -g status-format[0] "${LEFT}${RIGHT}"
+        tmux set -g status-format[1] "$WINDOWS"
+        tmux set -gu status-format[2] 2>/dev/null
+        ;;
+    3)
+        tmux set -g status 3
+        tmux set -g status-format[0] "$LEFT"
+        tmux set -g status-format[1] "$WINDOWS"
+        tmux set -g status-format[2] "$RIGHT"
+        ;;
+esac
