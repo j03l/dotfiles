@@ -1,45 +1,75 @@
 return {
 	{
 		"nvim-treesitter/nvim-treesitter",
-		dependencies = {
-			"nvim-treesitter/nvim-treesitter-textobjects",
-		},
 		branch = "main",
 		build = ":TSUpdate",
-		config = function()
-			require("nvim-treesitter").setup()
-
-			-- Install parsers
-			require("nvim-treesitter").install({
-				"vimdoc",
-				"javascript",
-				"typescript",
-				"c",
-				"lua",
-				"rust",
-				"jsdoc",
+		lazy = false,
+		init = function()
+			local parsers = {
 				"bash",
+				"c",
+				"css",
+				"gitignore",
 				"go",
+				"html",
+				"javascript",
+				"jsdoc",
+				"json",
+				"lua",
 				"python",
+				"query",
+				"rust",
 				"templ",
+				"tsx",
+				"typescript",
+				"vim",
+				"vimdoc",
+			}
+
+			local max_filesize = 500 * 1024
+
+			local group = vim.api.nvim_create_augroup("HunterTreesitter", { clear = true })
+			vim.api.nvim_create_autocmd({ "BufEnter", "FileType" }, {
+				group = group,
+				callback = function()
+					if vim.bo.buftype ~= "" then
+						return
+					end
+
+					local fname = vim.api.nvim_buf_get_name(0)
+					local ok, stats = pcall(vim.uv.fs_stat, fname)
+					if ok and stats and stats.size > max_filesize then
+						return
+					end
+
+					pcall(vim.treesitter.start, 0)
+				end,
 			})
 
-			vim.treesitter.language.register("templ", "templ")
-
-			-- Disable treesitter for large files
-			vim.api.nvim_create_autocmd("BufReadPre", {
-				callback = function(args)
-					local max_filesize = 500 * 1024 -- 500 KB
-					local ok, stats = pcall(vim.uv.fs_stat, args.file)
-					if ok and stats and stats.size > max_filesize then
-						vim.treesitter.stop(args.buf)
-						vim.notify(
-							"File larger than 500KB, treesitter disabled for performance",
-							vim.log.levels.WARN,
-							{ title = "Treesitter" }
-						)
-					end
+			vim.api.nvim_create_autocmd("User", {
+				group = group,
+				pattern = "VeryLazy",
+				once = true,
+				callback = function()
+					require("nvim-treesitter").install(parsers)
 				end,
+			})
+		end,
+	},
+
+	{
+		"nvim-treesitter/nvim-treesitter-textobjects",
+		lazy = false,
+		config = function()
+			require("nvim-treesitter-textobjects").setup({
+				select = {
+					enable = true,
+					lookahead = true,
+					keymaps = {
+						["af"] = "@function.outer",
+						["if"] = "@function.inner",
+					},
+				},
 			})
 		end,
 	},
@@ -49,19 +79,17 @@ return {
 		after = "nvim-treesitter",
 		config = function()
 			require("treesitter-context").setup({
-				enable = true, -- Enable this plugin (Can be enabled/disabled later via commands)
-				multiwindow = false, -- Enable multiwindow support.
-				max_lines = 0, -- How many lines the window should span. Values <= 0 mean no limit.
-				min_window_height = 0, -- Minimum editor window height to enable context. Values <= 0 mean no limit.
+				enable = true,
+				multiwindow = false,
+				max_lines = 0,
+				min_window_height = 0,
 				line_numbers = true,
-				multiline_threshold = 20, -- Maximum number of lines to show for a single context
-				trim_scope = "outer", -- Which context lines to discard if `max_lines` is exceeded. Choices: 'inner', 'outer'
-				mode = "cursor", -- Line used to calculate context. Choices: 'cursor', 'topline'
-				-- Separator between context and content. Should be a single character string, like '-'.
-				-- When separator is set, the context will only show up when there are at least 2 lines above cursorline.
+				multiline_threshold = 20,
+				trim_scope = "outer",
+				mode = "cursor",
 				separator = nil,
-				zindex = 20, -- The Z-index of the context window
-				on_attach = nil, -- (fun(buf: integer): boolean) return false to disable attaching
+				zindex = 20,
+				on_attach = nil,
 			})
 		end,
 	},

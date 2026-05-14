@@ -10,6 +10,18 @@ return {
     config = function()
         require('telescope').setup({})
 
+        -- Resolve filetype -> treesitter language so previews highlight
+        -- buffers whose filetype name differs from the parser name
+        -- (e.g. gitcommit, gitignore).
+        local preview_utils = require("telescope.previewers.utils")
+        preview_utils.ts_highlighter = function(bufnr, ft)
+            local lang = vim.treesitter.language.get_lang(ft) or ft
+            if not lang or lang == "" then
+                return false
+            end
+            return pcall(vim.treesitter.start, bufnr, lang)
+        end
+
         local builtin = require('telescope.builtin')
         vim.keymap.set('n', '<leader>pf', builtin.find_files, { desc = "Find files" })
         vim.keymap.set('n', '<C-p>', builtin.git_files, { desc = "Git files" })
