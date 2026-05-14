@@ -1,3 +1,8 @@
 #!/usr/bin/env bash
 DOTFILES="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/.." &>/dev/null && pwd)"
-glow -p -w 120 "$DOTFILES/KEYBINDS.md"
+
+# Let glow size to the actual viewport width. Inside a tmux popup
+# COLUMNS is set to the popup's column count; outside tmux it falls back
+# to the terminal width via tput.
+width="${COLUMNS:-$(tput cols 2>/dev/null || echo 100)}"
+glow -p -w "$width" "$DOTFILES/KEYBINDS.md"

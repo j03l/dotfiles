@@ -1,247 +1,236 @@
-Keybind Cheatsheet
-══════════════════
-All keybinds for our Prime-inspired setup.
-Leader = Space
+# Keybind Cheatsheet
 
-═══════════════════════════════════════════════════════════════════════════════
- NEOVIM
-═══════════════════════════════════════════════════════════════════════════════
+Prime-inspired setup. Leader = `Space`.
 
-Navigation
-┌─────────────────┬───────────────────────────────────────┬─────────────┐
-│ <leader>pv      │ Open file explorer (floating netrw)   │ remap.lua   │
-│ j/k/↑/↓         │ Move by visual line (no count)        │ remap.lua   │
-│ <C-d>           │ Half-page down (centered)             │ remap.lua   │
-│ <C-u>           │ Half-page up (centered)               │ remap.lua   │
-│ n               │ Next search result (centered)         │ remap.lua   │
-│ N               │ Prev search result (centered)         │ remap.lua   │
-│ <C-k>           │ Next quickfix item                    │ remap.lua   │
-│ <C-j>           │ Prev quickfix item                    │ remap.lua   │
-│ <leader>k       │ Next location list item               │ remap.lua   │
-│ <leader>j       │ Prev location list item               │ remap.lua   │
-└─────────────────┴───────────────────────────────────────┴─────────────┘
+---
 
-Telescope (Fuzzy Finder)
-┌─────────────────┬───────────────────────────────────────┬──────────────┐
-│ <leader>pf      │ Find files                            │ telescope    │
-│ <C-p>           │ Git files (tracked only)              │ telescope    │
-│ <leader>ps      │ Grep with prompt                      │ telescope    │
-│ <leader>pws     │ Grep word under cursor                │ telescope    │
-│ <leader>pWs     │ Grep WORD under cursor                │ telescope    │
-│ <leader>vh      │ Search help tags                      │ telescope    │
-│ <leader>K       │ Search keymaps                        │ remap.lua    │
-└─────────────────┴───────────────────────────────────────┴──────────────┘
+# Neovim
 
-Harpoon (Quick File Switching)
-┌─────────────────┬───────────────────────────────────────┬─────────────┐
-│ <leader>a       │ Add file to harpoon list              │ local.lua   │
-│ <leader>A       │ Prepend file to harpoon list          │ local.lua   │
-│ <C-e>           │ Toggle harpoon quick menu             │ local.lua   │
-│ <M-1>           │ Jump to harpoon file 1                │ local.lua   │
-│ <M-2>           │ Jump to harpoon file 2                │ local.lua   │
-│ <M-3>           │ Jump to harpoon file 3                │ local.lua   │
-│ <M-4>           │ Jump to harpoon file 4                │ local.lua   │
-└─────────────────┴───────────────────────────────────────┴─────────────┘
+## Files & search (Telescope)
 
-Editing
-┌─────────────────┬───────────────────────────────────────┬─────────────┐
-│ J (visual)      │ Move selected lines down              │ remap.lua   │
-│ K (visual)      │ Move selected lines up                │ remap.lua   │
-│ J (normal)      │ Join lines (cursor stays put)         │ remap.lua   │
-│ <leader>p       │ Paste without losing register         │ remap.lua   │
-│ <leader>d       │ Delete to void register               │ remap.lua   │
-│ <leader>s       │ Search & replace word under cursor    │ remap.lua   │
-│ <leader>x       │ chmod +x current file                 │ remap.lua   │
-│ =ap             │ Format paragraph (cursor stays)       │ remap.lua   │
-│ <C-s>           │ Save file (works in any mode)         │ remap.lua   │
-│ < (visual)      │ Indent left (stay selected)           │ remap.lua   │
-│ > (visual)      │ Indent right (stay selected)          │ remap.lua   │
-│ gco             │ Add comment below current line        │ remap.lua   │
-│ gcO             │ Add comment above current line        │ remap.lua   │
-│ <leader>f       │ Format buffer (conform)               │ conform     │
-│ <C-c>           │ Escape from insert mode               │ remap.lua   │
-│ Q               │ Disabled (no Ex mode)                 │ remap.lua   │
-└─────────────────┴───────────────────────────────────────┴─────────────┘
+| Key | Action |
+|---|---|
+| `<leader>pf` | Find files |
+| `<C-p>` | Git files |
+| `<leader>ps` | Grep with prompt |
+| `<leader>pws` | Grep word under cursor |
+| `<leader>pWs` | Grep WORD under cursor |
+| `<leader>vh` | Help tags |
+| `<leader>K` | Search keymaps |
+| `<leader>pv` | Open netrw |
+| `<leader><leader>` | Last buffer |
 
-Clipboard
-┌─────────────────┬───────────────────────────────────────┬─────────────┐
-│ <leader>y       │ Yank to system clipboard              │ remap.lua   │
-│ <leader>Y       │ Yank line to system clipboard         │ remap.lua   │
-└─────────────────┴───────────────────────────────────────┴─────────────┘
+## LSP (buffer-local when attached)
 
-LSP
-┌─────────────────┬───────────────────────────────────────┬─────────────┐
-│ gd              │ Go to definition                      │ init.lua    │
-│ K               │ Hover documentation                   │ init.lua    │
-│ <leader>vws     │ Workspace symbol search               │ init.lua    │
-│ <leader>vd      │ Open diagnostic float                 │ init.lua    │
-│ <leader>vca     │ Code action                           │ init.lua    │
-│ <leader>vrr     │ References                            │ init.lua    │
-│ <leader>vrn     │ Rename                                │ init.lua    │
-│ [d              │ Prev diagnostic                       │ init.lua    │
-│ ]d              │ Next diagnostic                       │ init.lua    │
-│ <C-h>           │ Signature help (insert mode)          │ init.lua    │
-│ <leader>zig     │ Restart LSP                           │ remap.lua   │
-└─────────────────┴───────────────────────────────────────┴─────────────┘
+| Key | Action |
+|---|---|
+| `gd` | Go to definition |
+| `K` | Hover info |
+| `<C-h>` (insert) | Signature help |
+| `<leader>vca` | Code action |
+| `<leader>vrr` | References |
+| `<leader>vrn` | Rename |
+| `<leader>vws` | Workspace symbol |
+| `<leader>vd` | Diagnostic float |
+| `[d` / `]d` | Prev / next diagnostic |
+| `<leader>zig` | Restart LSP |
+| `<leader>cm` | Open Mason |
+| `<leader>f` | Format buffer (conform) |
 
-Completion (nvim-cmp)
-┌─────────────────┬───────────────────────────────────────┬─────────────┐
-│ <C-p>           │ Select prev completion item           │ lsp.lua     │
-│ <C-n>           │ Select next completion item           │ lsp.lua     │
-│ <C-y>           │ Confirm selection                     │ lsp.lua     │
-│ <C-Space>       │ Trigger completion                    │ lsp.lua     │
-└─────────────────┴───────────────────────────────────────┴─────────────┘
+## Git
 
-Snippets (LuaSnip)
-┌─────────────────┬───────────────────────────────────────┬──────────────┐
-│ <C-s>e          │ Expand snippet                        │ snippets     │
-│ <C-s>;          │ Jump forward in snippet               │ snippets     │
-│ <C-s>,          │ Jump backward in snippet              │ snippets     │
-│ <C-E>           │ Change choice                         │ snippets     │
-└─────────────────┴───────────────────────────────────────┴──────────────┘
+| Key | Action |
+|---|---|
+| `<leader>gs` | Git status (fugitive) |
+| `<leader>gg` | Lazygit in new tmux window |
+| `gu` / `gh` | Diffget ours / theirs |
+| `<leader>p` | Push (in fugitive index) |
+| `<leader>P` | Pull --rebase (in fugitive index) |
+| `]c` / `[c` | Next / prev hunk (gitsigns) |
 
-Git (Fugitive)
-┌─────────────────┬───────────────────────────────────────┬──────────────┐
-│ <leader>gs      │ Git status                            │ fugitive     │
-│ <leader>p       │ Git push (in fugitive buffer)         │ fugitive     │
-│ <leader>P       │ Git pull --rebase (in fugitive buf)   │ fugitive     │
-│ <leader>t       │ Git push -u origin (set upstream)     │ fugitive     │
-│ gu              │ Diffget ours                          │ fugitive     │
-│ gh              │ Diffget theirs                        │ fugitive     │
-└─────────────────┴───────────────────────────────────────┴──────────────┘
+## Tests & debugging
 
-Gitsigns
-┌─────────────────┬───────────────────────────────────────┬──────────────┐
-│ ]c              │ Next hunk                             │ gitsigns     │
-│ [c              │ Previous hunk                         │ gitsigns     │
-└─────────────────┴───────────────────────────────────────┴──────────────┘
+| Key | Action |
+|---|---|
+| `<leader>tr` | Run nearest test |
+| `<leader>td` | Debug nearest test |
+| `<leader>ts` | Run whole suite |
+| `<leader>ta` | Run all tests in cwd |
+| `<leader>tv` | Toggle test summary |
+| `<leader>to` | Open test output |
+| `<leader>tf` | Plenary test file |
+| `<leader>tt` | Toggle Trouble |
+| `[t` / `]t` | Prev / next Trouble item |
+| `<F8>` | DAP continue |
+| `<F10>` / `<F11>` / `<F12>` | Step over / into / out |
+| `<leader>b` / `<leader>B` | Toggle / conditional breakpoint |
+| `<leader>dr` | Toggle DAP repl |
+| `<leader>ds` / `<leader>dS` | Toggle stacks / scopes |
+| `<leader>dw` / `<leader>db` | Toggle watches / breakpoints |
+| `<leader>dc` | Toggle console |
 
-Trouble (Diagnostics)
-┌─────────────────┬───────────────────────────────────────┬──────────────┐
-│ <leader>tt      │ Toggle trouble                        │ trouble      │
-│ [t              │ Prev trouble item                     │ trouble      │
-│ ]t              │ Next trouble item                     │ trouble      │
-└─────────────────┴───────────────────────────────────────┴──────────────┘
+## Claude Code
 
-Undotree / Zen Mode
-┌─────────────────┬───────────────────────────────────────┬──────────────┐
-│ <leader>u       │ Toggle undotree                       │ undotree     │
-│ <leader>zz      │ Zen mode (with line numbers)          │ zenmode      │
-│ <leader>zZ      │ Zen mode (no line numbers)            │ zenmode      │
-└─────────────────┴───────────────────────────────────────┴──────────────┘
+| Key | Action |
+|---|---|
+| `<leader>ac` | Toggle Claude |
+| `<leader>af` | Focus Claude |
+| `<leader>ar` / `<leader>aC` | Resume / Continue |
+| `<leader>ab` | Add buffer to Claude |
+| `<leader>as` (visual) | Send selection |
+| `<leader>aa` / `<leader>ad` | Accept / deny diff |
 
-Go Error Handling
-┌─────────────────┬───────────────────────────────────────┬─────────────┐
-│ <leader>ee      │ if err != nil { return err }          │ remap.lua   │
-│ <leader>ea      │ assert.NoError(err, "")               │ remap.lua   │
-│ <leader>ef      │ if err != nil { log.Fatalf(...) }     │ remap.lua   │
-│ <leader>el      │ if err != nil { .logger.Error() }     │ remap.lua   │
-└─────────────────┴───────────────────────────────────────┴─────────────┘
+## Harpoon
 
-Tools
-┌─────────────────┬───────────────────────────────────────┬─────────────┐
-│ <leader>cm      │ Open Mason                            │ remap.lua   │
-│ <leader>K       │ Search keymaps (Telescope)            │ remap.lua   │
-│ <leader>ca      │ Cellular automaton (make it rain)     │ remap.lua   │
-│ <leader><leader>│ Switch to last buffer                 │ remap.lua   │
-└─────────────────┴───────────────────────────────────────┴─────────────┘
+| Key | Action |
+|---|---|
+| `<leader>h` / `<leader>H` | Add / prepend file |
+| `<C-e>` | Toggle quick menu |
+| `<M-1>`…`<M-4>` | Jump to slot 1–4 |
 
-Theme Switching
-┌─────────────────┬───────────────────────────────────────┬─────────────┐
-│ :Tokyo          │ Switch to tokyonight-night            │ init.lua    │
-│ :Rose           │ Switch to rose-pine-moon              │ init.lua    │
-└─────────────────┴───────────────────────────────────────┴─────────────┘
+## Editing
 
-Visual Indicators
-┌────────────────────────────────┬──────────────────────────────────────┐
-│ Mode-colored line numbers      │ Changes color per mode (reactive)    │
-│ Operator-pending colors        │ d=red, y=yellow, c=cyan              │
-│ Mode-colored -- INSERT --      │ Command line text changes per mode   │
-│ Command line coloring          │ : commands shown in orange/gold      │
-└────────────────────────────────┴──────────────────────────────────────┘
+| Key | Action |
+|---|---|
+| `<C-s>` | Save (any mode) |
+| `<leader>qq` / `<leader>q!` | Save+quit all / force quit |
+| `<leader>y` / `<leader>Y` | Yank to clipboard / line |
+| `<leader>p` (visual) | Paste without overwriting register |
+| `<leader>d` | Delete to void |
+| `<leader>s` | Find/replace word under cursor |
+| `<leader>x` | `chmod +x %` |
+| `J` (normal) | Join lines, cursor stays |
+| `J` / `K` (visual) | Move selection down / up |
+| `<` / `>` (visual) | Indent left/right (stay selected) |
+| `=ap` | Indent paragraph |
+| `<C-d>` / `<C-u>` | Half-page down/up (centered) |
+| `n` / `N` | Search next/prev (centered) |
+| `<C-k>` / `<C-j>` | Next / prev quickfix |
+| `<leader>k` / `<leader>j` | Next / prev loclist |
+| `gco` / `gcO` | Comment line below / above |
+| `<C-c>` (insert) | Esc |
+| `Q` | Disabled (was Ex mode) |
 
-═══════════════════════════════════════════════════════════════════════════════
- TMUX (Ctrl-B prefix)
-═══════════════════════════════════════════════════════════════════════════════
+## Go snippets
 
-Press Ctrl-B Space for the interactive which-key menu.
+| Key | Inserts |
+|---|---|
+| `<leader>ee` | `if err != nil { return err }` |
+| `<leader>ef` | `if err != nil { log.Fatalf(...) }` |
+| `<leader>el` | `if err != nil { logger.Error(...) }` |
+| `<leader>ea` | `assert.NoError(err, "")` |
 
-Windows & Sessions
-┌─────────────────────────────┬───────────────────────────────────────────┐
-│ Ctrl-B then c               │ New window                                │
-│ Ctrl-B then 1-9             │ Jump to window by number                  │
-│ Ctrl-B then n               │ Next window                               │
-│ Ctrl-B then p               │ Previous window                           │
-│ Ctrl-B then b               │ Toggle last window                        │
-│ Ctrl-B then s               │ List sessions (tree view)                 │
-│ Ctrl-B then (               │ Previous session                          │
-│ Ctrl-B then )               │ Next session                              │
-│ Ctrl-B then d               │ Detach from tmux                          │
-└─────────────────────────────┴───────────────────────────────────────────┘
+## Completion (nvim-cmp)
 
-Panes
-┌─────────────────────────────┬───────────────────────────────────────────┐
-│ Ctrl-B then |               │ Vertical split                            │
-│ Ctrl-B then _               │ Horizontal split                          │
-│ Ctrl+h/j/k/l               │ Move between panes AND nvim splits        │
-│ Ctrl-B then h               │ Pane left                                 │
-│ Ctrl-B then j               │ Pane down                                 │
-│ Ctrl-B then k               │ Pane up                                   │
-│ Ctrl-B then l               │ Pane right                                │
-│ Ctrl-B then x               │ Kill pane                                 │
-└─────────────────────────────┴───────────────────────────────────────────┘
+| Key | Action |
+|---|---|
+| `<C-n>` / `<C-p>` | Next / prev item |
+| `<C-y>` | Confirm |
+| `<C-Space>` | Trigger completion |
 
-Custom
-┌─────────────────────────────┬───────────────────────────────────────────┐
-│ Ctrl-B then Space           │ Which-key menu (all keybinds)             │
-│ Ctrl-B then H               │ Cheatsheet popup                          │
-│ Ctrl-B then a               │ Claude Code scratchpad popup              │
-│ Ctrl-B then r               │ Reload tmux config                        │
-│ Ctrl-B then D               │ Open TODO.md / study guide in nvim        │
-│ Ctrl-B then S               │ Save sessions (tmux-resurrect)            │
-│ Ctrl-B then R               │ Restore sessions (tmux-resurrect)         │
-│ Ctrl-B then Ctrl-F          │ tmux-sessionizer (project switch)         │
-└─────────────────────────────┴───────────────────────────────────────────┘
+## Snippets (LuaSnip)
 
-Session Bookmarks
-4 slots (H/J/K/L) with colored status bar indicators. Click indicators to switch.
-┌───────────────────────────────┬─────────────────────────────────────────┐
-│ Ctrl-B then m then h          │ Set/toggle bookmark slot H (green)      │
-│ Ctrl-B then m then j          │ Set/toggle bookmark slot J (purple)     │
-│ Ctrl-B then m then k          │ Set/toggle bookmark slot K (cyan)       │
-│ Ctrl-B then m then l          │ Set/toggle bookmark slot L (orange)     │
-│ Ctrl-B then m then m          │ Clear all bookmarks (with confirm)      │
-│ Ctrl-B then m then Esc        │ Cancel bookmark set mode                │
-│ Alt-h                         │ Go to bookmark H                        │
-│ Alt-j                         │ Go to bookmark J                        │
-│ Alt-k                         │ Go to bookmark K                        │
-│ Alt-l                         │ Go to bookmark L                        │
-│ Click status bar indicator    │ Go to that bookmark                     │
-└───────────────────────────────┴─────────────────────────────────────────┘
+| Key | Action |
+|---|---|
+| `<C-s>e` | Expand at cursor |
+| `<C-s>;` / `<C-s>,` | Jump next / prev |
+| `<C-E>` | Cycle choice node |
 
-Copy Mode
-┌─────────────────────────────┬───────────────────────────────────────────┐
-│ Ctrl-B then [               │ Enter copy mode                           │
-│ v in copy mode              │ Start selection                           │
-│ y in copy mode              │ Yank to clipboard (wl-copy)               │
-│ Ctrl-B then ?               │ tmux built-in key list                    │
-└─────────────────────────────┴───────────────────────────────────────────┘
+## UI / windows
 
-═══════════════════════════════════════════════════════════════════════════════
- TMUX-SESSIONIZER (project switching)
-═══════════════════════════════════════════════════════════════════════════════
+| Key | Action |
+|---|---|
+| `<C-f>` | tmux-sessionizer in new window |
+| `<C-h/j/k/l>` | vim-tmux-navigator (pane ↔ tmux) |
+| `<leader>u` | Toggle Undotree |
+| `<leader>zz` / `<leader>zZ` | Zen mode / fancier Zen |
+| `<leader>ca` | Make it rain (cellular automaton) |
+| `<leader>lt` | Lazy plugin manager |
+
+## User commands
+
+| Command | Action |
+|---|---|
+| `:Tokyo` | Tokyonight Night colorscheme |
+| `:Rose` | Rose-pine Moon colorscheme |
+| `:Mason` | Mason package UI |
+| `:Lazy` | Lazy plugin UI |
+| `:Trouble` | Diagnostics list |
+
+---
+
+# Tmux (prefix `Ctrl-B`)
+
+## Windows & sessions
+
+| Key | Action |
+|---|---|
+| `prefix c` | New window |
+| `prefix 1-9` | Jump to window |
+| `prefix n` / `p` | Next / prev window |
+| `prefix b` | Last window |
+| `prefix s` | List sessions |
+| `prefix (` / `)` | Prev / next session |
+| `prefix d` | Detach |
+
+## Panes
+
+| Key | Action |
+|---|---|
+| `prefix |` / `_` | Vertical / horizontal split |
+| `Ctrl-h/j/k/l` | Move between panes + nvim splits |
+| `prefix h/j/k/l` | Move within tmux only |
+| `prefix x` | Kill pane |
+| `prefix Arrow` | Resize pane (repeatable) |
+
+## Custom bindings
+
+| Key | Action |
+|---|---|
+| `prefix Space` | Which-key menu |
+| `prefix H` | Cheatsheet popup |
+| `prefix a` | Claude Code scratchpad popup |
+| `prefix r` | Reload tmux config |
+| `prefix D` | Open TODO.md / study guide |
+| `prefix S` / `R` | Save / restore sessions (resurrect) |
+| `prefix Ctrl-F` | tmux-sessionizer |
+
+## Session bookmarks
+
+Four slots (H/J/K/L) shown in the status bar; click an indicator to jump.
+
+| Key | Action |
+|---|---|
+| `prefix m h/j/k/l` | Set / toggle slot |
+| `prefix m m` | Clear all (with confirm) |
+| `prefix m Esc` | Cancel set mode |
+| `Alt-h/j/k/l` | Go to slot H/J/K/L (no prefix) |
+
+## Copy mode
+
+| Key | Action |
+|---|---|
+| `prefix [` | Enter copy mode |
+| `v` | Start selection |
+| `y` | Yank to clipboard (wl-copy) |
+| `prefix ?` | Built-in key list |
+
+---
+
+# tmux-sessionizer
 
 Auto-restores saved sessions on first launch after reboot.
-┌─────────────────┬──────────┬──────────────────────────────────────────┐
-│ Ctrl-F          │ zsh      │ Open fzf project picker                  │
-│ Ctrl-F          │ tmux     │ Open fzf project picker                  │
-│ <C-f>           │ nvim     │ Open fzf project picker                  │
-│ ts              │ zsh      │ Alias for tmux-sessionizer               │
-└─────────────────┴──────────┴──────────────────────────────────────────┘
 
-═══════════════════════════════════════════════════════════════════════════════
- ANYWHERE
-═══════════════════════════════════════════════════════════════════════════════
-┌─────────────────┬────────────────────────────────────────────────────────┐
-│ cheatsheet      │ Show this keybind reference (any terminal)             │
-└─────────────────┴────────────────────────────────────────────────────────┘
+| Key | Context | Action |
+|---|---|---|
+| `Ctrl-F` | zsh / tmux | fzf project picker |
+| `<C-f>` | nvim | fzf project picker |
+| `ts` | zsh alias | Same |
+
+---
+
+# Anywhere
+
+| Command | Action |
+|---|---|
+| `cheatsheet` | Show this reference (any terminal) |
