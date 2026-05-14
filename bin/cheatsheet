@@ -5,4 +5,10 @@ DOTFILES="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/.." &>/dev/null 
 # COLUMNS is set to the popup's column count; outside tmux it falls back
 # to the terminal width via tput.
 width="${COLUMNS:-$(tput cols 2>/dev/null || echo 100)}"
-glow -p -w "$width" "$DOTFILES/KEYBINDS.md"
+
+# Pipe glow's rendered output through less rather than using `glow -p`:
+# glow's built-in pager doesn't enable mouse mode (mouse: true in glow.yml
+# applies to TUI mode only), so wheel events get swallowed inside a tmux
+# popup. less --mouse opts into xterm mouse mode and tmux forwards the
+# wheel events to it. -R preserves glow's ANSI styling.
+glow -w "$width" "$DOTFILES/KEYBINDS.md" | less -R --mouse
