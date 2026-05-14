@@ -46,7 +46,21 @@ Prime-inspired setup. Leader = `Space`.
 | `gu` / `gh` | Diffget ours / theirs |
 | `<leader>p` | Push (in fugitive index) |
 | `<leader>P` | Pull --rebase (in fugitive index) |
-| `]c` / `[c` | Next / prev hunk (gitsigns) |
+
+### Hunks (gitsigns)
+
+| Key | Action |
+|---|---|
+| `]c` / `[c` | Next / prev hunk |
+| `<leader>ghs` | Stage hunk (or selection in visual) |
+| `<leader>ghr` | Reset hunk (or selection in visual) |
+| `<leader>ghu` | Undo stage hunk |
+| `<leader>ghp` | Preview hunk |
+| `<leader>ghS` / `<leader>ghR` | Stage / reset whole buffer |
+| `<leader>ghb` | Blame line (full) |
+| `<leader>ghB` | Toggle inline line-blame |
+| `<leader>ghd` / `<leader>ghD` | Diff vs index / HEAD~ |
+| `ih` (text object) | Select current hunk (`dih`, `vih`) |
 
 ## Tests & debugging
 
