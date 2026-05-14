@@ -69,10 +69,10 @@ local local_plugins = {
 
 			harpoon:setup()
 
-			vim.keymap.set("n", "<leader>A", function()
+			vim.keymap.set("n", "<leader>H", function()
 				harpoon:list():prepend()
 			end, { desc = "Harpoon prepend" })
-			vim.keymap.set("n", "<leader>a", function()
+			vim.keymap.set("n", "<leader>h", function()
 				harpoon:list():add()
 			end, { desc = "Harpoon add" })
 			vim.keymap.set("n", "<C-e>", function()
