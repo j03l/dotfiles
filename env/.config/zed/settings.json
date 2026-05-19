@@ -1,26 +1,28 @@
 {
+  "cli_default_open_behavior": "new_window",
+  "show_edit_predictions": false,
   "diagnostics": {
     "inline": {
-      "enabled": true
-    }
+      "enabled": true,
+    },
   },
   "preferred_line_length": 100,
   "ui_font_weight": 400.0,
   "buffer_font_weight": 400.0,
   "tab_bar": {
-    "show_pinned_tabs_in_separate_row": false
+    "show_pinned_tabs_in_separate_row": false,
   },
   "tabs": {
     "file_icons": true,
-    "git_status": true
+    "git_status": true,
   },
   "title_bar": {
     "show_menus": false,
-    "show_branch_status_icon": true
+    "show_branch_status_icon": true,
   },
   "status_bar": {
     "show_active_file": false,
-    "active_encoding_button": "enabled"
+    "active_encoding_button": "enabled",
   },
   "agent_ui_font_size": 14.0,
   "proxy": "",
@@ -28,18 +30,18 @@
     "hide_hidden": false,
     "git_status_indicator": true,
     "entry_spacing": "standard",
-    "dock": "right"
+    "dock": "right",
   },
   "outline_panel": {
-    "dock": "left"
+    "dock": "left",
   },
   "collaboration_panel": {
     "button": false,
-    "dock": "left"
+    "dock": "left",
   },
   "git_panel": {
     "tree_view": true,
-    "dock": "right"
+    "dock": "right",
   },
   "agent": {
     "show_turn_stats": true,
@@ -109,7 +111,7 @@
     "flexible": true,
     "show_count_badge": true,
     "toolbar": {
-      "breadcrumbs": false
+      "breadcrumbs": false,
     },
     "font_size": 14.0,
     "font_family": "Cascadia Code NF",
@@ -127,26 +129,20 @@
       "args": [],
       "projects": [
         {
-          "paths": [
-            "/home/hunter/dev/datadog"
-          ]
+          "paths": ["/home/hunter/dev/datadog"],
         },
         {
-          "paths": [
-            "/home/hunter/dev/hellogo"
-          ]
+          "paths": ["/home/hunter/dev/hellogo"],
         },
         {
-          "paths": [
-            "/home/hunter/dev/pokemon/./"
-          ]
-        }
-      ]
+          "paths": ["/home/hunter/dev/pokemon/./"],
+        },
+      ],
     },
     {
       "host": "Hunters_Workstation",
       "args": [],
-      "projects": []
+      "projects": [],
     },
     {
       "host": "hunter-work",
@@ -154,21 +150,15 @@
       "args": [],
       "projects": [
         {
-          "paths": [
-            "/home/hunter/dev/eagle-leather-shopify"
-          ]
+          "paths": ["/home/hunter/dev/eagle-leather-shopify"],
         },
         {
-          "paths": [
-            "/home/hunter/dev/eagle-leather-theme"
-          ]
+          "paths": ["/home/hunter/dev/eagle-leather-theme"],
         },
         {
-          "paths": [
-            "/home/hunter/dev/jira-work"
-          ]
-        }
-      ]
+          "paths": ["/home/hunter/dev/jira-work"],
+        },
+      ],
     },
     {
       "host": "hunter-work",
@@ -176,18 +166,16 @@
       "args": [],
       "projects": [
         {
-          "paths": [
-            "/home/hunter/tmp/./"
-          ]
-        }
-      ]
+          "paths": ["/home/hunter/tmp/./"],
+        },
+      ],
     },
     {
       "host": "hunter-work",
       "username": "hunter",
       "args": [],
-      "projects": []
-    }
+      "projects": [],
+    },
   ],
   "languages": {
     "Python": {
