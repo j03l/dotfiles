@@ -101,6 +101,18 @@ for dir in "$DOTFILES"/env/.config/*/; do
     link_dir "${dir%/}" "$XDG_CONFIG_HOME/$name"
 done
 
+echo "=== deploy: kitty per-machine config ==="
+kitty_choice="kitty.$selected_env.conf"
+if [[ -f "$DOTFILES/env/.config/kitty/$kitty_choice" ]]; then
+    # Relative target so the symlink resolves inside ~/.config/kitty
+    log "ln -sfn $kitty_choice -> $XDG_CONFIG_HOME/kitty/local.conf"
+    if [[ $dry_run == "0" ]]; then
+        ln -sfn "$kitty_choice" "$XDG_CONFIG_HOME/kitty/local.conf"
+    fi
+else
+    log "skip: no $kitty_choice (kitty per-machine config)"
+fi
+
 echo "=== deploy: systemd user units ==="
 mkdir -p "$XDG_CONFIG_HOME/systemd/user"
 for unit in "$DOTFILES"/env/.config/systemd/user/*.service; do
