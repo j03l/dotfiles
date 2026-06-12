@@ -19,9 +19,6 @@ else
     desired=on
 fi
 
-current=$(tmux show -gv status 2>/dev/null)
-[[ "$current" == "$desired" ]] && exit 0
-
 case "$desired" in
     on)
         tmux set -g status on
