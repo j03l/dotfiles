@@ -7,5 +7,15 @@
         "\u001b\r"
       ]
     }
+  },
+  {
+    "bindings": {
+      "ctrl-shift-d": "project_panel::DownloadFromRemote"
+    }
+  },
+  {
+    "bindings": {
+      "alt-f": "project_panel::FoldDirectory"
+    }
   }
 ]

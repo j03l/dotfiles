@@ -24,7 +24,7 @@
     "show_active_file": false,
     "active_encoding_button": "enabled",
   },
-  "agent_ui_font_size": 14.0,
+  "agent_ui_font_size": 16.0,
   "proxy": "",
   "project_panel": {
     "hide_hidden": false,
@@ -44,11 +44,17 @@
     "dock": "right",
   },
   "agent": {
+    "default_model": {
+      "provider": "copilot_chat",
+      "model": "gpt-5-mini",
+      "enable_thinking": true,
+      "effort": "high"
+    },
     "show_turn_stats": true,
     "use_modifier_to_send": false,
     "expand_terminal_card": false,
     "thinking_display": "always_collapsed",
-    "play_sound_when_agent_done": "when_hidden",
+    "play_sound_when_agent_done": "never",
     "single_file_review": true,
     "dock": "left",
     "favorite_models": [],
@@ -120,7 +126,7 @@
   "edit_predictions": {
     "mode": "subtle",
   },
-  "ui_font_family": "Cascadia Code NF",
+  "ui_font_family": "Cascadia Code",
   "buffer_line_height": "standard",
   "buffer_font_family": "Cascadia Mono NF",
   "ssh_connections": [
@@ -129,20 +135,26 @@
       "args": [],
       "projects": [
         {
-          "paths": ["/home/hunter/dev/datadog"],
+          "paths": [
+            "/home/hunter/dev/datadog"
+          ]
         },
         {
-          "paths": ["/home/hunter/dev/hellogo"],
+          "paths": [
+            "/home/hunter/dev/hellogo"
+          ]
         },
         {
-          "paths": ["/home/hunter/dev/pokemon/./"],
-        },
-      ],
+          "paths": [
+            "/home/hunter/dev/pokemon/./"
+          ]
+        }
+      ]
     },
     {
       "host": "Hunters_Workstation",
       "args": [],
-      "projects": [],
+      "projects": []
     },
     {
       "host": "hunter-work",
@@ -150,15 +162,26 @@
       "args": [],
       "projects": [
         {
-          "paths": ["/home/hunter/dev/eagle-leather-shopify"],
+          "paths": [
+            "/home/hunter/dev/eagle-leather-shopify"
+          ]
         },
         {
-          "paths": ["/home/hunter/dev/eagle-leather-theme"],
+          "paths": [
+            "/home/hunter/dev/eagle-leather-theme"
+          ]
         },
         {
-          "paths": ["/home/hunter/dev/jira-work"],
+          "paths": [
+            "/home/hunter/dev/integration-attemps/./"
+          ]
         },
-      ],
+        {
+          "paths": [
+            "/home/hunter/dev/jira-work"
+          ]
+        }
+      ]
     },
     {
       "host": "hunter-work",
@@ -166,16 +189,34 @@
       "args": [],
       "projects": [
         {
-          "paths": ["/home/hunter/tmp/./"],
+          "paths": [
+            "/home/hunter/dev/datadog"
+          ]
         },
-      ],
+        {
+          "paths": [
+            "/home/hunter/dev/eagle-ops"
+          ]
+        },
+        {
+          "paths": [
+            "/home/hunter/tmp/./"
+          ]
+        }
+      ]
     },
     {
       "host": "hunter-work",
       "username": "hunter",
       "args": [],
-      "projects": [],
-    },
+      "projects": [
+        {
+          "paths": [
+            "/home/hunter/dev/stock-movement-project"
+          ]
+        }
+      ]
+    }
   ],
   "languages": {
     "Python": {
@@ -206,11 +247,11 @@
     "trust_all_worktrees": true,
   },
   "vim_mode": false,
-  "ui_font_size": 14.0,
-  "buffer_font_size": 14.0,
+  "ui_font_size": 20.0,
+  "buffer_font_size": 16.0,
   "theme": {
     "mode": "system",
     "light": "Tokyo Night Light",
-    "dark": "Rosé Pine",
+    "dark": "Tokyo Night Storm",
   },
 }
