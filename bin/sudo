@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# sudo wrapper: when stdin is not a TTY (e.g. running inside Claude Code or
+# any non-interactive context), automatically pass -A and export SUDO_ASKPASS
+# so the KDE ksshaskpass dialog handles the prompt on the user's desktop.
+# With a real TTY, behave exactly like /usr/bin/sudo.
+REAL_SUDO=/usr/bin/sudo
+
+if [[ ! -t 0 ]]; then
+  export SUDO_ASKPASS="${SUDO_ASKPASS:-/usr/bin/ksshaskpass}"
+  exec "$REAL_SUDO" -A "$@"
+fi
+
+exec "$REAL_SUDO" "$@"
