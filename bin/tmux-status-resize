@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
-# Switch tmux status line count based on client width.
-#   < 60 cols  : 3 lines (mobile/very narrow)
-#   60-159     : 2 lines (windows on their own row)
-#   >= 160     : 1 line  (default packed layout)
+# Adapt the tmux status line to the current client width:
+#   * line count   : <60 -> 3 lines, 60-159 -> 2 lines, >=160 -> 1 line
+#   * window list  : every window always fits — per-tab names are truncated
+#                    (with an … ellipsis) so the list never overflows/scrolls.
+#
+# Runs from the client-resized / window-* / session-window-changed hooks, so it
+# recomputes the per-tab budget whenever the width or window count changes.
 
 width=$(tmux display -p '#{client_width}' 2>/dev/null) || exit 0
 [[ -z "$width" || "$width" == "0" ]] && exit 0
@@ -11,6 +14,39 @@ LEFT='#[align=left range=left #{E:status-left-style}]#[push-default]#{T;=/#{stat
 RIGHT='#[align=right range=right #{E:status-right-style}]#[push-default]#{T;=/#{status-right-length}:status-right}#[pop-default]#[norange default]'
 WINDOWS='#[align=#{status-justify} list=on]#{W:#[range=window|#{window_index} #{E:window-status-style}]#[push-default]#{T:window-status-format}#[pop-default]#[norange default]#{?window_end_flag,,#{window-status-separator}},#[range=window|#{window_index} list=focus #{E:window-status-current-style}]#[push-default]#{T:window-status-current-format}#[pop-default]#[norange list=on default]#{?window_end_flag,,#{window-status-separator}}}'
 
+# --- per-tab name truncation -------------------------------------------------
+# Visible column width of an expanded status format (strips #[...] colour markup).
+visible_width() {
+    tmux display -p "$1" 2>/dev/null | sed 's/#\[[^]]*\]//g' | tr -d '\n' | wc -m
+}
+
+nwin=$(tmux display -p '#{session_windows}' 2>/dev/null); nwin=${nwin:-1}
+(( nwin < 1 )) && nwin=1
+
+if (( width >= 160 )); then
+    # 1-line layout: the window list shares the row with status-left/right.
+    lw=$(visible_width "$(tmux show -gqv status-left)")
+    rw=$(visible_width "$(tmux show -gqv status-right)")
+    avail=$(( width - lw - rw - 2 ))   # -2: breathing room either side
+else
+    # 2/3-line layouts: the window list owns its own full-width row.
+    avail=$width
+fi
+(( avail < nwin )) && avail=$nwin
+
+# Per-window chrome that is NOT part of the truncated name:
+#   leading space + index (~2) + ':' + trailing space + ellipsis = ~7 cols.
+overhead=7
+budget=$(( avail / nwin - overhead ))
+(( budget < 3 ))  && budget=3     # always show at least a sliver of the name
+(( budget > 64 )) && budget=64    # large budget == effectively no truncation
+
+name='#{?#{==:#{pane_current_command},nvim},#{pane_title},#W}'
+panes='#{?#{>:#{window_panes},1},[#{window_panes}],}'
+tmux set -g window-status-current-format "#[bg=#292e42 fg=#7aa2f7 bold] #I:#{=/$budget/…:$name}$panes "
+tmux set -g window-status-format "#[fg=#545c7e] #I:#{=/$budget/…:$name}$panes "
+
+# --- line count --------------------------------------------------------------
 if (( width < 60 )); then
     desired=3
 elif (( width < 160 )); then
