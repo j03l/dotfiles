@@ -120,3 +120,10 @@ setopt hist_find_no_dups
 
 # Aliases
 alias c='claude'
+
+# bun completions
+[ -s "/home/hunter/.bun/_bun" ] && source "/home/hunter/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"

@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# bun is not in the official repos. Install via the upstream installer, which
+# lands in ~/.bun — matching the BUN_INSTALL / PATH block in .zshrc. The
+# installer needs unzip; everything else it bundles.
+if command -v bun &>/dev/null; then
+    echo "bun already installed"
+    exit 0
+fi
+
+paru -S --needed --noconfirm unzip
+echo "Installing bun via bun.sh installer..."
+curl -fsSL https://bun.sh/install | bash

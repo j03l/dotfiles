@@ -13,6 +13,7 @@ The `run` orchestrator discovers and executes these in sorted order. Use `./run 
 | `40-ghostty` | ghostty | `paru --needed` |
 | `50-rust` | rustup, stylua, claude-tmux | `command -v` check; `cargo install` skips current |
 | `60-node` | nodejs, npm | `paru --needed` |
+| `65-bun` | bun (via bun.sh installer) | `command -v` check |
 | `70-go` | go (via webi) | `command -v` check |
 | `80-python` | uv | `command -v` check; `uv self update` |
 | `90-dev-tools` | fzf, ripgrep, btop, eza, lazygit, glow, jq, docker | `paru --needed`; `systemctl enable` is idempotent |
