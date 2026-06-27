@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+DOTFILES="${DOTFILES:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." &>/dev/null && pwd)}"
+source "$DOTFILES/lib/platform.sh"
+is_macos || { echo "01-brew: skip (not macOS)"; exit 0; }
+
+# Install Homebrew if missing
+if ! command -v brew &>/dev/null; then
+    echo "Installing Homebrew..."
+    NONINTERACTIVE=1 /bin/bash -c \
+        "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+fi
+
+# Load brew into this shell (Apple Silicon vs Intel prefix)
+if [[ -x /opt/homebrew/bin/brew ]]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+elif [[ -x /usr/local/bin/brew ]]; then
+    eval "$(/usr/local/bin/brew shellenv)"
+fi
+
+echo "Installing packages from macos.Brewfile..."
+brew bundle --file "$DOTFILES/runs/macos.Brewfile"
+
+echo "brew packages installed"

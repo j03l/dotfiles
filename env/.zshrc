@@ -1,30 +1,33 @@
-# Hunter's zsh config - fully self-managed
+# Hunter's zsh config — shared across Linux (CachyOS/Arch) + macOS.
+# OS-specific bits live in ~/.config/zsh/os.zsh, symlinked per-platform by deploy
+# (env/zsh/linux.zsh or env/zsh/macos.zsh). That fragment sets $ZSH (the oh-my-zsh
+# path differs per OS), appends $OS_PLUGINS, and defines os_post_omz() for things
+# that must load after oh-my-zsh (plugin sourcing, etc.).
 
-# SSH agent (systemd user service)
-export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
+# Local bin + language paths. The macOS fragment additionally prepends Homebrew
+# via `brew shellenv`.
+export PATH="$HOME/.local/bin:/usr/local/bin:$HOME/go/bin:$PATH"
 
-# Local bin path
-export PATH=$HOME/.local/bin:/usr/local/bin:$HOME/go/bin:$PATH
+# Base oh-my-zsh plugin set (OS fragment appends platform-specific plugins)
+plugins=(git aliases history docker colorize command-not-found copybuffer copypath dotenv emoji encode64 gh man safe-paste ssh sudo themes fzf)
 
-# Path to oh-my-zsh installation
-export ZSH="/usr/share/oh-my-zsh"
-
-# Theme
+# Theme + OMZ behaviour
 ZSH_THEME="geoffgarside"
-
-# OMZ update reminder
 zstyle ':omz:update' mode reminder
-
-# NVM lazy loading (if you use nvm)
 zstyle ':omz:plugins:nvm' lazy yes
 
-# Plugins
-plugins=(git aliases history docker archlinux colorize command-not-found copybuffer copypath dotenv emoji encode64 gh man safe-paste ssh sudo tailscale themes ufw fzf)
+# Platform layer: sets $ZSH, $OS_PLUGINS, defines os_post_omz, exports brew env…
+[[ -r ~/.config/zsh/os.zsh ]] && source ~/.config/zsh/os.zsh
+plugins+=(${OS_PLUGINS[@]})
 
 source $ZSH/oh-my-zsh.sh
 source ~/.zsh_profile
 
-# Tailscale hostname injected before username in prompt (computed once at startup)
+# Platform bits that must run after oh-my-zsh (e.g. syntax highlighting loads last)
+typeset -f os_post_omz >/dev/null && os_post_omz
+
+# Tailscale hostname injected before username in prompt (computed once at startup;
+# self-guards, so it's a no-op where the tailscale CLI isn't on PATH).
 __ts_host=$(tailscale status --json --self=true --peers=false 2>/dev/null | jq -r 'select(.BackendState=="Running") | .Self.DNSName // empty' 2>/dev/null | cut -d. -f1)
 if [[ -n "$__ts_host" ]]; then
   __ts_repl="%F{cyan}${__ts_host}%f:%n"
@@ -33,36 +36,18 @@ if [[ -n "$__ts_host" ]]; then
 fi
 unset __ts_host
 
-# System-installed zsh plugins (from CachyOS packages)
-source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
-source /usr/share/zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
-source /usr/share/doc/pkgfile/command-not-found.zsh
-
-# FZF
-export FZF_BASE=/usr/share/fzf
-
 # Environment
 export MANPATH="/usr/local/man:$MANPATH"
 export MANPAGER='nvim +Man!'
 export MANWIDTH=999
 export LANG=en_AU.UTF-8
-
-# Editor
 export EDITOR='nvim'
 
-# Fix VS Code integrated terminal (breaks local file:// URLs)
-# VS Code strips desktop env vars and overrides BROWSER with its SSH helper
-# Only applies when in VS Code terminal but NOT actually over SSH
-if [[ "$TERM_PROGRAM" == "vscode" && -z "$SSH_CLIENT" && -z "$SSH_TTY" ]]; then
-  [[ -z "$XDG_CURRENT_DESKTOP" ]] && export XDG_CURRENT_DESKTOP="KDE"
-  [[ -z "$KDE_FULL_SESSION" ]] && export KDE_FULL_SESSION="true"
-  export BROWSER="brave-browser"
-fi
-
-# Personal aliases
+# Personal aliases (cross-platform)
 alias gcc="gcc -Wall -Wextra -Wpedantic"
 alias dc="docker compose"
+alias n="ninja"
+alias tb="nc termbin.com 9999"
 
 # Tmux project management
 alias tp='tmux-project'
@@ -72,36 +57,42 @@ alias tpk='tmux kill-session -t'
 alias tpn='tmux new-session -s'
 alias ts='tmux-sessionizer'  # Fuzzy find projects
 alias tcht='tmux-cht'         # Cheat sheets
-alias remove-orphans="sudo pacman -Qdtq | sudo pacman -Rns -"
-alias governor="cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor"
-alias performance="sudo cpupower frequency-set -g performance"
-alias powersave="sudo cpupower frequency-set -g schedutil"
-alias setip="~/.local/bin/set_ip.sh"
-alias getip="~/.local/bin/get_ip.sh"
-alias blue="hyprctl hyprsunset identity"
-alias noblue="hyprctl hyprsunset temperature 2500"
-alias set-colour="sudo liquidctl set ring color fixed ff2e00 && sudo liquidctl set ring color off"
+
+# eza
 alias ls="eza --icons --group-directories-first"
 alias l="eza --icons --group-directories-first -1"
 alias la="eza --icons --group-directories-first -a"
 alias ll="eza --icons --group-directories-first -lag --header"
 alias llg="eza --icons --group-directories-first -lag --git --header"
 alias lt="eza --icons --group-directories-first --tree -L 2"
-alias gdb="gdb --tui"
-alias paru="paru --skipreview"
+
 alias fd="find . -type d -name"
 alias ff="find . -name"
-alias zed="zeditor"
-alias open="xdg-open"
 alias reload!="exec zsh"
+alias c='claude'
 
-# Useful aliases from CachyOS
-alias make="make -j$(nproc)"
-alias ninja="ninja -j$(nproc)"
-alias n="ninja"
-alias jctl="journalctl -p 3 -xb"
-alias rip="expac --timefmt='%Y-%m-%d %T' '%l\t%n %v' | sort | tail -200 | nl"
-alias tb="nc termbin.com 9999"
+# uv (Python package manager) aliases
+alias ui='uv init'
+alias un='uv init --name'
+alias us='uv sync'
+alias ua='uv add'
+alias ur='uv remove'
+alias ul='uv lock'
+alias venv='uv venv'
+alias uva='source .venv/bin/activate'
+alias uu='uv run'
+alias up='uv run python'
+alias upi='uv run python -i'
+alias ut='uv tool'
+alias uti='uv tool install'
+alias utr='uv tool run'
+alias upy='uv python'
+alias upyl='uv python list'
+alias upyi='uv python install'
+alias utest='uv run pytest'
+alias ufmt='uv run ruff format'
+alias ulint='uv run ruff check'
+alias userver='uv run python -m http.server'
 
 # History config
 HISTSIZE=5000
@@ -115,16 +106,15 @@ setopt hist_ignore_all_dups
 setopt hist_save_no_dups
 setopt hist_ignore_dups
 setopt hist_find_no_dups
+
 # Generated for envman. Do not edit.
 [ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"
 
-# Aliases
-alias c='claude'
-
-# bun completions
-[ -s "/home/hunter/.bun/_bun" ] && source "/home/hunter/.bun/_bun"
+# Rust / cargo (rustup installs to ~/.cargo; no-op if absent, e.g. system cargo on Arch)
+[ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
 
 # bun
+[ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 

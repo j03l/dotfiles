@@ -1,14 +1,28 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Install via paru only if not already available (may be installed via rustup.rs/cargo)
-command -v rustup &>/dev/null || paru -S --needed --noconfirm rustup
-command -v stylua &>/dev/null || paru -S --needed --noconfirm stylua
+DOTFILES="${DOTFILES:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." &>/dev/null && pwd)}"
+source "$DOTFILES/lib/platform.sh"
+
+# Install only if not already available (may be installed via rustup.rs/cargo).
+# Formula name `rustup` is the same on brew and paru.
+command -v rustup &>/dev/null || pkg_install rustup
+# Homebrew's rustup formula is keg-only (not symlinked into the prefix), so it
+# isn't on PATH after install. Add it so the toolchain commands below resolve.
+if is_macos; then
+    export PATH="$(brew --prefix rustup 2>/dev/null)/bin:$PATH"
+fi
+command -v stylua &>/dev/null || pkg_install stylua
 
 # Ensure a default toolchain is installed
 if ! rustup show active-toolchain &>/dev/null; then
     rustup default stable
 fi
+
+# rustup installs cargo proxies under ~/.cargo/bin — make sure they're on PATH
+# for the cargo install below (esp. on a fresh mac where it was just created).
+[ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
+export PATH="$HOME/.cargo/bin:$PATH"
 
 # claude-tmux is not packaged — install via cargo
 if ! command -v claude-tmux &>/dev/null; then

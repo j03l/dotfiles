@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-paru -S --needed --noconfirm go
+DOTFILES="${DOTFILES:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." &>/dev/null && pwd)}"
+source "$DOTFILES/lib/platform.sh"
+
+pkg_install go

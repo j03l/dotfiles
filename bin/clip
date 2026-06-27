@@ -1,0 +1,15 @@
+#!/bin/sh
+#
+# clip — copy stdin to the system clipboard, cross-platform.
+# Used by tmux copy-mode bindings so the config stays OS-agnostic.
+
+if command -v pbcopy >/dev/null 2>&1; then
+    exec pbcopy
+elif command -v wl-copy >/dev/null 2>&1; then
+    exec wl-copy
+elif command -v xclip >/dev/null 2>&1; then
+    exec xclip -selection clipboard
+else
+    echo "clip: no clipboard tool found (pbcopy/wl-copy/xclip)" >&2
+    exit 1
+fi

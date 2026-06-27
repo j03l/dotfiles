@@ -26,10 +26,12 @@ log() {
 
 log "DOTFILES=$DOTFILES  grep=$grep_filter"
 
-# Find executable scripts in runs/, sorted by name
-mapfile -t scripts < <(find "$DOTFILES/runs" -mindepth 1 -maxdepth 1 -executable | sort)
-
-for s in "${scripts[@]}"; do
+# Run executable scripts in runs/, in glob (sorted) order. A glob avoids GNU
+# find's -executable and bash 4's mapfile, so this works on macOS (BSD find +
+# bash 3.2) as well as Linux. Non-executable files (READMEs, Brewfile) are
+# skipped by the -x test.
+for s in "$DOTFILES"/runs/*; do
+    [[ -f "$s" && -x "$s" ]] || continue
     name=$(basename "$s")
 
     if [[ -n "$grep_filter" ]] && ! echo "$name" | grep -q "$grep_filter"; then

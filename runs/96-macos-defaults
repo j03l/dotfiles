@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+DOTFILES="${DOTFILES:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." &>/dev/null && pwd)}"
+source "$DOTFILES/lib/platform.sh"
+is_macos || { echo "96-macos-defaults: skip (macOS-only)"; exit 0; }
+
+# Reasonable macOS defaults (harvested from the old ~/.dotfiles macos topic).
+# Original idea + a couple settings from:
+#   https://github.com/mathiasbynens/dotfiles/blob/master/.macos
+
+# Disable press-and-hold for keys in favour of key repeat, and make it fast.
+defaults write -g ApplePressAndHoldEnabled -bool false
+defaults write NSGlobalDomain KeyRepeat -int 1
+
+# Use AirDrop over every interface.
+defaults write com.apple.NetworkBrowser BrowseAllInterfaces 1
+
+# Finder: list view everywhere; show volumes on the Desktop.
+defaults write com.apple.Finder FXPreferredViewStyle Nlsv
+defaults write com.apple.finder ShowExternalHardDrivesOnDesktop -bool true
+defaults write com.apple.finder ShowRemovableMediaOnDesktop -bool true
+
+# Show the ~/Library folder.
+chflags nohidden ~/Library
+
+# Screensaver when the pointer hits the bottom-left hot corner.
+defaults write com.apple.dock wvous-bl-corner -int 5
+defaults write com.apple.dock wvous-bl-modifier -int 0
+
+# Safari: hide the bookmark bar and enable the Develop menu.
+defaults write com.apple.Safari.plist ShowFavoritesBar -bool false
+defaults write com.apple.Safari.SandboxBroker ShowDevelopMenu -bool true
+defaults write com.apple.Safari.plist IncludeDevelopMenu -bool true
+defaults write com.apple.Safari.plist WebKitDeveloperExtrasEnabledPreferenceKey -bool true
+defaults write com.apple.Safari.plist "com.apple.Safari.ContentPageGroupIdentifier.WebKit2DeveloperExtrasEnabled" -bool true
+defaults write NSGlobalDomain WebKitDeveloperExtras -bool true
+
+# Apply the bits that need a relaunch.
+killall Finder Dock 2>/dev/null || true
+
+echo "macOS defaults applied"

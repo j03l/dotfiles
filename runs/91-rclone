@@ -1,6 +1,12 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+DOTFILES="${DOTFILES:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." &>/dev/null && pwd)}"
+source "$DOTFILES/lib/platform.sh"
+# Linux-only: pacman/AUR + FUSE + systemd user mounts. macOS uses the native
+# iCloud Drive / OneDrive apps instead.
+is_linux || { echo "91-rclone: skip (Linux-only)"; exit 0; }
+
 # rclone + FUSE for the OneDrive / iCloud / Obsidian user mounts.
 #
 # Stable rclone from extra/ (v1.74+) carries the iCloud Drive SRP fix

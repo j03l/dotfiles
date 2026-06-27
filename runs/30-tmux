@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+DOTFILES="${DOTFILES:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." &>/dev/null && pwd)}"
+source "$DOTFILES/lib/platform.sh"
+
 # fzf + jq are required by tmux-claude-session-manager
-paru -S --needed --noconfirm tmux fzf jq
+pkg_install tmux fzf jq
 
 # TPM lives alongside the XDG config so it resolves TMUX_PLUGIN_MANAGER_PATH
 # to ~/.config/tmux/plugins/ (gitignored in dotfiles).

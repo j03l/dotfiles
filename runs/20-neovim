@@ -1,11 +1,19 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-paru -S --needed --noconfirm \
-    neovim \
-    lua51 \
-    luarocks \
-    tree-sitter-cli
+DOTFILES="${DOTFILES:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." &>/dev/null && pwd)}"
+source "$DOTFILES/lib/platform.sh"
+
+if is_macos; then
+    # luarocks pulls in lua; tree-sitter is the CLI used by nvim-treesitter
+    brew install neovim luarocks tree-sitter
+else
+    paru -S --needed --noconfirm \
+        neovim \
+        lua51 \
+        luarocks \
+        tree-sitter-cli
+fi
 
 mkdir -p "$HOME/.vim/undodir"
 echo "neovim ready (plugins install on first launch via lazy.nvim)"

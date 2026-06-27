@@ -1,18 +1,46 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-paru -S --needed --noconfirm \
-    zsh \
-    oh-my-zsh-git \
-    zsh-syntax-highlighting \
-    zsh-autosuggestions \
-    zsh-history-substring-search \
-    pkgfile
+DOTFILES="${DOTFILES:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." &>/dev/null && pwd)}"
+source "$DOTFILES/lib/platform.sh"
 
-# Set zsh as default shell if not already
-if [[ "$SHELL" != */zsh ]]; then
-    echo "Setting zsh as default shell..."
-    chsh -s "$(which zsh)"
+if is_macos; then
+    brew install zsh \
+        zsh-syntax-highlighting \
+        zsh-autosuggestions \
+        zsh-history-substring-search
+
+    # Oh My Zsh (no brew formula) — install unattended into ~/.oh-my-zsh
+    if [[ ! -d "$HOME/.oh-my-zsh" ]]; then
+        echo "Installing oh-my-zsh..."
+        RUNZSH=no KEEP_ZSHRC=yes CHSH=no \
+            sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+    fi
+
+    brew_zsh="$(brew --prefix)/bin/zsh"
+    # Register brew zsh as a valid login shell, then make it the default
+    if ! grep -qx "$brew_zsh" /etc/shells 2>/dev/null; then
+        echo "Adding $brew_zsh to /etc/shells (needs sudo)..."
+        echo "$brew_zsh" | sudo tee -a /etc/shells >/dev/null
+    fi
+    if [[ "$SHELL" != "$brew_zsh" ]]; then
+        echo "Setting zsh as default shell..."
+        chsh -s "$brew_zsh"
+    fi
 else
-    echo "zsh is already default shell"
+    paru -S --needed --noconfirm \
+        zsh \
+        oh-my-zsh-git \
+        zsh-syntax-highlighting \
+        zsh-autosuggestions \
+        zsh-history-substring-search \
+        pkgfile
+
+    # Set zsh as default shell if not already
+    if [[ "$SHELL" != */zsh ]]; then
+        echo "Setting zsh as default shell..."
+        chsh -s "$(which zsh)"
+    else
+        echo "zsh is already default shell"
+    fi
 fi

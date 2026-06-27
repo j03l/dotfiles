@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+DOTFILES="${DOTFILES:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." &>/dev/null && pwd)}"
+source "$DOTFILES/lib/platform.sh"
+is_linux || { echo "00-paru: skip (not Linux)"; exit 0; }
+
 if command -v paru &>/dev/null; then
     echo "paru already installed"
     exit 0

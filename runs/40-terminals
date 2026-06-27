@@ -1,4 +1,12 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-paru -S --needed --noconfirm ghostty kitty
+DOTFILES="${DOTFILES:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." &>/dev/null && pwd)}"
+source "$DOTFILES/lib/platform.sh"
+
+if is_macos; then
+    # ghostty and kitty are casks on macOS
+    brew install --cask ghostty kitty
+else
+    paru -S --needed --noconfirm ghostty kitty
+fi

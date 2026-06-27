@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+DOTFILES="${DOTFILES:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." &>/dev/null && pwd)}"
+source "$DOTFILES/lib/platform.sh"
+# Linux-only: evdev input group + systemd user service for a specific keyboard.
+is_linux || { echo "95-hscroll-volume: skip (Linux-only)"; exit 0; }
+
 # Add user to input group for evdev access
 if ! groups "$USER" | grep -q '\binput\b'; then
     sudo usermod -aG input "$USER"

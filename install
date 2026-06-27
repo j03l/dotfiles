@@ -2,6 +2,7 @@
 set -euo pipefail
 
 DOTFILES="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
+source "$DOTFILES/lib/platform.sh"
 
 dry_run=""
 [[ "${1:-}" == "--dry" ]] && dry_run="--dry"
@@ -39,10 +40,14 @@ echo "Environment set to: $current_env"
 echo ""
 
 echo "=== Syncing package databases ==="
-if [[ -z "$dry_run" ]]; then
-    paru -Sy
+if is_linux; then
+    if [[ -z "$dry_run" ]]; then
+        paru -Sy
+    else
+        echo "[DRY_RUN]: paru -Sy"
+    fi
 else
-    echo "[DRY_RUN]: paru -Sy"
+    echo "(skip: macOS — Homebrew refresh is handled in runs/01-brew)"
 fi
 
 echo ""

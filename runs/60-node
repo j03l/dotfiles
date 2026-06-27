@@ -1,4 +1,13 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-paru -S --needed --noconfirm nodejs npm
+DOTFILES="${DOTFILES:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." &>/dev/null && pwd)}"
+source "$DOTFILES/lib/platform.sh"
+
+if is_macos; then
+    # On macOS node is often provided by nvm (lazy-loaded in zsh). Only install a
+    # brew node as a fallback when nothing provides it, so we don't fight nvm.
+    command -v node &>/dev/null || brew install node
+else
+    paru -S --needed --noconfirm nodejs npm
+fi
