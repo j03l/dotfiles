@@ -1,6 +1,8 @@
 # Dotfiles
 
-Modular dotfiles system for CachyOS/Arch Linux, inspired by [ThePrimeagen's dev environment](https://github.com/ThePrimeagen/dev).
+Modular, cross-platform dotfiles for **CachyOS/Arch Linux** and **macOS**, inspired by [ThePrimeagen's dev environment](https://github.com/ThePrimeagen/dev).
+
+The OS is detected at runtime (`lib/platform.sh`); installers and configs branch per platform, so the same `./install` works on both. Linux uses paru/AUR + systemd + KDE Wallet; macOS uses Homebrew + macOS Keychain (and coexists with [Mackup](https://github.com/lra/mackup), which keeps syncing GUI app settings via iCloud — see [Mackup](#mackup-macos)).
 
 ## Quick Start
 
@@ -16,38 +18,50 @@ Modular dotfiles system for CachyOS/Arch Linux, inspired by [ThePrimeagen's dev 
 
 ```
 dotfiles/
-├── run                  # Orchestrator: runs scripts in runs/
-├── deploy               # Copies configs from repo to system
-├── install              # Full setup: run + deploy
+├── run                  # Orchestrator: runs executable scripts in runs/ (sorted)
+├── deploy               # Symlinks configs from repo to system
+├── install              # Full setup: run + deploy + secrets
 ├── update-nvim          # Quick nvim-only refresh
 ├── update-dotfiles      # Config-only deploy (no packages)
+├── lib/platform.sh      # OS detection + pkg_install/clip helpers (sourced everywhere)
 ├── nvim/                # Neovim config → ~/.config/nvim/
-├── env/                 # Dotfiles mirroring target filesystem
-│   ├── .zshrc           # → ~/.zshrc
+├── env/                 # Configs mirroring the target filesystem
+│   ├── .zshrc           # → ~/.zshrc (shared across both OSes)
 │   ├── .zsh_profile     # → ~/.zsh_profile
-│   └── .config/
-│       ├── ghostty/     # → ~/.config/ghostty/
-│       ├── tmux/        # → ~/.config/tmux/
-│       └── tmux-sessionizer/
+│   ├── zsh/             # Per-OS fragments → ~/.config/zsh/os.zsh
+│   │   ├── linux.zsh
+│   │   └── macos.zsh
+│   └── .config/         # ghostty, kitty, tmux, glow, zed, …
 ├── secrets              # Pulls secret files from Bitwarden Secrets Manager
 ├── secrets.env          # UUID → target path mapping (no actual secrets)
-├── bin/                 # Scripts → ~/.local/bin/ (chmod +x)
-└── runs/                # Numbered install scripts
-    ├── 00-paru
-    ├── 10-zsh
-    ├── 20-neovim
-    ├── 30-tmux
-    ├── 40-ghostty
-    ├── 50-rust
-    ├── 60-node
-    ├── 70-go
-    ├── 80-python
-    └── 90-dev-tools
+├── bin/                 # Scripts → ~/.local/bin/ (Linux-only ones skipped on macOS)
+└── runs/                # Numbered, OS-aware install scripts
+    ├── 00-paru          # (Linux) AUR helper
+    ├── 01-brew          # (macOS) Homebrew + macos.Brewfile
+    ├── 10-zsh  20-neovim  30-tmux  40-terminals
+    ├── 50-rust  60-node  65-bun  70-go  80-python
+    ├── 90-dev-tools
+    ├── 91-rclone        # (Linux) iCloud/OneDrive mounts
+    ├── 95-hscroll-volume# (Linux) evdev
+    ├── 96-macos-defaults# (macOS) system defaults
+    └── macos.Brewfile   # macOS package list (brew bundle)
 ```
+
+## Platforms
+
+| Concern | Linux (CachyOS/Arch) | macOS |
+|---------|----------------------|-------|
+| Packages | paru / AUR | Homebrew (`runs/macos.Brewfile`) |
+| Secret store | KDE Wallet | macOS Keychain |
+| Clipboard | `wl-copy` | `pbcopy` (via `bin/clip`) |
+| Services | systemd user units | skipped |
+| oh-my-zsh | `/usr/share/oh-my-zsh` | `~/.oh-my-zsh` |
+
+OS-only installers self-skip on the other platform; `deploy` skips systemd units and Linux-only `bin/` scripts on macOS. Shell, git, ssh, nvim, tmux, ghostty/kitty configs are shared verbatim.
 
 ## Usage
 
-All scripts support `--dry` for previewing actions.
+All scripts support `--dry` for previewing actions. `run` executes every executable file in `runs/` in sorted order (non-executable files like `macos.Brewfile` are skipped).
 
 ```bash
 # Deploy configs only (no package installs)
@@ -57,7 +71,7 @@ All scripts support `--dry` for previewing actions.
 ./update-nvim
 
 # Run a specific installer (grep filter)
-./run paru
+./run brew
 ./run rust
 
 # Preview all installers
@@ -74,18 +88,25 @@ Never edit files in `~/.config/` directly — they get overwritten on deploy.
 
 ## Secrets
 
-Secret config files (gitconfig, gh tokens, rclone, etc.) are stored in [Bitwarden Secrets Manager](https://bitwarden.com/help/secrets-manager-overview/) and pulled at setup time.
+Secret config files (gitconfig, gh tokens, rclone, etc.) are stored in [Bitwarden Secrets Manager](https://bitwarden.com/help/secrets-manager-overview/) and pulled at setup time. The BWS access token is read from the OS secret store, so store it once per machine:
 
 ```bash
-# First-time setup: store your BWS access token in the KDE keyring (prompts for the value)
+# Linux — KDE keyring (prompts for the value, hidden):
 secret-tool store --label='Passwords/bws-access-token' server Passwords user bws-access-token
 
-# Open a new shell, then:
+# macOS — Keychain (prompts for the value, hidden):
+security add-generic-password -s bws-access-token -a "$USER" -w
+
+# then, in a new shell (loads the token via .zsh_profile):
 ./secrets          # pull and write all secret files
 ./secrets --dry    # preview without writing
 ```
 
-`install` runs secrets automatically when `BWS_ACCESS_TOKEN` is set (via `.zsh_profile` + the KDE keyring).
+`install` runs secrets automatically when `BWS_ACCESS_TOKEN` is set. On macOS the `bws` CLI has no Homebrew formula — it's built with `cargo install bws` (handled by `runs/50-rust` + `runs/90-dev-tools`).
+
+## Mackup (macOS)
+
+On macOS, Mackup syncs app settings via iCloud. To stop it fighting `deploy` over the same files, `~/.mackup.cfg` lists the repo-owned apps under `[applications_to_ignore]` (`zsh`, `git`, `ssh`, `kitty`, `tmux`, `neovim`). Mackup keeps syncing everything else (bash, vim, btop, docker, `Library/*`, app prefs).
 
 ## What's Not Tracked
 

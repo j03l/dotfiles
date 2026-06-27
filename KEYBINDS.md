@@ -242,7 +242,7 @@ Four slots (H/J/K/L) shown in the status bar; click an indicator to jump.
 |---|---|
 | `prefix [` | Enter copy mode |
 | `v` | Start selection |
-| `y` | Yank to clipboard (wl-copy) |
+| `y` | Yank to clipboard (via `clip`: pbcopy on macOS, wl-copy on Wayland) |
 | `prefix ?` | Built-in key list |
 
 ---
