@@ -1,20 +1,46 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# rclone + FUSE for the OneDrive / iCloud user mounts.
+# rclone + FUSE for the OneDrive / iCloud / Obsidian user mounts.
 #
-# Using rclone-beta-bin (AUR) until v1.74 stable lands: the iCloud
-# Drive SRP fix for iOS 26.4+ is only in 1.74-beta. The beta package
-# Conflicts with stable rclone, so swap explicitly if it's installed.
-# Once v1.74 stable ships in extra/, switch this back to plain rclone.
+# Stable rclone from extra/ (v1.74+) carries the iCloud Drive SRP fix
+# for iOS 26.4+ and the iCloud Photos backend, so the old rclone-beta-bin
+# workaround is no longer needed. If a previous setup left beta-bin
+# installed, swap it out for stable (they conflict).
 
-if pacman -Qq rclone 2>/dev/null | grep -qx rclone; then
-    echo "Removing stable rclone to make room for rclone-beta-bin..."
-    sudo pacman -R --noconfirm rclone
+if pacman -Qq rclone-beta-bin 2>/dev/null | grep -qx rclone-beta-bin; then
+    echo "Removing rclone-beta-bin in favour of stable rclone..."
+    sudo pacman -Rdd --noconfirm rclone-beta-bin
 fi
 
-paru -S --needed --noconfirm rclone-beta-bin fuse3
+paru -S --needed --noconfirm rclone fuse3
+
+# The Obsidian vault mounts under /mnt (root-owned tree), so create the
+# mountpoint owned by the user — the --user service can't mkdir there.
+# OneDrive/iCloud mount under $HOME and create their own dirs.
+sudo mkdir -p /mnt/obsidian
+sudo chown "$USER:$USER" /mnt/obsidian
 
 echo "rclone + fuse installed."
-echo "Next: configure remotes with 'rclone config' (creds aren't in dotfiles),"
-echo "      then enable mounts: systemctl --user enable --now rclone-onedrive rclone-onedrive-precache rclone-icloud icloud-2fa-refresh icloud-2fa-watch"
+
+# Let the mounts run without an active login session (they mount on boot).
+loginctl enable-linger "$USER" >/dev/null 2>&1 || true
+systemctl --user daemon-reload 2>/dev/null || true
+
+# Enable each mount only if its remote is already configured — credentials
+# are NOT in dotfiles, so run 'rclone config' first for anything skipped.
+enable_mount() {
+    local remote="$1"; shift
+    if rclone listremotes 2>/dev/null | grep -qx "${remote}:"; then
+        systemctl --user enable --now "$@"
+        echo "  enabled ($remote): $*"
+    else
+        echo "  skip: remote '${remote}:' not configured yet — run 'rclone config' then re-run './run rclone'  ($*)"
+    fi
+}
+
+enable_mount onedrive rclone-onedrive rclone-onedrive-precache
+enable_mount icloud   rclone-icloud icloud-2fa-refresh icloud-2fa-watch
+enable_mount obsidian rclone-obsidian
+
+echo "Done."

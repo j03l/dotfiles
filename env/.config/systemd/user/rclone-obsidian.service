@@ -1,0 +1,26 @@
+[Unit]
+Description=rclone mount: obsidian WebDAV vault
+Documentation=man:rclone(1)
+# Tailscale must be up before the mount can reach the server
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=notify
+# Recreate the mountpoint dir in case /mnt is empty at login
+ExecStartPre=-/usr/bin/mkdir -p /mnt/obsidian
+ExecStart=/usr/bin/rclone mount obsidian: /mnt/obsidian \
+    --config=%h/.config/rclone/rclone.conf \
+    --vfs-cache-mode writes \
+    --vfs-cache-max-age 24h \
+    --dir-cache-time 30s \
+    --poll-interval 15s \
+    --umask 022 \
+    --log-level INFO
+ExecStop=/usr/bin/fusermount3 -u /mnt/obsidian
+# Auto-remount if the server/network drops
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=default.target

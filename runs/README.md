@@ -17,6 +17,12 @@ The `run` orchestrator discovers and executes these in sorted order. Use `./run 
 | `70-go` | go (via webi) | `command -v` check |
 | `80-python` | uv | `command -v` check; `uv self update` |
 | `90-dev-tools` | fzf, ripgrep, btop, eza, lazygit, glow, jq, docker | `paru --needed`; `systemctl enable` is idempotent |
+| `91-rclone` | rclone (stable), fuse3; enables OneDrive/iCloud/Obsidian `--user` mounts | `paru --needed`; mounts enabled only if the remote is configured |
+| `95-hscroll-volume` | horizontal-scroll volume control | `command -v` / dir check |
+
+Remotes hold credentials, so they are **not** in dotfiles. After the first
+deploy, run `rclone config` to add the `onedrive`, `icloud`, and `obsidian`
+remotes, then re-run `./run rclone` to enable any mounts that were skipped.
 
 ## Examples
 
