@@ -77,15 +77,15 @@ Never edit files in `~/.config/` directly — they get overwritten on deploy.
 Secret config files (gitconfig, gh tokens, rclone, etc.) are stored in [Bitwarden Secrets Manager](https://bitwarden.com/help/secrets-manager-overview/) and pulled at setup time.
 
 ```bash
-# First-time setup: store your BWS access token in KDE Wallet
-echo -n 'your-token' | kwallet-query -f Passwords -w bws-access-token kdewallet
+# First-time setup: store your BWS access token in the KDE keyring (prompts for the value)
+secret-tool store --label='Passwords/bws-access-token' server Passwords user bws-access-token
 
 # Open a new shell, then:
 ./secrets          # pull and write all secret files
 ./secrets --dry    # preview without writing
 ```
 
-`install` runs secrets automatically when `BWS_ACCESS_TOKEN` is set (via `.zsh_profile` + KDE Wallet).
+`install` runs secrets automatically when `BWS_ACCESS_TOKEN` is set (via `.zsh_profile` + the KDE keyring).
 
 ## What's Not Tracked
 

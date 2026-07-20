@@ -1,7 +1,9 @@
 export XDG_CONFIG_HOME=$HOME/.config
 export GIT_EDITOR=nvim
 export DOTFILES="$HOME/dotfiles"
-export BWS_ACCESS_TOKEN=$(kwallet-query -f Passwords -r bws-access-token kdewallet 2>/dev/null)
+# kwalletd6 was retired in kwallet 6.28 — ksecretd owns org.freedesktop.secrets now, and
+# kwallet-query blocks ~50s on D-Bus activation before failing. timeout guards headless logins.
+export BWS_ACCESS_TOKEN=$(timeout 5 secret-tool lookup server Passwords user bws-access-token 2>/dev/null)
 export GITLAB_TOKEN=$(cat ~/.config/gitlab/token 2>/dev/null)
 export CLAUDE_CODE_OAUTH_TOKEN=$(cat ~/.config/claude/oauth_token 2>/dev/null)
 
