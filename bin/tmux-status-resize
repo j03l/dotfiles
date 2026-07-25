@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # Adapt the tmux status line to the current client width:
-#   * line count   : <60 -> 3 lines, 60-159 -> 2 lines, >=160 -> 1 line
-#   * window list  : every window always fits — per-tab names are truncated
-#                    (with an … ellipsis) so the list never overflows/scrolls.
+#   * line count   : <60 -> 3 lines, otherwise 2 lines
+#   * window list  : always gets its own full-width row (the tabs line), with
+#                    per-tab names truncated (… ellipsis) so it never scrolls.
 #
 # Runs from the client-resized / window-* / session-window-changed hooks, so it
 # recomputes the per-tab budget whenever the width or window count changes.
@@ -15,23 +15,12 @@ RIGHT='#[align=right range=right #{E:status-right-style}]#[push-default]#{T;=/#{
 WINDOWS='#[align=#{status-justify} list=on]#{W:#[range=window|#{window_index} #{E:window-status-style}]#[push-default]#{T:window-status-format}#[pop-default]#[norange default]#{?window_end_flag,,#{window-status-separator}},#[range=window|#{window_index} list=focus #{E:window-status-current-style}]#[push-default]#{T:window-status-current-format}#[pop-default]#[norange list=on default]#{?window_end_flag,,#{window-status-separator}}}'
 
 # --- per-tab name truncation -------------------------------------------------
-# Visible column width of an expanded status format (strips #[...] colour markup).
-visible_width() {
-    tmux display -p "$1" 2>/dev/null | sed 's/#\[[^]]*\]//g' | tr -d '\n' | wc -m
-}
-
 nwin=$(tmux display -p '#{session_windows}' 2>/dev/null); nwin=${nwin:-1}
 (( nwin < 1 )) && nwin=1
 
-if (( width >= 160 )); then
-    # 1-line layout: the window list shares the row with status-left/right.
-    lw=$(visible_width "$(tmux show -gqv status-left)")
-    rw=$(visible_width "$(tmux show -gqv status-right)")
-    avail=$(( width - lw - rw - 2 ))   # -2: breathing room either side
-else
-    # 2/3-line layouts: the window list owns its own full-width row.
-    avail=$width
-fi
+# The window list always owns its own full-width row (the tabs line), so the
+# whole client width is available for tabs.
+avail=$width
 (( avail < nwin )) && avail=$nwin
 
 # Per-window chrome that is NOT part of the truncated name:
@@ -47,21 +36,15 @@ tmux set -g window-status-current-format "#[bg=#292e42 fg=#7aa2f7 bold] #I:#{=/$
 tmux set -g window-status-format "#[fg=#545c7e] #I:#{=/$budget/…:$name}$panes "
 
 # --- line count --------------------------------------------------------------
+# Tabs always get their own row: 2 lines normally, 3 when too narrow to share
+# the top row between status-left and status-right.
 if (( width < 60 )); then
     desired=3
-elif (( width < 160 )); then
-    desired=2
 else
-    desired=on
+    desired=2
 fi
 
 case "$desired" in
-    on)
-        tmux set -g status on
-        tmux set -g status-format[0] "${LEFT}${WINDOWS}${RIGHT}"
-        tmux set -gu status-format[1] 2>/dev/null
-        tmux set -gu status-format[2] 2>/dev/null
-        ;;
     2)
         tmux set -g status 2
         tmux set -g status-format[0] "${LEFT}${RIGHT}"
