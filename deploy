@@ -115,6 +115,13 @@ else
 fi
 
 echo "=== deploy: zed per-machine settings ==="
+# Zed's settings.json has no #include mechanism, so the per-machine file is built
+# here instead of symlinked: settings.base.json * settings.<machine_id>.json.
+#
+# Note the output path resolves *back into this repo* — the env/.config/* loop above
+# already symlinked ~/.config/zed -> $DOTFILES/env/.config/zed, so the generated file
+# lands next to its own sources. That is why env/.config/zed/settings.json is
+# gitignored; it is a build artifact, not tracked config. Don't edit it directly.
 zed_base="$DOTFILES/env/.config/zed/settings.base.json"
 zed_override="$DOTFILES/env/.config/zed/settings.$(machine_id).json"
 zed_target="$XDG_CONFIG_HOME/zed/settings.json"

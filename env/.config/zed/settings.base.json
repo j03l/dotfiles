@@ -272,8 +272,8 @@
     "trust_all_worktrees": true
   },
   "vim_mode": false,
-  "ui_font_size": 16.0,
-  "buffer_font_size": 14.0,
+  "ui_font_size": 18.0,
+  "buffer_font_size": 16.0,
   "theme": {
     "mode": "system",
     "light": "Tokyo Night Light",
