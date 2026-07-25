@@ -191,7 +191,8 @@ Prime-inspired setup. Leader = `Space`.
 
 | Key | Action |
 |---|---|
-| `prefix |` / `_` | Vertical / horizontal split |
+| `prefix v` / `\|` | Split left/right |
+| `prefix -` | Split top/bottom |
 | `Ctrl-h/j/k/l` | Move between panes + nvim splits |
 | `prefix h/j/k/l` | Move within tmux only |
 | `prefix x` | Kill pane |
@@ -205,9 +206,24 @@ Prime-inspired setup. Leader = `Space`.
 | `prefix H` | Cheatsheet popup |
 | `prefix a` | Claude Code scratchpad popup |
 | `prefix r` | Reload tmux config |
+| `prefix I` / `U` | Install / update plugins (tpm) |
 | `prefix D` | Open TODO.md / study guide |
 | `prefix S` / `R` | Save / restore sessions (resurrect) |
 | `prefix Ctrl-F` | tmux-sessionizer |
+
+## Claude Code agents
+
+Cross-project agent picker (tmux-claude-session-manager). Reads
+`claude agents --json`, so it sees every running agent, not just ones
+started from here. Distinct from `prefix a`, which is a single pinned
+scratchpad session.
+
+| Key | Action |
+|---|---|
+| `prefix y` | Launch / reattach an agent for the current directory |
+| `prefix u` | Open the picker (status: working / waiting / idle) |
+| `Enter` | Jump to the highlighted agent |
+| `Ctrl-x` | Kill the highlighted agent |
 
 ## Session bookmarks
 
