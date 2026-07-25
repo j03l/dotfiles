@@ -1,9 +1,12 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-paru -S --needed --noconfirm tmux
+# fzf + jq are required by tmux-claude-session-manager
+paru -S --needed --noconfirm tmux fzf jq
 
-TPM_DIR="$HOME/.tmux/plugins/tpm"
+# TPM lives alongside the XDG config so it resolves TMUX_PLUGIN_MANAGER_PATH
+# to ~/.config/tmux/plugins/ (gitignored in dotfiles).
+TPM_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/tmux/plugins/tpm"
 if [[ -d "$TPM_DIR" ]]; then
     echo "TPM already installed"
 else

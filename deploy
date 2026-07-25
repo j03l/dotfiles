@@ -128,8 +128,9 @@ echo "=== deploy: zsh dotfiles ==="
 link_file "$DOTFILES/env/.zshrc" "$HOME/.zshrc"
 link_file "$DOTFILES/env/.zsh_profile" "$HOME/.zsh_profile"
 
-echo "=== deploy: tmux (legacy ~/.tmux.conf -> XDG config) ==="
-link_file "$DOTFILES/env/.config/tmux/tmux.conf" "$HOME/.tmux.conf"
+# No ~/.tmux.conf link: tmux >=3.1 reads $XDG_CONFIG_HOME/tmux/tmux.conf directly,
+# and env/.config/tmux is already symlinked as a whole. Linking both paths made tmux
+# source the same config twice.
 
 echo "=== deploy: ssh config ==="
 mkdir -p "$HOME/.ssh"
