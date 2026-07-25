@@ -127,3 +127,7 @@ alias c='claude'
 # bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
+
+# mise — per-directory runtime versions (e.g. Node from a project's mise.toml).
+# Kept last so its shims win over system tools and the PATH edits above.
+eval "$(mise activate zsh)"
