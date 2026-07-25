@@ -17,6 +17,7 @@ Mirrors the target filesystem structure. `deploy` symlinks each item to its corr
 | `.config/tmux-sessionizer/` | `~/.config/tmux-sessionizer/` |
 | `.config/systemd/user/` | `~/.config/systemd/user/` (Linux only) |
 | `.ssh/config` | `~/.ssh/config` |
+| `.ssh/allowed_signers` | `~/.ssh/allowed_signers` (public keys only) |
 
 ## zsh
 

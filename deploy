@@ -177,6 +177,8 @@ echo "=== deploy: ssh config ==="
 mkdir -p "$HOME/.ssh"
 chmod 700 "$HOME/.ssh"
 link_file "$DOTFILES/env/.ssh/config" "$HOME/.ssh/config"
+# Public keys only — lets git verify SSH-signed commits locally (gpg.ssh.allowedSignersFile)
+link_file "$DOTFILES/env/.ssh/allowed_signers" "$HOME/.ssh/allowed_signers"
 
 echo "=== deploy: bin/ ==="
 mkdir -p "$HOME/.local/bin"
