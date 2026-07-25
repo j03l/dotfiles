@@ -149,6 +149,11 @@ fi
 echo "=== deploy: gitconfig ==="
 link_file "$DOTFILES/env/.gitconfig" "$HOME/.gitconfig"
 
+if is_macos; then
+    echo "=== deploy: mackup config ==="
+    link_file "$DOTFILES/env/.mackup.cfg" "$HOME/.mackup.cfg"
+fi
+
 echo "=== deploy: zsh dotfiles ==="
 link_file "$DOTFILES/env/.zshrc" "$HOME/.zshrc"
 link_file "$DOTFILES/env/.zsh_profile" "$HOME/.zsh_profile"
