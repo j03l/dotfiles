@@ -1,0 +1,7 @@
+[user]
+	# This machine signs with ~/.ssh/github_signing, not the ~/.ssh/id_ed25519 the
+	# base config names — that key belongs to the home machine and is scoped `home`
+	# in secrets.env, so it is never deployed here. Both keys are registered as SSH
+	# signing keys on the GitHub account and listed in env/.ssh/allowed_signers, so
+	# commits signed with either verify locally and on GitHub.
+	signingkey = ~/.ssh/github_signing.pub

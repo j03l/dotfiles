@@ -25,3 +25,9 @@
 	gpgsign = true
 [init]
 	defaultBranch = main
+
+# Per-machine overrides, symlinked by ./deploy to env/.gitconfig.<machine_id>.
+# Kept last so it outranks the values above (git takes the last one set); a
+# machine with no override file leaves this a dangling path, which git ignores.
+[include]
+	path = ~/.gitconfig.machine

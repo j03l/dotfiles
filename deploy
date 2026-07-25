@@ -156,6 +156,23 @@ fi
 echo "=== deploy: gitconfig ==="
 link_file "$DOTFILES/env/.gitconfig" "$HOME/.gitconfig"
 
+# Per-machine gitconfig, pulled in by the [include] at the end of env/.gitconfig.
+# Keyed on machine_id rather than $selected_env because the divergence is per-box,
+# not per-environment: the signing key differs between two machines that are both
+# "work". Nothing here is secret, so it stays tracked instead of going to Bitwarden
+# like ~/.gitconfig.local (which ./secrets would overwrite anyway).
+git_machine="$DOTFILES/env/.gitconfig.$(machine_id)"
+if [[ -f "$git_machine" ]]; then
+    link_file "$git_machine" "$HOME/.gitconfig.machine"
+else
+    log "skip: no $(basename "$git_machine") (gitconfig per-machine override)"
+    # Drop a link left by a previous machine_id so it cannot shadow the base config.
+    if [[ -L "$HOME/.gitconfig.machine" ]]; then
+        log "rm -f $HOME/.gitconfig.machine (stale)"
+        [[ $dry_run == "0" ]] && rm -f "$HOME/.gitconfig.machine"
+    fi
+fi
+
 if is_macos; then
     echo "=== deploy: mackup config ==="
     link_file "$DOTFILES/env/.mackup.cfg" "$HOME/.mackup.cfg"
