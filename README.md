@@ -62,12 +62,12 @@ OS-only installers self-skip on the other platform; `deploy` skips systemd units
 
 ## Per-Machine Overrides
 
-Two configs need values that differ per *machine*, not per OS (font sizes, SSH connection lists, …). Neither is handled by the `home`/`work` environment selector alone, since e.g. two "home" machines can still want different values.
+Some configs need values that differ per *machine*, not per OS (font family/size, window size, SSH connection lists, …) — `home`/`work` alone can't express this, since two machines in the same bucket can still want different values. Both mechanisms below key off `machine_id()` in `lib/platform.sh` (`scutil --get LocalHostName` on macOS, `hostname -s` on Linux). No override file for a machine → the shared defaults apply, nothing breaks.
 
-- **kitty** — `~/.dotfiles-env` (`home`/`work`) picks `kitty.home.conf` or `kitty.work.conf`, symlinked by `deploy` to `env/.config/kitty/local.conf` (gitignored), which `kitty.conf` `include`s last.
-- **zed** — Zed's `settings.json` has no `#include` mechanism, so `deploy` merges `env/.config/zed/settings.base.json` (shared, tracked) with an optional `env/.config/zed/settings.<machine_id>.json` (small, tracked, per real machine) via `jq`, writing the result to `~/.config/zed/settings.json` (generated, gitignored). `machine_id()` in `lib/platform.sh` returns `scutil --get LocalHostName` on macOS or `hostname -s` on Linux. No override file for a machine → base settings only.
+- **kitty** — has a native `include`, so `deploy` just symlinks `env/.config/kitty/kitty.<machine_id>.conf` (tracked, one full file per machine) to `env/.config/kitty/local.conf` (gitignored), which `kitty.conf` `include`s last. A missing override file means kitty logs a one-line warning and skips the `include` — no crash.
+- **zed** — Zed's `settings.json` has no `#include` mechanism, so `deploy` merges `env/.config/zed/settings.base.json` (shared, tracked) with an optional `env/.config/zed/settings.<machine_id>.json` (small, tracked, just the differing keys) via `jq`, writing the result to `~/.config/zed/settings.json` (generated, gitignored).
 
-To add an override for a new machine: `source lib/platform.sh && machine_id` on that machine to get its key, then create `env/.config/zed/settings.<that-id>.json` with just the differing keys.
+To add an override for a new machine: `source lib/platform.sh && machine_id` on that machine to get its key, then create `env/.config/kitty/kitty.<that-id>.conf` (full config) and/or `env/.config/zed/settings.<that-id>.json` (just the differing keys).
 
 ## Usage
 

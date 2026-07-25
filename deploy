@@ -103,7 +103,7 @@ for dir in "$DOTFILES"/env/.config/*/; do
 done
 
 echo "=== deploy: kitty per-machine config ==="
-kitty_choice="kitty.$selected_env.conf"
+kitty_choice="kitty.$(machine_id).conf"
 if [[ -f "$DOTFILES/env/.config/kitty/$kitty_choice" ]]; then
     # Relative target so the symlink resolves inside ~/.config/kitty
     log "ln -sfn $kitty_choice -> $XDG_CONFIG_HOME/kitty/local.conf"
