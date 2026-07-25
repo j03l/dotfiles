@@ -1,4 +1,6 @@
 {
+  "hard_tabs": true,
+  "tab_size": 4,
   "cli_default_open_behavior": "new_window",
   "show_edit_predictions": false,
   "diagnostics": {
@@ -220,15 +222,26 @@
   ],
   "languages": {
     "Python": {
+      "indent_guides": {
+        "background_coloring": "indent_aware"
+      },
+      "colorize_brackets": true,
+      "prettier": {
+        "allowed": true
+      },
       "language_servers": ["ruff", "ty", "!pyright", "!basedpyright"],
       "formatter": {
         "external": {
           "command": "ruff",
-          "arguments": ["format", "--stdin-filename", "{buffer_path}", "-"],
-        },
+          "arguments": ["format", "--stdin-filename", "{buffer_path}", "-"]
+        }
       },
       "format_on_save": "on",
-    },
+      "tab_size": 4,
+      "hard_tabs": false,
+      "auto_indent": "syntax_aware",
+      "use_on_type_format": false
+    }
   },
   "lsp": {
     "ruff": {
@@ -247,7 +260,7 @@
     "trust_all_worktrees": true,
   },
   "vim_mode": false,
-  "ui_font_size": 20.0,
+  "ui_font_size": 18.0,
   "buffer_font_size": 16.0,
   "theme": {
     "mode": "system",
