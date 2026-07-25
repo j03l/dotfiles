@@ -45,10 +45,14 @@ clip_copy_cmd() {
 }
 
 # Read the BWS access token from the OS secret store (echoes to stdout).
+# Linux goes through the Secret Service API (ksecretd), not kwallet-query:
+# kwalletd6 was retired in kwallet 6.28, and kwallet-query blocks ~50s on D-Bus
+# activation before failing. The timeout guards headless logins. Keep this in
+# sync with the equivalent block in env/.zsh_profile.
 bws_token_from_store() {
     if is_macos; then
         security find-generic-password -s bws-access-token -w 2>/dev/null
     else
-        kwallet-query -f Passwords -r bws-access-token kdewallet 2>/dev/null
+        timeout 5 secret-tool lookup server Passwords user bws-access-token 2>/dev/null
     fi
 }
