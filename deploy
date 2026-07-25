@@ -114,6 +114,26 @@ else
     log "skip: no $kitty_choice (kitty per-machine config)"
 fi
 
+echo "=== deploy: zed per-machine settings ==="
+zed_base="$DOTFILES/env/.config/zed/settings.base.json"
+zed_override="$DOTFILES/env/.config/zed/settings.$(machine_id).json"
+zed_target="$XDG_CONFIG_HOME/zed/settings.json"
+if ! command -v jq &>/dev/null; then
+    log "skip: jq not installed (zed settings not merged)"
+elif [[ -f "$zed_override" ]]; then
+    log "jq merge $(basename "$zed_base") + $(basename "$zed_override") -> $zed_target"
+    if [[ $dry_run == "0" ]]; then
+        mkdir -p "$(dirname "$zed_target")"
+        jq -s '.[0] * .[1]' "$zed_base" "$zed_override" > "$zed_target"
+    fi
+else
+    log "cp $(basename "$zed_base") -> $zed_target (no override for $(machine_id))"
+    if [[ $dry_run == "0" ]]; then
+        mkdir -p "$(dirname "$zed_target")"
+        cp "$zed_base" "$zed_target"
+    fi
+fi
+
 if is_linux; then
     echo "=== deploy: systemd user units ==="
     mkdir -p "$XDG_CONFIG_HOME/systemd/user"

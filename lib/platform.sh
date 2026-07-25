@@ -14,6 +14,16 @@ export PLATFORM
 is_linux() { [[ "$PLATFORM" == linux ]]; }
 is_macos() { [[ "$PLATFORM" == macos ]]; }
 
+# Filesystem-safe machine identifier for per-machine config overrides
+# (e.g. env/.config/zed/settings.<machine_id>.json).
+machine_id() {
+    if is_macos; then
+        scutil --get LocalHostName
+    else
+        hostname -s
+    fi
+}
+
 # Install packages with the native package manager.
 # Diverging package *names* stay in explicit OS branches in the caller;
 # this covers the common case where the name is identical.
