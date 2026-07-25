@@ -7,14 +7,21 @@
 
 SESSION="claude"
 
+# `new-session` below forks straight off the (long-lived) tmux server, not off this
+# script, so it never sees an `export` made here — re-read the token file inline in
+# both launch paths instead of trusting inherited env, which goes stale for however
+# long the tmux server has been running.
+TOKEN_CMD='export CLAUDE_CODE_OAUTH_TOKEN="$(cat ~/.config/claude/oauth_token 2>/dev/null)"'
+
 if [[ $# -gt 0 ]]; then
+    eval "$TOKEN_CMD"
     claude -p "$*"
     echo ""
     read -n 1 -s -r -p "Press any key to close..."
 else
     # Create session if it doesn't exist
     tmux has-session -t "$SESSION" 2>/dev/null || \
-        tmux new-session -d -s "$SESSION" "claude"
+        tmux new-session -d -s "$SESSION" "$TOKEN_CMD; exec claude"
 
     # Apply scratchpad styling (purple tokyonight accent)
     tmux set-option -t "$SESSION" status-style 'bg=#1a1b26 fg=#bb9af7'
