@@ -102,7 +102,7 @@ security add-generic-password -s bws-access-token -a "$USER" -w
 ./secrets --dry    # preview without writing
 ```
 
-`install` runs secrets automatically when `BWS_ACCESS_TOKEN` is set. On macOS the `bws` CLI has no Homebrew formula — it's built with `cargo install bws` (handled by `runs/50-rust` + `runs/90-dev-tools`).
+`install` runs secrets automatically when `BWS_ACCESS_TOKEN` is set. On macOS the `bws` CLI has no Homebrew formula — it's installed via Bitwarden's official installer script (handled by `runs/90-dev-tools`).
 
 ## Mackup (macOS)
 

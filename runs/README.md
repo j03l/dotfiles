@@ -17,7 +17,7 @@ The `run` orchestrator executes every **executable** file here in sorted order, 
 | `65-bun` | both | bun (bun.sh installer) |
 | `70-go` | both | go |
 | `80-python` | both | uv |
-| `90-dev-tools` | both | fzf, ripgrep, btop, eza, expect, lazygit, glow, jq; bws (paru / cargo); docker is Linux-only |
+| `90-dev-tools` | both | fzf, ripgrep, btop, eza, expect, lazygit, glow, jq; bws (paru / official installer); docker is Linux-only |
 | `91-rclone` | Linux | rclone + FUSE for iCloud/OneDrive mounts |
 | `95-hscroll-volume` | Linux | evdev horizontal-scroll-to-volume systemd service |
 | `96-macos-defaults` | macOS | Finder/Dock/Safari/key-repeat defaults |

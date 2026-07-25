@@ -8,12 +8,11 @@ source "$DOTFILES/lib/platform.sh"
 pkg_install fzf ripgrep btop eza expect lazygit glow jq
 
 if is_macos; then
-    # bws (Bitwarden Secrets Manager CLI) has no brew formula — build via cargo
-    # (rust is installed by 50-rust, which puts cargo under ~/.cargo/bin). Docker
-    # on macOS is Docker Desktop, managed as a cask in macos.Brewfile; no
-    # daemon/group provisioning is needed.
-    [ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
-    command -v bws &>/dev/null || cargo install bws
+    # bws (Bitwarden Secrets Manager CLI) has no brew formula — install via
+    # Bitwarden's official installer script. Docker on macOS is Docker
+    # Desktop, managed as a cask in macos.Brewfile; no daemon/group
+    # provisioning is needed.
+    command -v bws &>/dev/null || curl -fsSL https://bws.bitwarden.com/install | sh
 else
     paru -S --needed --noconfirm bws-bin docker docker-compose
 
