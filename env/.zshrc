@@ -9,7 +9,7 @@
 export PATH="$HOME/.local/bin:/usr/local/bin:$HOME/go/bin:$PATH"
 
 # Base oh-my-zsh plugin set (OS fragment appends platform-specific plugins)
-plugins=(git aliases history docker colorize command-not-found copybuffer copypath dotenv emoji encode64 gh man safe-paste ssh sudo themes fzf)
+plugins=(git aliases history docker colorize command-not-found copybuffer copypath emoji encode64 gh man safe-paste ssh sudo themes fzf)
 
 # Theme + OMZ behaviour
 ZSH_THEME="geoffgarside"
@@ -117,6 +117,13 @@ setopt hist_find_no_dups
 [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
+
+# direnv — replaced the omz `dotenv` plugin (2026-07-26): that plugin only
+# sources .env on cd, never unsets on leave, so project secrets leaked into
+# every later shell/project for the rest of the session (e.g. datadog's
+# GITHUB_TOKEN clobbering `gh` auth elsewhere). direnv diffs and restores
+# the environment on cd, so nothing outlives the directory it came from.
+eval "$(direnv hook zsh)"
 
 # mise — per-directory runtime versions (e.g. Node from a project's mise.toml).
 # Kept last so its shims win over system tools and the PATH edits above.
