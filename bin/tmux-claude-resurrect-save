@@ -1,0 +1,99 @@
+#!/usr/bin/env bash
+
+# tmux-claude-resurrect-save - record which Claude Code conversation each pane holds
+#
+# Runs from tmux-resurrect's post-save-all hook (and so also on every continuum
+# autosave). Writes a TSV of pane -> Claude session UUID next to resurrect's own
+# save files; tmux-claude-resurrect-restore reads it back.
+#
+# Why this exists: resurrect only records a pane's argv, and Claude Code's argv
+# carries the session UUID solely when the session was started with an explicit
+# `--resume <uuid>`. Panes started plainly, or picked from Claude's interactive
+# resume list, show just `claude` — indistinguishable from each other. Falling
+# back to `claude --continue` resolves per working directory, which collapses
+# every agent sharing a directory onto one conversation.
+
+set -uo pipefail
+
+# Claude keeps a live registry of its own processes here, one file per PID,
+# containing the sessionId. Undocumented internal path — if a Claude upgrade
+# moves it, this script degrades to writing no mappings and restore falls back
+# to `claude --continue`, which is the old behaviour rather than a breakage.
+sessions_dir="$HOME/.claude/sessions"
+
+resurrect_dir="$(tmux show-option -gqv '@resurrect-dir')"
+if [[ -z "$resurrect_dir" ]]; then
+    resurrect_dir="${XDG_DATA_HOME:-$HOME/.local/share}/tmux/resurrect"
+fi
+# tmux options may carry a literal ~ that never went through shell expansion.
+resurrect_dir="${resurrect_dir/#\~/$HOME}"
+
+out="$resurrect_dir/claude-sessions.txt"
+
+[[ -d "$sessions_dir" ]] || exit 0
+mkdir -p "$resurrect_dir" || exit 0
+
+# pid -> ppid for the whole process table, read once.
+declare -A PPID_OF=()
+while read -r pid ppid; do
+    PPID_OF[$pid]="$ppid"
+done < <(ps -eo pid=,ppid=)
+
+# pane_pid -> "session<TAB>window_index<TAB>pane_index".
+# Keyed on session/window/pane rather than pane_id (%17) because pane_id is
+# reassigned when the tmux server restarts, which is precisely when we restore.
+declare -A MAPPED=()
+declare -A PANE_OF=()
+while IFS=$'\t' read -r pane_pid target; do
+    PANE_OF[$pane_pid]="$target"
+done < <(tmux list-panes -a -F '#{pane_pid}#{l:	}#{session_name}#{l:	}#{window_index}#{l:	}#{pane_index}')
+
+tmp="$(mktemp "$out.XXXXXX")" || exit 0
+trap 'rm -f "$tmp"' EXIT
+
+for f in "$sessions_dir"/*.json; do
+    [[ -e "$f" ]] || continue
+
+    claude_pid="$(basename "$f" .json)"
+    kill -0 "$claude_pid" 2>/dev/null || continue        # stale registry entry
+
+    session_id="$(jq -r '.sessionId // empty' "$f" 2>/dev/null)"
+    [[ -n "$session_id" ]] || continue
+
+    # Walk up the ancestry until we land on a pane's root process. Depth varies
+    # (shell, or shell -> wrapper -> node), so don't assume a fixed number of
+    # hops; stop at init to avoid looping on a malformed table.
+    pid="$claude_pid"
+    target=""
+    while [[ -n "$pid" && "$pid" != "0" && "$pid" != "1" ]]; do
+        if [[ -n "${PANE_OF[$pid]:-}" ]]; then
+            target="${PANE_OF[$pid]}"
+            break
+        fi
+        pid="${PPID_OF[$pid]:-}"
+    done
+    [[ -n "$target" ]] || continue                       # Claude running outside tmux
+
+    printf '%s\t%s\n' "$target" "$session_id" >> "$tmp"
+    MAPPED[$target]=1
+done
+
+# Second pass: any pane still running Claude that the registry didn't account
+# for gets recorded with an empty UUID, so restore can at least fall back to
+# `claude --continue` instead of leaving a bare shell.
+while IFS=$'\t' read -r s w p cmd; do
+    [[ "$cmd" == "claude" ]] || continue
+    target="$s"$'\t'"$w"$'\t'"$p"
+    [[ -n "${MAPPED[$target]:-}" ]] && continue
+    printf '%s\t\n' "$target"
+done < <(tmux list-panes -a -F '#{session_name}#{l:	}#{window_index}#{l:	}#{pane_index}#{l:	}#{pane_current_command}') >> "$tmp"
+
+# Only publish a non-empty map. An empty result almost always means the registry
+# moved or jq is missing, and silently truncating the file would throw away a
+# good mapping from the previous save.
+if [[ -s "$tmp" ]]; then
+    mv "$tmp" "$out"
+    trap - EXIT
+fi
+
+exit 0

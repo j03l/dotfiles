@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+
+# tmux-claude-resurrect-restore - relaunch each pane's own Claude conversation
+#
+# Runs from tmux-resurrect's post-restore-all hook, reading the map written by
+# tmux-claude-resurrect-save. Panes with a recorded UUID get `claude --resume
+# <uuid>`; panes recorded without one fall back to `claude --continue`.
+#
+# Claude is deliberately absent from @resurrect-processes. If resurrect relaunched
+# it too, this script's send-keys would arrive after Claude was already up and be
+# typed into the conversation as a chat message rather than run by a shell.
+
+set -uo pipefail
+
+resurrect_dir="$(tmux show-option -gqv '@resurrect-dir')"
+if [[ -z "$resurrect_dir" ]]; then
+    resurrect_dir="${XDG_DATA_HOME:-$HOME/.local/share}/tmux/resurrect"
+fi
+resurrect_dir="${resurrect_dir/#\~/$HOME}"
+
+map="$resurrect_dir/claude-sessions.txt"
+[[ -r "$map" ]] || exit 0
+
+# Shells we're willing to type into. Anything else in the pane means something is
+# already running there and send-keys would land inside that program.
+is_shell() {
+    case "$1" in
+        bash|zsh|sh|fish|dash|ksh) return 0 ;;
+        *) return 1 ;;
+    esac
+}
+
+while IFS=$'\t' read -r session window pane uuid; do
+    [[ -n "$session" ]] || continue
+    target="$session:$window.$pane"
+
+    tmux has-session -t "$session" 2>/dev/null || continue
+
+    current="$(tmux display-message -p -t "$target" '#{pane_current_command}' 2>/dev/null)" || continue
+    [[ -n "$current" ]] || continue
+
+    # Already running Claude (a partial restore, or this hook firing twice) —
+    # leave it alone rather than stacking a second instance.
+    [[ "$current" == "claude" ]] && continue
+    is_shell "$current" || continue
+
+    if [[ -n "$uuid" ]]; then
+        cmd="claude --resume $uuid"
+    else
+        cmd="claude --continue"
+    fi
+
+    tmux send-keys -t "$target" "$cmd" C-m
+done < "$map"
+
+exit 0
