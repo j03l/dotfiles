@@ -9,10 +9,18 @@ Wants=network-online.target
 Type=notify
 # Recreate the mountpoint dir in case /mnt is empty at login
 ExecStartPre=-/usr/bin/mkdir -p /mnt/obsidian
+# cache-mode full, not writes: PDFs are read by seeking (trailer -> xref ->
+# objects), and under `writes` every backward seek became a fresh WebDAV range
+# request, so embedded PDFs rendered blank or partial. Matches the icloud and
+# onedrive mounts. dir-cache-time/poll-interval stay short so edits made on
+# other devices still show up quickly.
 ExecStart=/usr/bin/rclone mount obsidian: /mnt/obsidian \
     --config=%h/.config/rclone/rclone.conf \
-    --vfs-cache-mode writes \
-    --vfs-cache-max-age 24h \
+    --vfs-cache-mode full \
+    --vfs-cache-max-age 168h \
+    --vfs-cache-max-size 5G \
+    --buffer-size 32M \
+    --vfs-read-ahead 64M \
     --dir-cache-time 30s \
     --poll-interval 15s \
     --umask 022 \
