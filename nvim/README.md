@@ -21,7 +21,8 @@ nvim/
         ├── telescope.lua
         ├── fugitive.lua
         ├── colors.lua
-        └── ... (25 total)
+        ├── whichkey.lua
+        └── ... (21 total)
 ```
 
 ## Key Plugins
@@ -37,6 +38,8 @@ nvim/
 | navigator | Seamless tmux/nvim pane switching |
 | undotree | Undo history visualization |
 | trouble | Diagnostics list |
+| which-key | Popup showing available keys after a prefix |
+| gitsigns | Hunk signs, staging, blame |
 
 ## Refresh
 

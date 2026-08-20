@@ -21,12 +21,6 @@ vim.keymap.set("n", "N", "Nzzzv", { desc = "Prev search (centered)" })
 vim.keymap.set("n", "=ap", "ma=ap'a", { desc = "Indent paragraph" })
 vim.keymap.set("n", "<leader>zig", "<cmd>LspRestart<cr>", { desc = "Restart LSP" })
 
-vim.keymap.set("n", "<leader>vwm", function()
-    require("vim-with-me").StartVimWithMe()
-end, { desc = "Start Vim With Me" })
-vim.keymap.set("n", "<leader>svwm", function()
-    require("vim-with-me").StopVimWithMe()
-end, { desc = "Stop Vim With Me" })
 vim.keymap.set("n", "<leader>lt", function()
     vim.cmd [[ PlenaryBustedFile % ]]
 end, { desc = "Plenary busted test" })
@@ -82,10 +76,6 @@ vim.keymap.set(
     "oif err != nil {<CR>}<Esc>O.logger.Error(\"error\", \"error\", err)<Esc>F.;i",
     { desc = "Go: if err logger.Error" }
 )
-
-vim.keymap.set("n", "<leader>ca", function()
-    require("cellular-automaton").start_animation("make_it_rain")
-end, { desc = "Make it rain" })
 
 vim.keymap.set("n", "<leader>cm", "<cmd>Mason<CR>", { desc = "Open Mason" })
 vim.keymap.set("n", "<leader>K", "<cmd>Telescope keymaps<CR>", { desc = "Search keymaps" })

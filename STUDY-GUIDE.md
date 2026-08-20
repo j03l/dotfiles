@@ -30,6 +30,10 @@ Based on ThePrimeagen's repos, customized for our system:
 | Trouble nav | v2 API (broken on v3) | Updated to v3 API |
 | Diagnostic nav | `[d`/`]d` swapped (bug) | Fixed (correct vim convention) |
 | `vim.loop` | Used in 2 files | Updated to `vim.uv` (nvim 0.11) |
+| Keymap discovery | None | which-key popup + `<leader>?` for buffer-local |
+| Novelty plugins | golf, jai.vim, php.nvim, cellular-automaton | Removed (vim-be-good kept for practice) |
+| Dead keymaps | `<leader>vwm`/`<leader>svwm` call uninstalled vim-with-me | Removed |
+| Inert spec files | peek.lua, supermaven.lua fully commented out | Removed |
 
 ---
 
