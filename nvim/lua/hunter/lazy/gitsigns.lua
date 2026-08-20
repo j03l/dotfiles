@@ -13,7 +13,7 @@ return {
 					if vim.wo.diff then
 						vim.cmd.normal({ "]c", bang = true })
 					else
-						vim.schedule(gs.next_hunk)
+						vim.schedule(function() gs.nav_hunk("next") end)
 					end
 				end, "Next git hunk")
 
@@ -21,7 +21,7 @@ return {
 					if vim.wo.diff then
 						vim.cmd.normal({ "[c", bang = true })
 					else
-						vim.schedule(gs.prev_hunk)
+						vim.schedule(function() gs.nav_hunk("prev") end)
 					end
 				end, "Prev git hunk")
 
@@ -34,7 +34,8 @@ return {
 				map("v", "<leader>ghr", function()
 					gs.reset_hunk({ vim.fn.line("."), vim.fn.line("v") })
 				end, "Reset selection")
-				map("n", "<leader>ghu", gs.undo_stage_hunk, "Undo stage hunk")
+				-- ghu removed: undo_stage_hunk is deprecated, and stage_hunk() now
+				-- toggles when invoked on an already-staged sign, so ghs covers both.
 				map("n", "<leader>ghp", gs.preview_hunk, "Preview hunk")
 
 				-- Buffer-wide

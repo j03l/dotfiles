@@ -39,7 +39,7 @@ Inside any picker: `<C-j>`/`<C-k>` move, `<CR>` open, `<C-v>` vsplit, `<C-x>` sp
 | `<leader>vrn` | Rename |
 | `<leader>vws` | Workspace symbol |
 | `<leader>vd` | Diagnostic float |
-| `[d` / `]d` | Prev / next diagnostic |
+| `[d` / `]d` | Prev / next diagnostic (Neovim core, not mapped here) |
 | `<leader>zig` | Restart LSP |
 | `<leader>cm` | Open Mason |
 | `<leader>f` | Format buffer (conform) |
@@ -59,9 +59,8 @@ Inside any picker: `<C-j>`/`<C-k>` move, `<CR>` open, `<C-v>` vsplit, `<C-x>` sp
 | Key | Action |
 |---|---|
 | `]c` / `[c` | Next / prev hunk |
-| `<leader>ghs` | Stage hunk (or selection in visual) |
+| `<leader>ghs` | Stage hunk — press again on a staged sign to unstage |
 | `<leader>ghr` | Reset hunk (or selection in visual) |
-| `<leader>ghu` | Undo stage hunk |
 | `<leader>ghp` | Preview hunk |
 | `<leader>ghS` / `<leader>ghR` | Stage / reset whole buffer |
 | `<leader>ghb` | Blame line (full) |
