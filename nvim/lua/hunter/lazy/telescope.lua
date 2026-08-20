@@ -36,6 +36,19 @@ return {
         vim.keymap.set('n', '<leader>ps', function()
             builtin.grep_string({ search = vim.fn.input("Grep > ") })
         end, { desc = "Grep string" })
+        -- Incremental content search: refines as you type, unlike <leader>ps
+        -- which greps once for a string you commit to up front.
+        vim.keymap.set('n', '<leader>pg', builtin.live_grep, { desc = "Live grep" })
+
+        vim.keymap.set('n', '<leader>pb', function()
+            builtin.buffers({ sort_mru = true, ignore_current_buffer = true })
+        end, { desc = "Open buffers" })
+
+        -- Drop only_cwd to search recent files across every project.
+        vim.keymap.set('n', '<leader>pr', function()
+            builtin.oldfiles({ only_cwd = true })
+        end, { desc = "Recent files (cwd)" })
+
         vim.keymap.set('n', '<leader>vh', builtin.help_tags, { desc = "Help tags" })
     end
 }

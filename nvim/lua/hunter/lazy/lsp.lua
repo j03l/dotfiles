@@ -8,7 +8,6 @@ return {
         "hrsh7th/cmp-nvim-lsp",
         "hrsh7th/cmp-buffer",
         "hrsh7th/cmp-path",
-        "hrsh7th/cmp-cmdline",
         "hrsh7th/nvim-cmp",
         "L3MON4D3/LuaSnip",
         "saadparwaiz1/cmp_luasnip",
@@ -114,17 +113,21 @@ return {
             sources = cmp.config.sources({
                 { name = 'nvim_lsp' },
                 { name = 'luasnip' },
+                { name = 'path' },
             }, {
                 { name = 'buffer' },
             })
         })
 
         vim.diagnostic.config({
+            -- Core since 0.11. Without this you get underlines and signs only,
+            -- and have to press <leader>vd to read any error text.
+            virtual_lines = { current_line = true },
             float = {
                 focusable = false,
                 style = "minimal",
                 border = "rounded",
-                source = "always",
+                source = true,
                 header = "",
                 prefix = "",
             },

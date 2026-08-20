@@ -12,13 +12,20 @@ Prime-inspired setup. Leader = `Space`.
 |---|---|
 | `<leader>pf` | Find files |
 | `<C-p>` | Git files |
-| `<leader>ps` | Grep with prompt |
+| `<leader>pg` | Live grep (refines as you type) |
+| `<leader>ps` | Grep with prompt (one-shot string) |
 | `<leader>pws` | Grep word under cursor |
 | `<leader>pWs` | Grep WORD under cursor |
+| `<leader>pb` | Open buffers (most-recent first) |
+| `<leader>pr` | Recent files (cwd) |
 | `<leader>vh` | Help tags |
 | `<leader>K` | Search keymaps |
+| `<leader>?` | Buffer-local keymaps (which-key) |
 | `<leader>pv` | Open netrw |
 | `<leader><leader>` | Last buffer |
+
+Inside any picker: `<C-j>`/`<C-k>` move, `<CR>` open, `<C-v>` vsplit, `<C-x>` split,
+`<C-t>` tab, `<C-u>`/`<C-d>` scroll preview, `<Esc>` close.
 
 ## LSP (buffer-local when attached)
 
@@ -119,7 +126,7 @@ Prime-inspired setup. Leader = `Space`.
 | `=ap` | Indent paragraph |
 | `<C-d>` / `<C-u>` | Half-page down/up (centered) |
 | `n` / `N` | Search next/prev (centered) |
-| `<C-k>` / `<C-j>` | Next / prev quickfix |
+| `]q` / `[q` | Next / prev quickfix |
 | `<leader>k` / `<leader>j` | Next / prev loclist |
 | `gco` / `gcO` | Comment line below / above |
 | `<C-c>` (insert) | Esc |
@@ -146,8 +153,8 @@ Prime-inspired setup. Leader = `Space`.
 
 | Key | Action |
 |---|---|
-| `<C-s>e` | Expand at cursor |
-| `<C-s>;` / `<C-s>,` | Jump next / prev |
+| `<C-l>` | Expand / jump forward |
+| `<C-b>` | Jump back |
 | `<C-E>` | Cycle choice node |
 
 ## UI / windows

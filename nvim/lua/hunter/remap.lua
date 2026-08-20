@@ -41,8 +41,11 @@ vim.keymap.set("n", "Q", "<nop>", { desc = "Disable Q" })
 vim.keymap.set("n", "<C-f>", "<cmd>silent !tmux neww tmux-sessionizer<CR>", { desc = "Tmux sessionizer" })
 vim.keymap.set("n", "<leader>gg", "<cmd>silent !tmux neww lazygit<CR>", { desc = "Lazygit" })
 
-vim.keymap.set("n", "<C-k>", "<cmd>cnext<CR>zz", { desc = "Next quickfix" })
-vim.keymap.set("n", "<C-j>", "<cmd>cprev<CR>zz", { desc = "Prev quickfix" })
+-- <C-j>/<C-k> belong to vim-tmux-navigator, which loads after this file and
+-- silently won them, so these never fired. Core ships ]q/[q and ]Q/[Q (plus
+-- ]l ]b ]d ]a ]t); these only re-add the zz centering.
+vim.keymap.set("n", "]q", "<cmd>cnext<CR>zz", { desc = "Next quickfix" })
+vim.keymap.set("n", "[q", "<cmd>cprev<CR>zz", { desc = "Prev quickfix" })
 vim.keymap.set("n", "<leader>k", "<cmd>lnext<CR>zz", { desc = "Next loclist" })
 vim.keymap.set("n", "<leader>j", "<cmd>lprev<CR>zz", { desc = "Prev loclist" })
 
