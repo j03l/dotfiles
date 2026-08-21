@@ -1,0 +1,30 @@
+#!/bin/bash
+# Retry wrapper for kfrgb. SMBus detection for one of the two Kingston Fury
+# sticks on this board is intermittently flaky even with --wait tuning, so
+# retry the whole call a few times before giving up. Silent on success;
+# prints kfrgb's last output only if every attempt fails.
+
+SMBUS=22
+SLOTS=2,4
+WAIT=0.1
+MAX_ATTEMPTS=5
+RETRY_DELAY=1
+
+case "$1" in
+	on)  ARGS=(--mode static --color 255,200,0) ;;
+	off) ARGS=(--off) ;;
+	*) echo "Usage: $0 on|off" >&2; exit 1 ;;
+esac
+
+for ((i = 1; i <= MAX_ATTEMPTS; i++)); do
+	out=$(/usr/local/bin/kfrgb --smbus "$SMBUS" --ramslots "$SLOTS" --wait "$WAIT" "${ARGS[@]}" --nowarn 2>&1)
+	rc=$?
+	if [[ $rc -eq 0 ]] && ! grep -q "doesn.t seems to be" <<< "$out"; then
+		exit 0
+	fi
+	[[ $i -lt $MAX_ATTEMPTS ]] && sleep "$RETRY_DELAY"
+done
+
+echo "kfrgb-retry: gave up after $MAX_ATTEMPTS attempts" >&2
+echo "$out"
+exit 1

@@ -36,6 +36,7 @@ dotfiles/
 ├── secrets              # Pulls secret files from Bitwarden Secrets Manager
 ├── secrets.env          # UUID → target path mapping (no actual secrets)
 ├── bin/                 # Scripts → ~/.local/bin/ (Linux-only ones skipped on macOS)
+├── system/              # Scripts installed root-owned into system paths (see system/README.md)
 └── runs/                # Numbered, OS-aware install scripts
     ├── 00-paru          # (Linux) AUR helper
     ├── 01-brew          # (macOS) Homebrew + macos.Brewfile
