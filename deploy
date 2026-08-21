@@ -95,6 +95,11 @@ link_file() {
 echo "=== deploy: nvim ==="
 link_dir "$DOTFILES/nvim" "$XDG_CONFIG_HOME/nvim"
 
+# Second, isolated Neovim config reachable via NVIM_APPNAME=lazyvim (alias: lzv).
+# Separate config AND plugin dirs, so it cannot disturb the one above.
+echo "=== deploy: lazyvim ==="
+link_dir "$DOTFILES/lazyvim" "$XDG_CONFIG_HOME/lazyvim"
+
 echo "=== deploy: env/.config/* ==="
 for dir in "$DOTFILES"/env/.config/*/; do
     name=$(basename "$dir")
