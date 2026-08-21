@@ -43,6 +43,11 @@ export MANWIDTH=999
 export LANG=en_AU.UTF-8
 export EDITOR='nvim'
 
+# Second Neovim config. NVIM_APPNAME redirects BOTH ~/.config/<name> and
+# ~/.local/share/<name>, so lzv and nvim share nothing -- separate plugins,
+# separate lockfile, separate state.
+alias lzv='NVIM_APPNAME=lazyvim nvim'
+
 # Personal aliases (cross-platform)
 alias gcc="gcc -Wall -Wextra -Wpedantic"
 alias dc="docker compose"
