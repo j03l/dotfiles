@@ -14,9 +14,13 @@ ExecStartPre=-/usr/bin/mkdir -p /mnt/obsidian
 # request, so embedded PDFs rendered blank or partial. Matches the icloud and
 # onedrive mounts. dir-cache-time/poll-interval stay short so edits made on
 # other devices still show up quickly.
+# size-only: this WebDAV backend reports no hashes and no usable modtime
+# precision, so rclone couldn't confirm files were already synced and kept
+# re-uploading everything in a loop every poll cycle.
 ExecStart=/usr/bin/rclone mount obsidian: /mnt/obsidian \
     --config=%h/.config/rclone/rclone.conf \
     --vfs-cache-mode full \
+    --size-only \
     --vfs-cache-max-age 168h \
     --vfs-cache-max-size 5G \
     --buffer-size 32M \
