@@ -1,0 +1,17 @@
+# Global fd ignore. Applies to every `fd` invocation, and therefore to
+# everything built on it: fzf's Ctrl-T (the omz fzf plugin sets
+# FZF_DEFAULT_COMMAND=fd ...), telescope's find_files, and any script
+# reaching for fd directly.
+#
+# These two are rclone FUSE mounts that live *inside* $HOME, so any walk of
+# the home directory used to leave the machine and block on the network.
+# Measured from ~ before this file existed:
+#
+#   fd --type f --hidden --exclude .git            41s+ (never finished)
+#   ... same, with these two excluded                0.5s
+#
+# To search inside them deliberately, bypass this file:
+#   fd --no-ignore-vcs --no-global-ignore-file <pattern> ~/OneDrive
+# or just cd into the mount first, which is unaffected.
+OneDrive/
+iCloud/

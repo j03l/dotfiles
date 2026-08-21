@@ -71,7 +71,9 @@ alias ll="eza --icons --group-directories-first -lag --header"
 alias llg="eza --icons --group-directories-first -lag --git --header"
 alias lt="eza --icons --group-directories-first --tree -L 2"
 
-alias fd="find . -type d -name"
+# Was `alias fd=...`, which shadowed /usr/bin/fd — the actual fd is faster and
+# is what fzf and telescope call. Renamed so both are reachable.
+alias fdir="find . -type d -name"
 alias ff="find . -name"
 alias reload!="exec zsh"
 alias c='claude'
