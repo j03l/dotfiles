@@ -10,7 +10,6 @@ else
   export BWS_ACCESS_TOKEN=$(timeout 5 secret-tool lookup server Passwords user bws-access-token 2>/dev/null)
 fi
 export GITLAB_TOKEN=$(cat ~/.config/gitlab/token 2>/dev/null)
-export CLAUDE_CODE_OAUTH_TOKEN=$(cat ~/.config/claude/oauth_token 2>/dev/null)
 
 # tmux-sessionizer keybinds
 bindkey -s ^f "tmux-sessionizer\n"
