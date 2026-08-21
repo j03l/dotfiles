@@ -133,8 +133,10 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 # every later shell/project for the rest of the session (e.g. datadog's
 # GITHUB_TOKEN clobbering `gh` auth elsewhere). direnv diffs and restores
 # the environment on cd, so nothing outlives the directory it came from.
-eval "$(direnv hook zsh)"
+# Guarded: a machine without direnv should start a normal shell, not print
+# "command not found" on every prompt. runs/10-zsh installs it.
+command -v direnv >/dev/null && eval "$(direnv hook zsh)"
 
 # mise — per-directory runtime versions (e.g. Node from a project's mise.toml).
 # Kept last so its shims win over system tools and the PATH edits above.
-eval "$(mise activate zsh)"
+command -v mise >/dev/null && eval "$(mise activate zsh)"

@@ -8,7 +8,9 @@ if is_macos; then
     brew install zsh \
         zsh-syntax-highlighting \
         zsh-autosuggestions \
-        zsh-history-substring-search
+        zsh-history-substring-search \
+        direnv \
+        mise
 
     # Oh My Zsh (no brew formula) — install unattended into ~/.oh-my-zsh
     if [[ ! -d "$HOME/.oh-my-zsh" ]]; then
@@ -34,7 +36,9 @@ else
         zsh-syntax-highlighting \
         zsh-autosuggestions \
         zsh-history-substring-search \
-        pkgfile
+        pkgfile \
+        direnv \
+        mise
 
     # Set zsh as default shell if not already
     if [[ "$SHELL" != */zsh ]]; then
