@@ -94,6 +94,11 @@ alias ufmt='uv run ruff format'
 alias ulint='uv run ruff check'
 alias userver='uv run python -m http.server'
 
+# RAM RGB (Kingston Fury, via kfrgb-retry — retries on the intermittent
+# SMBus detection flake, silent on success)
+alias ramoff='sudo /usr/local/bin/kfrgb-retry off'
+alias ramon='sudo /usr/local/bin/kfrgb-retry on'
+
 # History config
 HISTSIZE=5000
 HISTFILE=~/.zsh_history
