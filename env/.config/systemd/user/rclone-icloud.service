@@ -2,6 +2,13 @@
 Description=iCloud Drive rclone mount
 After=network-online.target
 Wants=network-online.target
+# Every start is a fresh Apple SRP login. With an expired trust token the old
+# unbounded 10s restart loop hammered auth until Apple answered 503 for hours,
+# which also blocked the 2FA refresh. Cap it at 3 attempts/hour; after that the
+# unit stays failed until icloud-refresh-2fa.sh (or a manual reset-failed)
+# restarts it.
+StartLimitIntervalSec=3600
+StartLimitBurst=3
 
 [Service]
 Type=notify
@@ -17,7 +24,7 @@ ExecStart=/usr/bin/rclone mount icloud: %h/iCloud \
   --log-file %h/.cache/rclone/icloud-mount.log
 ExecStop=/usr/bin/fusermount -u %h/iCloud
 Restart=on-failure
-RestartSec=10
+RestartSec=300
 
 [Install]
 WantedBy=default.target

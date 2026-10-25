@@ -165,6 +165,9 @@ if health_check; then
     notify-send -a iCloud -i emblem-success \
         "iCloud reconnected" \
         "Trust token refreshed (~30 days)."
+    # The mount has likely tripped its StartLimitBurst while the token was
+    # dead; restart is refused in that state until the counter is cleared.
+    systemctl --user reset-failed rclone-icloud.service 2>/dev/null || true
     systemctl --user restart rclone-icloud.service
     rm -f "$THROTTLE_FILE"
     exit 0
