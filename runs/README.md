@@ -8,10 +8,11 @@ The `run` orchestrator executes every **executable** file here in sorted order, 
 |--------|----|------------------|
 | `00-paru` | Linux | paru AUR helper |
 | `01-brew` | macOS | Homebrew + everything in `macos.Brewfile` |
-| `10-zsh` | both | zsh, plugins, oh-my-zsh (paru + system dirs / brew + curl installer); sets default shell |
+| `10-zsh` | both | zsh, plugins, oh-my-zsh (paru + system dirs / brew + curl installer), pkgfile database timer on Linux; sets default shell |
 | `20-neovim` | both | neovim, luarocks, tree-sitter |
 | `30-tmux` | both | tmux + TPM |
 | `40-terminals` | both | ghostty + kitty |
+| `45-desktop` | Linux | KDE or GNOME integration per `~/.dotfiles-desktop` (askpass, dialog tool, keyring, SSH agent, GNOME gsettings) + wl-clipboard, libsecret, libnotify, Cascadia Mono NF, fd, gh |
 | `50-rust` | both | rustup, stylua, claude-tmux (brew rustup is keg-only — added to PATH) |
 | `60-node` | both | node (paru nodejs/npm; brew node, or defers to existing nvm) |
 | `65-bun` | both | bun (bun.sh installer) |

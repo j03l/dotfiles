@@ -20,7 +20,7 @@ Deployed to `~/.local/bin/`. Linux-only scripts (listed below) are skipped by `d
 
 ### Linux-only (not deployed on macOS)
 
-`sudo` (KDE ksshaskpass wrapper), `hscroll-volume`, `kenesis`, `icloud-2fa-watch.sh`, `icloud-refresh-2fa.sh`, `onedrive-precache.sh`.
+`sudo` (askpass wrapper: ksshaskpass on KDE, `zenity-askpass` on GNOME), `zenity-askpass`, `hscroll-volume`, `kenesis`, `icloud-2fa-watch.sh`, `icloud-refresh-2fa.sh`, `onedrive-precache.sh`.
 
 ## Shell Aliases
 

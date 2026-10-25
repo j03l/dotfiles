@@ -40,6 +40,11 @@ else
         direnv \
         mise
 
+    # Keep pkgfile's database current; command-not-found.zsh has nothing to
+    # suggest until it has run once.
+    sudo systemctl enable --now pkgfile-update.timer
+    compgen -G "/var/cache/pkgfile/*.files" >/dev/null || sudo pkgfile -u
+
     # Set zsh as default shell if not already
     if [[ "$SHELL" != */zsh ]]; then
         echo "Setting zsh as default shell..."

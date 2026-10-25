@@ -1,8 +1,8 @@
 export XDG_CONFIG_HOME=$HOME/.config
 export GIT_EDITOR=nvim
 export DOTFILES="$HOME/dotfiles"
-# BWS access token from the OS secret store (macOS Keychain / KDE Wallet).
-# kwalletd6 was retired in kwallet 6.28 — ksecretd owns org.freedesktop.secrets now, and
+# BWS access token from the OS secret store (macOS Keychain / Secret Service, which
+# is ksecretd on KDE and gnome-keyring on GNOME). kwalletd6 was retired in kwallet 6.28 — ksecretd owns org.freedesktop.secrets now, and
 # kwallet-query blocks ~50s on D-Bus activation before failing. timeout guards headless logins.
 if [[ "$OSTYPE" == darwin* ]]; then
   export BWS_ACCESS_TOKEN=$(security find-generic-password -s bws-access-token -w 2>/dev/null)

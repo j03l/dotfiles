@@ -6,20 +6,8 @@ export ZSH="/usr/share/oh-my-zsh"
 # Platform-specific oh-my-zsh plugins (appended to the shared list)
 OS_PLUGINS=(archlinux tailscale ufw)
 
-# SSH agent provided by a systemd user service
-export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
-
 # FZF
 export FZF_BASE=/usr/share/fzf
-
-# Fix VS Code integrated terminal (breaks local file:// URLs). VS Code strips
-# desktop env vars and overrides BROWSER with its SSH helper. Only applies when
-# in the VS Code terminal but NOT actually over SSH.
-if [[ "$TERM_PROGRAM" == "vscode" && -z "$SSH_CLIENT" && -z "$SSH_TTY" ]]; then
-  [[ -z "$XDG_CURRENT_DESKTOP" ]] && export XDG_CURRENT_DESKTOP="KDE"
-  [[ -z "$KDE_FULL_SESSION" ]] && export KDE_FULL_SESSION="true"
-  export BROWSER="brave-browser"
-fi
 
 # Arch / desktop aliases
 alias remove-orphans="sudo pacman -Qdtq | sudo pacman -Rns -"
@@ -47,3 +35,13 @@ os_post_omz() {
   source /usr/share/zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
   source /usr/share/doc/pkgfile/command-not-found.zsh
 }
+
+# Desktop pathway (kde | gnome, from ~/.dotfiles-desktop), symlinked by deploy.
+# Sourced last so it can override the aliases above (e.g. blue/noblue). Until
+# deploy has linked one, fall back to the KDE fragment next to this file (the
+# behaviour from before the split), resolved through the os.zsh symlink.
+if [[ -r ~/.config/zsh/desktop.zsh ]]; then
+  source ~/.config/zsh/desktop.zsh
+else
+  source "${${(%):-%x}:A:h}/desktop/kde.zsh"
+fi

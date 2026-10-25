@@ -39,6 +39,12 @@ echo "$current_env" > "$HOME/.dotfiles-env"
 echo "Environment set to: $current_env"
 echo ""
 
+if is_linux; then
+    echo "=== Desktop ==="
+    choose_desktop
+    echo ""
+fi
+
 echo "=== Syncing package databases ==="
 if is_linux; then
     if [[ -z "$dry_run" ]]; then

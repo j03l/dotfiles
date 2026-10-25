@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
-# Refresh rclone iCloud trust token via KDE 2FA prompt.
+# Refresh rclone iCloud trust token via a desktop 2FA prompt (kdialog on
+# KDE, zenity on GNOME).
 #
-# Flow ordering matters: kdialog appears INSIDE the expect block, only
+# Flow ordering matters: the dialog appears INSIDE the expect block, only
 # after rclone has hit Apple's verify-trusteddevice endpoint and Apple
 # has pushed a code to the trusted devices. That way the user sees the
 # push notification before the dialog asks for the code.
@@ -68,7 +69,21 @@ notify-send -a iCloud -i appointment-soon \
     "iCloud token expired" \
     "Contacting Apple — watch your trusted devices for a 6-digit code."
 
-echo "Spawning rclone config reconnect"
+# Pick the dialog tool for the 2FA code. GNOME (or no kdialog) gets zenity.
+if [[ "${XDG_CURRENT_DESKTOP:-}" != *GNOME* ]] && command -v kdialog >/dev/null; then
+    DIALOG_TOOL=kdialog
+elif command -v zenity >/dev/null; then
+    DIALOG_TOOL=zenity
+else
+    echo "No dialog tool (kdialog/zenity) found"
+    notify-send -a iCloud -i dialog-error \
+        "iCloud refresh failed" \
+        "Install zenity (GNOME) or kdialog (KDE)."
+    exit 1
+fi
+export DIALOG_TOOL
+
+echo "Spawning rclone config reconnect (dialog: $DIALOG_TOOL)"
 export RCLONE_PASSWORD="$PASSWORD"
 expect <<'EXPECT_SCRIPT'
 log_user 1
@@ -89,9 +104,15 @@ expect {
     }
     -re "config_2fa>\\s*$" {
         # rclone has hit Apple's verify endpoint; the push has gone out.
+        # Both tools exit non-zero on Cancel, which lands in the catch.
+        set msg "A 6-digit verification code was sent to your trusted Apple devices.\n\nEnter the code below:"
         if { [catch {
-            set code [exec kdialog --title "iCloud 2FA" \
-                --inputbox "A 6-digit verification code was sent to your trusted Apple devices.\n\nEnter the code below:" ""]
+            if { $::env(DIALOG_TOOL) eq "zenity" } {
+                # exec fails on any stderr output, and zenity prints GTK warnings there.
+                set code [exec zenity --entry --title "iCloud 2FA" --text $msg 2>/dev/null]
+            } else {
+                set code [exec kdialog --title "iCloud 2FA" --inputbox $msg ""]
+            }
         } err] } {
             send_user "User dismissed dialog ($err)\n"
             exit 10

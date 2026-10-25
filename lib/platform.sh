@@ -45,7 +45,8 @@ clip_copy_cmd() {
 }
 
 # Read the BWS access token from the OS secret store (echoes to stdout).
-# Linux goes through the Secret Service API (ksecretd), not kwallet-query:
+# Linux goes through the Secret Service API, served by ksecretd on KDE or
+# gnome-keyring on GNOME, so the lookup is identical on both. Not kwallet-query:
 # kwalletd6 was retired in kwallet 6.28, and kwallet-query blocks ~50s on D-Bus
 # activation before failing. The timeout guards headless logins. Keep this in
 # sync with the equivalent block in env/.zsh_profile.
@@ -55,4 +56,49 @@ bws_token_from_store() {
     else
         timeout 5 secret-tool lookup server Passwords user bws-access-token 2>/dev/null
     fi
+}
+
+# Linux desktop pathway: kde | gnome. Persisted in ~/.dotfiles-desktop, the same
+# way ~/.dotfiles-env persists home/work, so installers, deploy and the shell all
+# agree on one answer. With no saved choice, guess from the running session and
+# fall back to kde (the original setup). Empty on macOS.
+DESKTOP_FILE="$HOME/.dotfiles-desktop"
+DESKTOPS="kde gnome"
+
+desktop_id() {
+    is_linux || return 0
+    local saved=""
+    [[ -f "$DESKTOP_FILE" ]] && saved=$(<"$DESKTOP_FILE")
+    if [[ " $DESKTOPS " == *" $saved "* ]]; then
+        echo "$saved"
+    elif [[ "${XDG_CURRENT_DESKTOP:-}" == *GNOME* ]]; then
+        echo gnome
+    else
+        echo kde
+    fi
+}
+
+# Interactive: confirm or pick the desktop pathway, then save it. Linux only.
+choose_desktop() {
+    is_linux || return 0
+    local current="" answer d
+    [[ -f "$DESKTOP_FILE" ]] && current=$(<"$DESKTOP_FILE")
+    if [[ " $DESKTOPS " == *" $current "* ]]; then
+        echo "Current desktop: $current"
+        read -rp "Keep current? [Y/n] " answer
+        [[ "${answer:-y}" =~ ^[Yy]$ ]] || current=""
+    else
+        current=""
+    fi
+    if [[ -z "$current" ]]; then
+        echo "Select desktop (session: ${XDG_CURRENT_DESKTOP:-unknown}):"
+        select d in $DESKTOPS; do
+            if [[ -n "$d" ]]; then
+                current="$d"
+                break
+            fi
+        done
+    fi
+    echo "$current" > "$DESKTOP_FILE"
+    echo "Desktop set to: $current"
 }

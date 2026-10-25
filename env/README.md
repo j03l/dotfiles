@@ -9,6 +9,7 @@ Mirrors the target filesystem structure. `deploy` symlinks each item to its corr
 | `.zshrc` | `~/.zshrc` (shared across both OSes) |
 | `.zsh_profile` | `~/.zsh_profile` |
 | `zsh/linux.zsh` \| `zsh/macos.zsh` | `~/.config/zsh/os.zsh` (per-OS) |
+| `zsh/desktop/kde.zsh` \| `zsh/desktop/gnome.zsh` | `~/.config/zsh/desktop.zsh` (Linux, per `~/.dotfiles-desktop`) |
 | `.gitconfig` | `~/.gitconfig` |
 | `.config/ghostty/` | `~/.config/ghostty/` |
 | `.config/kitty/` | `~/.config/kitty/` (+ per-machine `local.conf`) |
@@ -27,6 +28,7 @@ Mirrors the target filesystem structure. `deploy` symlinks each item to its corr
 - Plugins: zsh-syntax-highlighting, zsh-autosuggestions, zsh-history-substring-search (sourced from `/usr/share` on Linux, the Homebrew prefix on macOS)
 - `Ctrl-f` bound to tmux-sessionizer
 - Shared aliases for eza, docker, tmux, and uv. Linux-only aliases (paru, pacman/cpupower/hyprctl, `open=xdg-open`) live in `zsh/linux.zsh`.
+- On Linux, `zsh/linux.zsh` sources the desktop fragment last: SSH agent socket, the VS Code terminal fix, and (GNOME) Night Light `blue`/`noblue`.
 
 ## ghostty
 

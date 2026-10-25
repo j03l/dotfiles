@@ -2,7 +2,7 @@
 
 Modular, cross-platform dotfiles for **CachyOS/Arch Linux** and **macOS**, inspired by [ThePrimeagen's dev environment](https://github.com/ThePrimeagen/dev).
 
-The OS is detected at runtime (`lib/platform.sh`); installers and configs branch per platform, so the same `./install` works on both. Linux uses paru/AUR + systemd + KDE Wallet; macOS uses Homebrew + macOS Keychain (and coexists with [Mackup](https://github.com/lra/mackup), which keeps syncing GUI app settings via iCloud — see [Mackup](#mackup-macos)).
+The OS is detected at runtime (`lib/platform.sh`); installers and configs branch per platform, so the same `./install` works on both. Linux uses paru/AUR + systemd + the Secret Service keyring, with a per-machine **KDE or GNOME** desktop pathway (see [Linux desktop](#linux-desktop-kde--gnome)); macOS uses Homebrew + macOS Keychain (and coexists with [Mackup](https://github.com/lra/mackup), which keeps syncing GUI app settings via iCloud — see [Mackup](#mackup-macos)).
 
 ## Quick Start
 
@@ -23,7 +23,7 @@ dotfiles/
 ├── install              # Full setup: run + deploy + secrets
 ├── update-nvim          # Quick nvim-only refresh
 ├── update-dotfiles      # Config-only deploy (no packages)
-├── lib/platform.sh      # OS detection + pkg_install/clip/machine_id helpers (sourced everywhere)
+├── lib/platform.sh      # OS + desktop detection, pkg_install/clip/machine_id helpers (sourced everywhere)
 ├── nvim/                # Neovim config → ~/.config/nvim/
 ├── env/                 # Configs mirroring the target filesystem
 │   ├── .zshrc           # → ~/.zshrc (shared across both OSes)
@@ -31,7 +31,8 @@ dotfiles/
 │   ├── .mackup.cfg      # → ~/.mackup.cfg (macOS only)
 │   ├── zsh/             # Per-OS fragments → ~/.config/zsh/os.zsh
 │   │   ├── linux.zsh
-│   │   └── macos.zsh
+│   │   ├── macos.zsh
+│   │   └── desktop/     # Per-desktop fragments → ~/.config/zsh/desktop.zsh (kde.zsh, gnome.zsh)
 │   └── .config/         # ghostty, kitty, tmux, glow, zed, … (some with per-machine overrides, see below)
 ├── secrets              # Pulls secret files from Bitwarden Secrets Manager
 ├── secrets.env          # UUID → target path mapping (no actual secrets)
@@ -41,6 +42,7 @@ dotfiles/
     ├── 00-paru          # (Linux) AUR helper
     ├── 01-brew          # (macOS) Homebrew + macos.Brewfile
     ├── 10-zsh  20-neovim  30-tmux  40-terminals
+    ├── 45-desktop       # (Linux) KDE or GNOME integration, fonts, clipboard
     ├── 50-rust  60-node  65-bun  70-go  80-python
     ├── 90-dev-tools
     ├── 91-rclone        # (Linux) iCloud/OneDrive mounts
@@ -54,12 +56,30 @@ dotfiles/
 | Concern | Linux (CachyOS/Arch) | macOS |
 |---------|----------------------|-------|
 | Packages | paru / AUR | Homebrew (`runs/macos.Brewfile`) |
-| Secret store | KDE Wallet | macOS Keychain |
+| Desktop | KDE or GNOME (`~/.dotfiles-desktop`) | — |
+| Secret store | Secret Service (KDE Wallet / GNOME Keyring) | macOS Keychain |
 | Clipboard | `wl-copy` | `pbcopy` (via `bin/clip`) |
 | Services | systemd user units | skipped |
 | oh-my-zsh | `/usr/share/oh-my-zsh` | `~/.oh-my-zsh` |
 
 OS-only installers self-skip on the other platform; `deploy` skips systemd units and Linux-only `bin/` scripts on macOS. Shell, git, ssh, nvim, tmux, ghostty/kitty configs are shared verbatim.
+
+## Linux desktop (KDE / GNOME)
+
+On Linux, `./install` and `./deploy` ask for a desktop pathway — `kde` or `gnome` — and save it to `~/.dotfiles-desktop`, the same way `~/.dotfiles-env` holds home/work. With no saved choice, `desktop_id()` in `lib/platform.sh` guesses from `$XDG_CURRENT_DESKTOP` and falls back to `kde`.
+
+| Concern | KDE | GNOME |
+|---------|-----|-------|
+| zsh fragment (`~/.config/zsh/desktop.zsh`) | `env/zsh/desktop/kde.zsh` | `env/zsh/desktop/gnome.zsh` |
+| SSH agent | `ssh-agent.socket` (`$XDG_RUNTIME_DIR/ssh-agent.socket`) | `gcr-ssh-agent` (`$XDG_RUNTIME_DIR/gcr/ssh`) |
+| Secret Service (`secret-tool`) | ksecretd | gnome-keyring |
+| `sudo` askpass (`bin/sudo`) | ksshaskpass | `bin/zenity-askpass` |
+| iCloud 2FA prompt | kdialog | zenity |
+| `blue` / `noblue` | hyprctl hyprsunset | GNOME Night Light |
+
+`runs/45-desktop` installs the packages for the chosen side (plus shared ones: wl-clipboard, libsecret, libnotify, the Cascadia Mono NF font, fd, gh) and, on GNOME, applies a few `gsettings` (dark scheme, monospace font, 2500K Night Light) when run from inside a GNOME login. The askpass and 2FA scripts also pick their tool at runtime from `$XDG_CURRENT_DESKTOP`, so they keep working if both desktops are installed.
+
+To switch desktops on a machine: `./deploy` (answer "n" to keep current, pick the other one), then `./run desktop`.
 
 ## Per-Machine Overrides
 
@@ -102,7 +122,7 @@ Never edit files in `~/.config/` directly — they get overwritten on deploy.
 Secret config files (gitconfig, gh tokens, rclone, etc.) are stored in [Bitwarden Secrets Manager](https://bitwarden.com/help/secrets-manager-overview/) and pulled at setup time. The BWS access token is read from the OS secret store, so store it once per machine:
 
 ```bash
-# Linux — KDE keyring (prompts for the value, hidden):
+# Linux — Secret Service, KDE Wallet or GNOME Keyring (prompts for the value, hidden):
 secret-tool store --label='Passwords/bws-access-token' server Passwords user bws-access-token
 
 # macOS — Keychain (prompts for the value, hidden):

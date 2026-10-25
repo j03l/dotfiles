@@ -1,0 +1,4 @@
+#!/bin/sh
+# SUDO_ASKPASS helper for GNOME (KDE uses ksshaskpass): prints the password
+# typed into a zenity dialog. sudo passes its prompt as $1.
+exec zenity --password --title="${1:-sudo}"

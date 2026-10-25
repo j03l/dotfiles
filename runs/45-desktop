@@ -1,0 +1,73 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+DOTFILES="${DOTFILES:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." &>/dev/null && pwd)}"
+source "$DOTFILES/lib/platform.sh"
+
+# Linux-only: desktop integration for the pathway in ~/.dotfiles-desktop
+# (kde | gnome, chosen by ./install or ./deploy).
+is_linux || { echo "45-desktop: skip (not Linux)"; exit 0; }
+
+desktop=$(desktop_id)
+echo "45-desktop: $desktop"
+
+# Shared by both desktops:
+#   wl-clipboard      bin/clip + tmux copy-mode (wl-copy)
+#   libsecret         secret-tool, reads the BWS token (.zsh_profile, ./secrets)
+#   libnotify         notify-send, used by the iCloud 2FA scripts
+#   ttf-cascadia-code "Cascadia Mono NF", the kitty + ghostty font
+#   fd, github-cli    fzf/telescope finder (env/.config/fd), gh
+paru -S --needed --noconfirm \
+    wl-clipboard \
+    libsecret \
+    libnotify \
+    ttf-cascadia-code \
+    fd \
+    github-cli
+
+# Enable a user unit if it is installed; say so if it isn't or there's no
+# user bus (e.g. run from a bare tty before the first desktop login).
+enable_user_unit() {
+    local unit="$1"
+    if ! systemctl --user cat "$unit" &>/dev/null; then
+        echo "  skip: $unit not installed"
+    elif systemctl --user enable --now "$unit" 2>/dev/null; then
+        echo "  enabled: $unit"
+    else
+        echo "  could not enable $unit now — run 'systemctl --user enable --now $unit' after logging in"
+    fi
+}
+
+case "$desktop" in
+    kde)
+        # ksshaskpass: SUDO_ASKPASS for bin/sudo; kdialog: iCloud 2FA prompt
+        paru -S --needed --noconfirm ksshaskpass kdialog
+        # env/zsh/desktop/kde.zsh points SSH_AUTH_SOCK here
+        enable_user_unit ssh-agent.socket
+        ;;
+    gnome)
+        # zenity: bin/zenity-askpass + iCloud 2FA prompt
+        # gnome-keyring: Secret Service for secret-tool; gcr-4: SSH agent
+        paru -S --needed --noconfirm zenity gnome-keyring gcr-4
+        # env/zsh/desktop/gnome.zsh falls back to this socket
+        enable_user_unit gcr-ssh-agent.socket
+
+        # A few settings that match the rest of the setup. gsettings needs the
+        # session bus, so this only applies from inside a GNOME login.
+        if [[ -n "${DBUS_SESSION_BUS_ADDRESS:-}" ]] && command -v gsettings &>/dev/null; then
+            gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
+            gsettings set org.gnome.desktop.interface monospace-font-name 'Cascadia Mono NF 12'
+            # Same 2500K as the noblue alias; schedule left on sunset/sunrise
+            gsettings set org.gnome.settings-daemon.plugins.color night-light-temperature 'uint32 2500'
+            echo "  gsettings applied"
+        else
+            echo "  skip gsettings: no session bus — re-run './run desktop' from a GNOME login"
+        fi
+        ;;
+esac
+
+if command -v fc-list &>/dev/null && ! fc-list | grep -q "Cascadia Mono NF"; then
+    echo "WARNING: 'Cascadia Mono NF' not found by fontconfig — kitty/ghostty will fall back."
+fi
+
+echo "desktop integration installed ($desktop)"

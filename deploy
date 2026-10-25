@@ -33,6 +33,11 @@ echo "$selected_env" > "$HOME/.dotfiles-env"
 echo "Environment: $selected_env"
 echo ""
 
+if is_linux; then
+    choose_desktop
+    echo ""
+fi
+
 log() {
     if [[ $dry_run == "1" ]]; then
         echo "[DRY_RUN]: $1"
@@ -195,6 +200,12 @@ echo "=== deploy: zsh os fragment ($PLATFORM) ==="
 mkdir -p "$XDG_CONFIG_HOME/zsh"
 link_file "$DOTFILES/env/zsh/$PLATFORM.zsh" "$XDG_CONFIG_HOME/zsh/os.zsh"
 
+if is_linux; then
+    # Sourced at the end of linux.zsh: SSH agent, VS Code fixups, night light.
+    echo "=== deploy: zsh desktop fragment ($(desktop_id)) ==="
+    link_file "$DOTFILES/env/zsh/desktop/$(desktop_id).zsh" "$XDG_CONFIG_HOME/zsh/desktop.zsh"
+fi
+
 echo "=== deploy: ssh config ==="
 mkdir -p "$HOME/.ssh"
 chmod 700 "$HOME/.ssh"
@@ -204,8 +215,8 @@ link_file "$DOTFILES/env/.ssh/allowed_signers" "$HOME/.ssh/allowed_signers"
 
 echo "=== deploy: bin/ ==="
 mkdir -p "$HOME/.local/bin"
-# Linux/desktop-specific helpers — skip on macOS (KDE askpass, evdev, rclone mounts)
-linux_only_bins=" sudo hscroll-volume kenesis icloud-2fa-watch.sh icloud-refresh-2fa.sh onedrive-precache.sh "
+# Linux/desktop-specific helpers — skip on macOS (askpass, evdev, rclone mounts)
+linux_only_bins=" sudo zenity-askpass hscroll-volume kenesis icloud-2fa-watch.sh icloud-refresh-2fa.sh onedrive-precache.sh "
 for script in "$DOTFILES"/bin/*; do
     [[ -f "$script" ]] || continue
     name=$(basename "$script")
