@@ -25,7 +25,7 @@ Deployed to `~/.local/bin/`. Linux-only scripts (listed below) are skipped by `d
 `sudo` (askpass wrapper: ksshaskpass on KDE, `zenity-askpass` on GNOME), `zenity-askpass`, `hscroll-volume`, `kenesis`, `icloud-2fa-watch.sh`, `icloud-refresh-2fa.sh`, `onedrive-precache.sh`, `onedrive-bisync`, `onedrive-link-userdirs`.
 
 - `onedrive-link-userdirs`: one-time move of `~/Desktop`, `~/Documents`, `~/Music`, `~/Pictures` and `~/Videos` into `~/OneDriveSync/`, leaving symlinks behind. `~/Downloads` stays local and is synced to timber by Syncthing instead. Remove any Syncthing shares of the moved folders first.
-- `onedrive-bisync`: two-way sync of those folders between `~/OneDriveSync` and OneDrive (rclone bisync), run every 5 minutes by `rclone-onedrive-bisync.timer`. KDE `.directory`, `*.desktop` launchers, Windows `desktop.ini`/`Thumbs.db` and Syncthing markers are not synced, so each OS keeps its own. If bisync aborts asking for a resync, run `onedrive-bisync --resync`.
+- `onedrive-bisync`: two-way sync of those folders between `~/OneDriveSync` and OneDrive (rclone bisync), run every 5 minutes by `rclone-onedrive-bisync.timer`. KDE `.directory`, `*.desktop` launchers, Windows `desktop.ini`/`Thumbs.db`, Windows shortcuts and programs (`*.lnk`, `*.url`, `*.exe`) and Syncthing markers are not synced, so each OS keeps its own. If bisync aborts asking for a resync, run `onedrive-bisync --resync`.
 
 ## Shell Aliases
 

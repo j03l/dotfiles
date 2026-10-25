@@ -28,6 +28,11 @@ new_filter="$STATE/filter.new"
     echo "- *.desktop"
     echo "- desktop.ini"
     echo "- Thumbs.db"
+    # Windows shortcuts and programs (mostly on Desktop) are useless here, and
+    # deleting them locally must not remove them from the Windows desktops.
+    echo "- *.lnk"
+    echo "- *.url"
+    echo "- *.exe"
     # Syncthing markers: these folders are also shared with timber.
     echo "- .stfolder/**"
     echo "- .stversions/**"
