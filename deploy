@@ -169,7 +169,7 @@ fi
 if is_linux; then
     echo "=== deploy: systemd user units ==="
     mkdir -p "$XDG_CONFIG_HOME/systemd/user"
-    for unit in "$DOTFILES"/env/.config/systemd/user/*.service; do
+    for unit in "$DOTFILES"/env/.config/systemd/user/*.{service,timer}; do
         [[ -f "$unit" ]] || continue
         name=$(basename "$unit")
         link_file "$unit" "$XDG_CONFIG_HOME/systemd/user/$name"
@@ -231,7 +231,7 @@ link_file "$DOTFILES/env/.ssh/allowed_signers" "$HOME/.ssh/allowed_signers"
 echo "=== deploy: bin/ ==="
 mkdir -p "$HOME/.local/bin"
 # Linux/desktop-specific helpers — skip on macOS (askpass, evdev, rclone mounts)
-linux_only_bins=" sudo zenity-askpass hscroll-volume kenesis icloud-2fa-watch.sh icloud-refresh-2fa.sh onedrive-precache.sh "
+linux_only_bins=" sudo zenity-askpass hscroll-volume kenesis icloud-2fa-watch.sh icloud-refresh-2fa.sh onedrive-precache.sh onedrive-bisync onedrive-link-userdirs "
 for script in "$DOTFILES"/bin/*; do
     [[ -f "$script" ]] || continue
     name=$(basename "$script")

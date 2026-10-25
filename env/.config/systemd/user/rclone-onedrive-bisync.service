@@ -1,0 +1,10 @@
+[Unit]
+Description=Two-way sync of user folders with OneDrive (rclone bisync)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/onedrive-bisync
+Nice=10
+IOSchedulingClass=idle

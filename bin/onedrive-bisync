@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+# Two-way sync of the user folders between ~/OneDriveSync and OneDrive, so they
+# are real local files (unlike the ~/OneDrive FUSE mount). ~/Desktop, ~/Documents
+# etc. are symlinks into ~/OneDriveSync (see onedrive-link-userdirs).
+#
+# Run by rclone-onedrive-bisync.timer. The first run, and any run after the
+# filter rules below change, does a --resync (union of both sides; where a file
+# differs on both, the newer copy wins; OneDrive keeps the older one in version
+# history). Extra args are passed to rclone, e.g. `onedrive-bisync --resync`
+# after bisync aborts and asks for one.
+set -euo pipefail
+
+LOCAL="$HOME/OneDriveSync"
+REMOTE="onedrive:"
+FOLDERS=(Desktop Documents Music Pictures Videos)
+
+STATE="${XDG_CACHE_HOME:-$HOME/.cache}/rclone/onedrive-bisync"
+FILTER="$STATE/filter"
+OK="$STATE/ok"
+mkdir -p "$STATE"
+
+for f in "${FOLDERS[@]}"; do mkdir -p "$LOCAL/$f"; done
+
+new_filter="$STATE/filter.new"
+{
+    # Each OS keeps its own folder metadata and launchers.
+    echo "- .directory"
+    echo "- *.desktop"
+    echo "- desktop.ini"
+    echo "- Thumbs.db"
+    # Syncthing markers: these folders are also shared with timber.
+    echo "- .stfolder/**"
+    echo "- .stversions/**"
+    echo "- .stignore"
+    # In-progress downloads and office lock files.
+    echo "- *.part"
+    echo "- *.crdownload"
+    echo "- .~lock.*#"
+    echo "- ~\$*"
+    for f in "${FOLDERS[@]}"; do echo "+ /$f/**"; done
+    echo "- **"
+} > "$new_filter"
+
+# A changed filter invalidates bisync's listings, so it needs a resync.
+if ! cmp -s "$new_filter" "$FILTER"; then
+    mv "$new_filter" "$FILTER"
+    rm -f "$OK"
+else
+    rm -f "$new_filter"
+fi
+
+resync=()
+[[ -f "$OK" ]] || resync=(--resync --resync-mode newer)
+
+rclone bisync "$LOCAL" "$REMOTE" \
+    --filters-file "$FILTER" \
+    --workdir "$STATE/work" \
+    --create-empty-src-dirs \
+    --compare size,modtime \
+    --conflict-resolve newer \
+    --conflict-loser num \
+    --resilient --recover \
+    --max-lock 15m \
+    --transfers 8 --checkers 16 \
+    -v "${resync[@]}" "$@"
+
+[[ " $* " == *" --dry-run "* ]] || touch "$OK"

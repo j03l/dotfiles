@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+# One-time move of ~/Desktop, ~/Documents, ~/Music, ~/Pictures and ~/Videos
+# into ~/OneDriveSync, leaving a symlink at each old path. Existing
+# contents (including .directory icons and Syncthing markers) move with them.
+# Idempotent: folders that are already symlinks are skipped.
+#
+# ~/Downloads stays a plain local folder (synced to timber by Syncthing rather
+# than OneDrive). Remove any Syncthing shares of the moved folders first. Then
+# run onedrive-bisync to merge in what's on OneDrive.
+set -euo pipefail
+
+LOCAL="$HOME/OneDriveSync"
+FOLDERS=(Desktop Documents Music Pictures Videos)
+STAMP=$(date +%Y%m%d-%H%M%S)
+
+mkdir -p "$LOCAL"
+for f in "${FOLDERS[@]}"; do
+    src="$HOME/$f"
+    dest="$LOCAL/$f"
+
+    if [[ -L "$src" ]]; then
+        echo "$f: already a symlink -> $(readlink "$src")"
+        continue
+    fi
+
+    if [[ -d "$src" ]]; then
+        if [[ ! -e "$dest" ]] || [[ -z "$(ls -A "$dest")" ]]; then
+            rmdir "$dest" 2>/dev/null || true
+            mv "$src" "$dest"
+        else
+            # Both sides have content: merge, keeping the existing copy of
+            # any file that differs as "<name>.bak-<stamp>".
+            rsync -a --remove-source-files --backup --suffix=".bak-$STAMP" "$src/" "$dest/"
+            find "$src" -depth -type d -empty -delete
+            if [[ -e "$src" ]]; then
+                echo "$f: could not empty $src; leaving it in place" >&2
+                continue
+            fi
+        fi
+    else
+        mkdir -p "$dest"
+    fi
+
+    ln -s "$dest" "$src"
+    echo "$f: $src -> $dest"
+done
