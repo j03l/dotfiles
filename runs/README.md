@@ -22,6 +22,7 @@ The `run` orchestrator executes every **executable** file here in sorted order, 
 | `91-rclone` | Linux | rclone + FUSE for iCloud/OneDrive mounts, bc (used by `onedrive-precache.sh`) |
 | `95-hscroll-volume` | Linux | evdev horizontal-scroll-to-volume systemd service |
 | `96-macos-defaults` | macOS | Finder/Dock/Safari/key-repeat defaults |
+| `97-kfrgb` | Linux | RGB: liquidctl + OpenRGB; kfrgb deps (i2c-tools, yad, lshw) and the root-owned `kfrgb-retry` wrapper (kfrgb itself is installed by hand — see `system/README.md`) |
 | `macos.Brewfile` | macOS | package list consumed by `01-brew` (not executable, not run directly) |
 
 Package installs go through `pkg_install` (paru on Linux, `brew` on macOS) where formula names match; scripts branch explicitly where they differ.

@@ -3,8 +3,12 @@ set -euo pipefail
 
 DOTFILES="${DOTFILES:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." &>/dev/null && pwd)}"
 source "$DOTFILES/lib/platform.sh"
-# Linux-only: SMBus RAM lighting on a specific desktop board.
+# Linux-only: RGB tooling, plus SMBus RAM lighting on a specific desktop board.
 is_linux || { echo "97-kfrgb: skip (Linux-only)"; exit 0; }
+
+# General RGB tooling: liquidctl drives the board's RGB Fusion controller (and
+# the set-colour alias), OpenRGB is the all-in-one GUI.
+pkg_install liquidctl openrgb
 
 # kfrgb refuses to run without yad + lshw, and drives the SMBus via i2c-tools.
 pkg_install i2c-tools yad lshw
