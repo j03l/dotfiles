@@ -19,7 +19,7 @@ The `run` orchestrator executes every **executable** file here in sorted order, 
 | `70-go` | both | go |
 | `80-python` | both | uv |
 | `90-dev-tools` | both | fzf, ripgrep, btop, eza, expect, lazygit, glow, jq; bws (paru / official installer); docker is Linux-only |
-| `91-rclone` | Linux | rclone + FUSE for iCloud/OneDrive mounts, bc (used by `onedrive-precache.sh`); enables the OneDrive user-folder bisync timer |
+| `91-rclone` | Linux | rclone + FUSE for iCloud/OneDrive mounts, bc (used by `onedrive-precache.sh`, which is no longer enabled by default); enables the OneDrive user-folder bisync timer |
 | `95-hscroll-volume` | Linux | evdev horizontal-scroll-to-volume systemd service |
 | `96-macos-defaults` | macOS | Finder/Dock/Safari/key-repeat defaults |
 | `97-kfrgb` | Linux | RGB: liquidctl + OpenRGB; kfrgb deps (i2c-tools, yad, lshw) and the root-owned `kfrgb-retry` wrapper (kfrgb itself is installed by hand — see `system/README.md`) |

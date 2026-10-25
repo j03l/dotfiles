@@ -53,7 +53,7 @@ enable_mount() {
     fi
 }
 
-enable_mount onedrive rclone-onedrive rclone-onedrive-precache rclone-onedrive-bisync.timer
+enable_mount onedrive rclone-onedrive rclone-onedrive-bisync.timer
 enable_mount icloud   rclone-icloud icloud-2fa-refresh icloud-2fa-watch
 enable_mount obsidian rclone-obsidian
 
