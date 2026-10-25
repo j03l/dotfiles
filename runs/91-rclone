@@ -19,7 +19,8 @@ if pacman -Qq rclone-beta-bin 2>/dev/null | grep -qx rclone-beta-bin; then
     sudo pacman -Rdd --noconfirm rclone-beta-bin
 fi
 
-paru -S --needed --noconfirm rclone fuse3
+# bc: onedrive-precache.sh measures throughput with it to scale its workers.
+paru -S --needed --noconfirm rclone fuse3 bc
 
 # The Obsidian vault mounts under /mnt (root-owned tree), so create the
 # mountpoint owned by the user — the --user service can't mkdir there.

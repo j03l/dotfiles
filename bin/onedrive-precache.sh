@@ -58,11 +58,13 @@ for folder in "${FOLDERS[@]}"; do
   LAST_TIME=$(date +%s)
   LAST_SPEED=0
 
-  # Start initial workers
+  # Start initial workers. Track their PIDs explicitly so scaling down kills
+  # workers only — the feeder below is also a bash child of $$.
+  WORKER_PIDS=()
   for ((i=0; i<PARALLEL; i++)); do
     worker < "$FIFO" &
+    WORKER_PIDS+=($!)
   done
-  WORKER_PIDS=$(jobs -p)
 
   echo "$(date): Starting with $PARALLEL workers..." | tee -a "$LOG"
 
@@ -104,6 +106,7 @@ for folder in "${FOLDERS[@]}"; do
           # Add more workers
           for ((i=PARALLEL; i<NEW_PARALLEL; i++)); do
             worker < "$FIFO" &
+            WORKER_PIDS+=($!)
           done
           PARALLEL=$NEW_PARALLEL
           echo ""
@@ -112,11 +115,14 @@ for folder in "${FOLDERS[@]}"; do
       elif (( $(echo "$RATIO < 0.7" | bc -l) )); then
         # Speed dropped >30%, reduce workers
         if [[ $PARALLEL -gt $MIN_PARALLEL ]]; then
-          # Kill half the workers
+          # Kill half the workers (newest first), never dropping below the floor
           KILL_COUNT=$((PARALLEL / 2))
-          pkill -n -P $$ -x bash 2>/dev/null
+          (( PARALLEL - KILL_COUNT < MIN_PARALLEL )) && KILL_COUNT=$((PARALLEL - MIN_PARALLEL))
+          for ((k=0; k<KILL_COUNT; k++)); do
+            kill "${WORKER_PIDS[-1]}" 2>/dev/null
+            unset 'WORKER_PIDS[-1]'
+          done
           PARALLEL=$((PARALLEL - KILL_COUNT))
-          [[ $PARALLEL -lt $MIN_PARALLEL ]] && PARALLEL=$MIN_PARALLEL
           echo ""
           echo "$(date): ↓ Reduced to $PARALLEL workers (slowdown)" | tee -a "$LOG"
         fi
