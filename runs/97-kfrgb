@@ -6,6 +6,9 @@ source "$DOTFILES/lib/platform.sh"
 # Linux-only: SMBus RAM lighting on a specific desktop board.
 is_linux || { echo "97-kfrgb: skip (Linux-only)"; exit 0; }
 
+# kfrgb refuses to run without yad + lshw, and drives the SMBus via i2c-tools.
+pkg_install i2c-tools yad lshw
+
 SRC="$DOTFILES/system/kfrgb-retry"
 DEST="/usr/local/bin/kfrgb-retry"
 

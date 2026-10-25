@@ -14,7 +14,7 @@ That means editing a script here does not change the installed copy. Re-run its
 
 | Script | Installed to | Installed by | Needs |
 |--------|--------------|--------------|-------|
-| `kfrgb-retry` | `/usr/local/bin/kfrgb-retry` | `runs/97-kfrgb` | `kfrgb` at `/usr/local/bin/kfrgb` |
+| `kfrgb-retry` | `/usr/local/bin/kfrgb-retry` | `runs/97-kfrgb` | `kfrgb` at `/usr/local/bin/kfrgb`; `i2c-tools`, `yad`, `lshw` (installed by `runs/97-kfrgb`) |
 
 ## kfrgb-retry
 
