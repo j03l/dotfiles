@@ -15,6 +15,7 @@ That means editing a script here does not change the installed copy. Re-run its
 | Script | Installed to | Installed by | Needs |
 |--------|--------------|--------------|-------|
 | `kfrgb-retry` | `/usr/local/bin/kfrgb-retry` | `runs/97-kfrgb` | `kfrgb` at `/usr/local/bin/kfrgb`; `i2c-tools`, `yad`, `lshw` (installed by `runs/97-kfrgb`) |
+| `kfrgb.service` | `/etc/systemd/system/kfrgb.service` (enabled) | `runs/97-kfrgb` | `kfrgb-retry`; `i2c-dev` loaded at boot via `/etc/modules-load.d/i2c-dev.conf` (also written by `runs/97-kfrgb`) |
 
 ## kfrgb-retry
 
@@ -24,7 +25,8 @@ on this board is intermittently flaky even with `--wait` tuning, so the wrapper
 retries the whole call up to five times, stays silent on success, and prints
 kfrgb's last output only if every attempt fails.
 
-Driven by the `ramon` / `ramoff` aliases in `.zshrc`.
+Driven by the `ramon` / `ramoff` aliases in `.zshrc`, and run as `kfrgb-retry on`
+at every boot by `kfrgb.service`, since the sticks reset to rainbow on a cold boot.
 
 **Machine-specific values** — `SMBUS=22` and `SLOTS=2,4` are correct for the
 Gigabyte Z790 UD AX. On different hardware, find yours with

@@ -1,0 +1,10 @@
+[Unit]
+Description=Set Kingston Fury RAM lighting (kfrgb-retry on)
+After=systemd-modules-load.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/kfrgb-retry on
+
+[Install]
+WantedBy=multi-user.target

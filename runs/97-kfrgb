@@ -33,9 +33,27 @@ fi
 # file is a privilege-escalation path.
 if [[ -f "$DEST" ]] && cmp -s "$SRC" "$DEST"; then
     echo "97-kfrgb: ok (already current) $DEST"
-    exit 0
+else
+    echo "97-kfrgb: installing $DEST (root-owned, 755)"
+    sudo install -Dm755 -o root -g root "$SRC" "$DEST"
 fi
 
-echo "97-kfrgb: installing $DEST (root-owned, 755)"
-sudo install -Dm755 -o root -g root "$SRC" "$DEST"
-echo "97-kfrgb: done. Test with: ramon / ramoff"
+# kfrgb talks to the SMBus through /dev/i2c-*, which needs i2c-dev loaded.
+MODULES=/etc/modules-load.d/i2c-dev.conf
+if [[ "$(cat "$MODULES" 2>/dev/null)" != "i2c-dev" ]]; then
+    echo "97-kfrgb: loading i2c-dev at boot ($MODULES)"
+    echo i2c-dev | sudo tee "$MODULES" >/dev/null
+fi
+sudo modprobe i2c-dev
+
+# The sticks fall back to their default rainbow on every cold boot, so set
+# the colour once at startup (system unit: it runs kfrgb as root).
+UNIT_SRC="$DOTFILES/system/kfrgb.service"
+UNIT_DEST="/etc/systemd/system/kfrgb.service"
+if ! cmp -s "$UNIT_SRC" "$UNIT_DEST"; then
+    echo "97-kfrgb: installing $UNIT_DEST"
+    sudo install -Dm644 -o root -g root "$UNIT_SRC" "$UNIT_DEST"
+    sudo systemctl daemon-reload
+fi
+sudo systemctl enable kfrgb.service >/dev/null 2>&1
+echo "97-kfrgb: done. Lights are set at boot; toggle with: ramon / ramoff"
