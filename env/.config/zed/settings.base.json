@@ -98,8 +98,8 @@
     "ruff": true,
     "ty": true,
     "tokyo-night": true,
-    "rose-pine": true,
-    "zed-icons-colored-theme": true
+    "rose-pine-theme": true,
+    "colored-zed-icons-theme": true
   },
   "vim": {
     "toggle_relative_line_numbers": true

@@ -22,7 +22,11 @@ alias getip="~/.local/bin/get_ip.sh"
 alias gdb="gdb --tui"
 alias paru="paru --skipreview"
 alias open="xdg-open"
-alias zed="zeditor"
+# Arch's `zed` package ships the binary as `zeditor`; the official installer
+# (~/.local/bin/zed) uses `zed`. Only alias when that's the one installed.
+if ! command -v zed &>/dev/null && command -v zeditor &>/dev/null; then
+    alias zed="zeditor"
+fi
 alias make="make -j$(nproc)"
 alias ninja="ninja -j$(nproc)"
 alias jctl="journalctl -p 3 -xb"
