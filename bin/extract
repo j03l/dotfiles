@@ -19,6 +19,8 @@ fi
 case "$1" in
     *.tar.bz2)  tar -jxvf "$1"                      ;;
     *.tar.gz)   tar -zxvf "$1"                      ;;
+    *.tar.xz|*.txz)   tar -Jxvf "$1"                ;;
+    *.tar.zst|*.tzst) tar --zstd -xvf "$1"          ;;
     *.bz2)      bunzip2 "$1"                        ;;
     *.dmg)      hdiutil mount "$1"                  ;;
     *.gz)       gunzip "$1"                         ;;
@@ -29,6 +31,9 @@ case "$1" in
     *.pax)      pax -r < "$1"                       ;;
     *.pax.Z)    uncompress "$1" --stdout | pax -r   ;;
     *.rar)      unrar x "$1"                        ;;
+    *.7z)       7z x "$1"                           ;;
+    *.xz)       unxz -k "$1"                        ;;
+    *.zst)      unzstd "$1"                         ;;
     *.Z)        uncompress "$1"                     ;;
     *)          echo "'$1' cannot be extracted/mounted via extract" ;;
 esac

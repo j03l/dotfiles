@@ -8,5 +8,12 @@
 #
 #   git nuke add-git-nuke
 
-git branch -D $1
-git push origin :$1
+# Without a name, `git push origin :` is a *matching push* — it pushes every
+# local branch that shares a name with one on origin, instead of deleting one.
+if [ -z "$1" ]; then
+    echo "Usage: git nuke <branch>" >&2
+    exit 1
+fi
+
+git branch -D "$1"
+git push origin --delete "$1"
