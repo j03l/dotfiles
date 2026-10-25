@@ -51,7 +51,7 @@ check_overwrite() {
     local dest="$1"
     if [[ -e "$dest" && ! -L "$dest" ]]; then
         echo "WARNING: $dest is a real file/directory, not a symlink."
-        read -rp "Overwrite? [y/N] " answer
+        read -rp "Replace with symlink? (existing is kept as $dest.bak-<timestamp>) [y/N] " answer
         if [[ ! "$answer" =~ ^[Yy]$ ]]; then
             echo "skip: $dest"
             return 1
@@ -60,7 +60,24 @@ check_overwrite() {
     return 0
 }
 
-# Remove target (file, dir, or stale symlink) then symlink
+# Clear the way for a symlink. A real file/dir is moved aside to
+# <dest>.bak-<timestamp> rather than deleted: an rm -rf here once destroyed TPM
+# (cloned into a real ~/.config/tmux by runs/30-tmux before deploy ran), and
+# would take any other local state with it just as silently.
+clear_dest() {
+    local dest="$1"
+    if [[ -e "$dest" && ! -L "$dest" ]]; then
+        local bak="$dest.bak-$(date +%Y%m%d-%H%M%S)"
+        log "mv $dest -> $bak"
+        [[ $dry_run == "0" ]] && mv "$dest" "$bak"
+    else
+        log "rm -f $dest"
+        [[ $dry_run == "0" ]] && rm -f "$dest"
+    fi
+    return 0
+}
+
+# Move aside / remove target (file, dir, or stale symlink) then symlink
 link_dir() {
     local src="$1" dest="$2"
     if [[ -L "$dest" && "$(readlink "$dest")" == "$src" ]]; then
@@ -70,10 +87,9 @@ link_dir() {
     if [[ $dry_run == "0" ]]; then
         check_overwrite "$dest" || return 0
     fi
-    log "rm -rf $dest"
+    clear_dest "$dest"
     log "ln -s  $src -> $dest"
     if [[ $dry_run == "0" ]]; then
-        rm -rf "$dest"
         mkdir -p "$(dirname "$dest")"
         ln -s "$src" "$dest"
     fi
@@ -88,11 +104,10 @@ link_file() {
     if [[ $dry_run == "0" ]]; then
         check_overwrite "$dest" || return 0
     fi
-    log "rm -f $dest"
+    clear_dest "$dest"
     log "ln -s $src -> $dest"
     if [[ $dry_run == "0" ]]; then
         mkdir -p "$(dirname "$dest")"
-        rm -f "$dest"
         ln -s "$src" "$dest"
     fi
 }

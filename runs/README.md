@@ -10,7 +10,7 @@ The `run` orchestrator executes every **executable** file here in sorted order, 
 | `01-brew` | macOS | Homebrew + everything in `macos.Brewfile` |
 | `10-zsh` | both | zsh, plugins, oh-my-zsh (paru + system dirs / brew + curl installer), pkgfile database timer on Linux; sets default shell |
 | `20-neovim` | both | neovim, luarocks, tree-sitter |
-| `30-tmux` | both | tmux + TPM |
+| `30-tmux` | both | tmux + TPM + all `@plugin`s from tmux.conf (installed into the repo's gitignored `env/.config/tmux/plugins/`, so it works before `deploy` links `~/.config/tmux`) |
 | `40-terminals` | both | ghostty + kitty |
 | `45-desktop` | Linux | KDE or GNOME integration per `~/.dotfiles-desktop` (askpass, dialog tool, keyring, SSH agent, GNOME gsettings) + wl-clipboard, libsecret, libnotify, Cascadia Mono NF, fd, gh |
 | `50-rust` | both | rustup, stylua, claude-tmux (brew rustup is keg-only — added to PATH) |
@@ -19,7 +19,7 @@ The `run` orchestrator executes every **executable** file here in sorted order, 
 | `70-go` | both | go |
 | `80-python` | both | uv |
 | `90-dev-tools` | both | fzf, ripgrep, btop, eza, expect, lazygit, glow, jq; bws (paru / official installer); docker is Linux-only |
-| `91-rclone` | Linux | rclone + FUSE for iCloud/OneDrive mounts |
+| `91-rclone` | Linux | rclone + FUSE for iCloud/OneDrive mounts, bc (used by `onedrive-precache.sh`) |
 | `95-hscroll-volume` | Linux | evdev horizontal-scroll-to-volume systemd service |
 | `96-macos-defaults` | macOS | Finder/Dock/Safari/key-repeat defaults |
 | `macos.Brewfile` | macOS | package list consumed by `01-brew` (not executable, not run directly) |
