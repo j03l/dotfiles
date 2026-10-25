@@ -25,8 +25,15 @@ paru -S --needed --noconfirm rclone fuse3 bc
 # The Obsidian vault mounts under /mnt (root-owned tree), so create the
 # mountpoint owned by the user — the --user service can't mkdir there.
 # OneDrive/iCloud mount under $HOME and create their own dirs.
-sudo mkdir -p /mnt/obsidian
-sudo chown "$USER:$USER" /mnt/obsidian
+# Skip when already mounted: it's then a FUSE mount owned by the user, which
+# root can't even stat (no allow_other), so `sudo mkdir -p` fails on every
+# re-run once the vault is up.
+if mountpoint -q /mnt/obsidian; then
+    echo "/mnt/obsidian already mounted"
+else
+    sudo mkdir -p /mnt/obsidian
+    sudo chown "$USER:$USER" /mnt/obsidian
+fi
 
 echo "rclone + fuse installed."
 
